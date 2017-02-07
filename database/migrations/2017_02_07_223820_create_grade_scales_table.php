@@ -15,13 +15,16 @@ class CreateGradeScalesTable extends Migration
     {
         Schema::create('grade_scales', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('section_id');
+            $table->unsignedInteger('section_id');
             $table->enum('scale_type', ['percent', 'points']);
 
+        });
 
-            $table->foreign('section_id')
-                ->references('id')->on('sections')
-                ->onDelete('cascade');
+        Schema::table('grade_scales', function (Blueprint $table) {
+           $table->foreign('section_id')
+                 ->references('id')
+                 ->on('sections')
+                 ->onDelete('cascade');
         });
     }
 

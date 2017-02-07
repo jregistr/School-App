@@ -15,13 +15,16 @@ class CreateWeightsTable extends Migration
     {
         Schema::create('weights', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('grade_scale_id');
+            $table->unsignedInteger('grade_scale_id');
             $table->string('name');
             $table->tinyInteger('value');
+        });
 
-            $table->foreign('grade_scale_id')
-                ->references('id')->on('grade_scales')
-                ->onDelete('cascade');
+        Schema::table('weights', function (Blueprint $table) {
+           $table->foreign('grade_scale_id')
+                 ->references('id')
+                 ->on('grade_scales')
+                 ->onDelete('cascade');
         });
     }
 

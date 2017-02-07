@@ -15,11 +15,14 @@ class CreateGradesTable extends Migration
     {
         Schema::create('grades', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('weight_id');
+            $table->unsignedInteger('weight_id');
             $table->tinyInteger('grade');
+        });
 
+        Schema::table('grades', function (Blueprint $table) {
             $table->foreign('weight_id')
-                ->references('id')->on('weights')
+                ->references('id')
+                ->on('weights')
                 ->onDelete('cascade');
         });
     }

@@ -13,14 +13,19 @@ class CreateSchedulesTable extends Migration
      */
     public function up()
     {
+
         Schema::create('schedules', function (Blueprint $table){
             $table->increments('id');
-            $table->integer('student_id');
+            $table->unsignedInteger('student_id');
             $table->boolean('selected');
+        });
 
+
+        Schema::table('schedules', function (Blueprint $table){
             $table->foreign('student_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 
