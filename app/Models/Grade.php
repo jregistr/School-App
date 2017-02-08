@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Grade extends Model
+class Grade extends BaseModel
 {
-    //
+    public function weight()
+    {
+        return $this->belongsTo(Weight::class);
+    }
 }

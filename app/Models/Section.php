@@ -2,9 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Section extends Model
+class Section extends BaseModel
 {
-    //
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function gradingScale()
+    {
+        return $this->hasOne(GradeScale::class);
+    }
+
 }

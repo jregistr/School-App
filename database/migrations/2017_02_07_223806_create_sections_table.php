@@ -21,7 +21,7 @@ class CreateSectionsTable extends Migration
             $table->string('days', 7);
             $table->string('professor')->nullable()->default(null);
             $table->string('building')->nullable()->default(null);
-            $table->tinyInteger('room_number')->nullable()->default(null);
+            $table->smallInteger('room_number')->nullable()->default(null);
         });
 
         Schema::table('sections', function (Blueprint $table){
