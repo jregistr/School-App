@@ -17,7 +17,7 @@ class CreateWeightsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('grade_scale_id');
             $table->string('name');
-            $table->tinyInteger('value');
+            $table->float('value', 6, 2);
         });
 
         Schema::table('weights', function (Blueprint $table) {

@@ -3,14 +3,14 @@
 namespace App\Models;
 
 /**
- * @property mixed id
- * @property mixed class_id
+ * @property integer id
+ * @property integer class_id
  * @property mixed start_time
  * @property mixed end_time
- * @property mixed days
- * @property mixed professor
- * @property mixed building
- * @property mixed room_number
+ * @property string days
+ * @property string professor
+ * @property integer building
+ * @property integer room_number
  */
 class Section extends BaseModel
 {

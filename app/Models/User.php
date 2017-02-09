@@ -8,22 +8,23 @@ use Illuminate\Validation\Validator;
 
 
 /**
- * @property mixed id
- * @property mixed first_name
- * @property mixed last_name
- * @property mixed school_id
- * @property mixed email
- * @property mixed password
+ * @property integer id
+ * @property string first_name
+ * @property string last_name
+ * @property integer school_id
+ * @property string email
+ * @property string password
  */
 class User extends Authenticatable
 {
     use Notifiable;
 
     protected $rules = array(
-        'first_name' => 'required|alpha_numeric',
-        'last_name' => 'required|alpha_numeric',
+        'first_name' => 'required|alpha',
+        'last_name' => 'required|alpha',
         'password' => 'required|min:8',
-        'email' => 'required|email'
+        'email' => 'required|email',
+        'school_name' => 'alpha'
     );
 
     protected $errors;

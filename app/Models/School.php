@@ -4,11 +4,11 @@ namespace App\Models;
 
 /**
  * Class School
- * @property mixed id
- * @property mixed name
- * @property mixed country
- * @property mixed state
- * @property mixed city
+ * @property integer id
+ * @property string name
+ * @property string country
+ * @property string state
+ * @property string city
  * @package App\Models
  */
 class School extends BaseModel

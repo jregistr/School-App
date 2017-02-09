@@ -3,20 +3,26 @@
 namespace App\Models;
 
 /**
- * @property mixed id
- * @property mixed grade_scale_id
- * @property mixed name
- * @property mixed value
+ * @property integer id
+ * @property integer grade_scale_id
+ * @property string name
+ * @property float value
  */
 class Weight extends BaseModel
 {
-  public function gradingScale()
-  {
-      return $this->belongsTo(GradeScale::class);
-  }
+    protected $rules = array(
+        'grade_scale' => 'required|integer',
+        'name' => 'required|alpha',
+        'value' => 'required|regex:/^(?:[0-9]{1,3})+(?:\.\d{1,2})?$/'
+    );
 
-  public function grades()
-  {
-      return $this->hasMany(Grade::class);
-  }
+    public function gradingScale()
+    {
+        return $this->belongsTo(GradeScale::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
 }

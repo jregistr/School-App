@@ -4,14 +4,21 @@ namespace App\Models;
 
 
 /**
- * @property mixed id
- * @property mixed school_id
- * @property mixed name
- * @property mixed crn
- * @property mixed credits
+ * @property integer id
+ * @property integer school_id
+ * @property string name
+ * @property integer crn
+ * @property integer credits
  */
 class Course extends BaseModel
 {
+
+    protected $rules = array(
+        'school_name' => 'alpha',
+        'name' => 'required|alpha',
+        'crn' => 'integer',
+        'credits' => 'integer'
+    );
 
     public function school()
     {
