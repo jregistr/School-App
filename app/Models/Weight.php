@@ -12,7 +12,7 @@ class Weight extends BaseModel
 {
     protected $rules = array(
         'grade_scale' => 'required|integer',
-        'name' => 'required|alpha',
+        'name' => 'required|alpha|max:191',
         'value' => 'required|regex:/^(?:[0-9]{1,3})+(?:\.\d{1,2})?$/'
     );
 

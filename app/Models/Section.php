@@ -15,6 +15,16 @@ namespace App\Models;
 class Section extends BaseModel
 {
 
+    protected $rules = array(
+        'class_id' => 'required|integer',
+        'start_time' => 'required|date_format:"HH:MM"|before:end_time',
+        'end_time' => 'required|date_format:"HH:MM"|after:start_time',
+        'days' => 'required|max:191',
+        'professor' => 'max:191',
+        'building' => 'integer',
+        'room_number' => 'integer'
+    );
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -23,6 +33,9 @@ class Section extends BaseModel
         return $this->belongsTo(Course::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function gradingScale()
     {
         return $this->hasOne(GradeScale::class);

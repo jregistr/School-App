@@ -19,16 +19,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $rules = array(
-        'first_name' => 'required|alpha',
-        'last_name' => 'required|alpha',
-        'password' => 'required|min:8',
-        'email' => 'required|email',
-        'school_name' => 'alpha'
-    );
-
-    protected $errors;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -46,21 +36,5 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    public function validateInput($data)
-    {
-        $v = Validator::make($data, $this->rules);
-        $r = true;
-        if ($v->fails()) {
-            $this->errors = $v->errors;
-            $r = false;
-        }
-        return $r;
-    }
-
-    public function errors()
-    {
-        return $this->errors;
-    }
 
 }

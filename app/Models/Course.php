@@ -14,8 +14,8 @@ class Course extends BaseModel
 {
 
     protected $rules = array(
-        'school_name' => 'alpha',
-        'name' => 'required|alpha',
+        'school_name' => 'alpha|max:191',
+        'name' => 'required|alpha|max:191',
         'crn' => 'integer',
         'credits' => 'integer'
     );
