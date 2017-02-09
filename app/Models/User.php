@@ -7,11 +7,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Validation\Validator;
 
 
+/**
+ * @property mixed id
+ * @property mixed first_name
+ * @property mixed last_name
+ * @property mixed school_id
+ * @property mixed email
+ * @property mixed password
+ */
 class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $rules = array();
+    protected $rules = array(
+        'first_name' => 'required|alpha_numeric',
+        'last_name' => 'required|alpha_numeric',
+        'password' => 'required|min:8',
+        'email' => 'required|email'
+    );
 
     protected $errors;
 

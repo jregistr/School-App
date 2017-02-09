@@ -3,6 +3,13 @@
 namespace App\Models;
 
 
+/**
+ * @property mixed id
+ * @property mixed school_id
+ * @property mixed name
+ * @property mixed crn
+ * @property mixed credits
+ */
 class Course extends BaseModel
 {
 
