@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -47,9 +48,12 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'first_name' => 'required|alpha|max:191',
-            'last_name' => 'required|alpha|max:191',
+
+        $values = $this->scrubSchoolId($data);
+
+        return Validator::make($values, [
+            'first_name' => 'required|max:191',
+            'last_name' => 'required|max:191',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:8|confirmed',
             'school_id' => 'sometimes|integer|exists:schools,id'
@@ -59,11 +63,12 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $data
+     * @param  array $dataRaw
      * @return User
      */
-    protected function create(array $data)
+    protected function create($dataRaw)
     {
+        $data = $this->scrubSchoolId($dataRaw);
         $info = [
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
@@ -71,32 +76,19 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password'])
         ];
 
-        $school_id = $data['school_id'];
-        if ($school_id != null) {
-            $info['school_id'] = $school_id;
-
-//            if ($this->schoolExists($school_id)) {
-//                $info['school_id'] = $school_id;
-//            } else {
-//                throw new ValidationException("School doesn't exist");
-//            }
-
+        if (array_key_exists('school_id', $data)) {
+            $info['school_id'] = $data['school_id'];
         }
-
 
         return User::create($info);
     }
 
-//    private function schoolExists($schoolId)
-//    {
-//        $rVal = false;
-//
-//        $school = School::find($schoolId)->first();
-//        if ($school != null) {
-//            $rVal = true;
-//        }
-//
-//        return $rVal;
-//    }
+    private function scrubSchoolId($data)
+    {
+        if ($data['school_id'] == 'none') {
+            unset($data['school_id']);
+        }
+        return $data;
+    }
 
 }
