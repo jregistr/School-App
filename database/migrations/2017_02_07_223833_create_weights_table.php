@@ -15,16 +15,23 @@ class CreateWeightsTable extends Migration
     {
         Schema::create('weights', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('grade_scale_id');
-            $table->string('name');
-            $table->float('value', 6, 2);
+            $table->unsignedInteger('section_id');
+            $table->unsignedInteger('student_id');
+            $table->string('category');
+            $table->float('points_percentage', 6, 2);
         });
 
         Schema::table('weights', function (Blueprint $table) {
-           $table->foreign('grade_scale_id')
+           $table->foreign('section_id')
                  ->references('id')
-                 ->on('grade_scales')
+                 ->on('sections')
                  ->onDelete('cascade');
+
+            $table->foreign('student_id')
+                ->references('id')
+                ->on('students')
+                ->onDelete('cascade');
+
         });
     }
 

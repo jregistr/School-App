@@ -33,12 +33,4 @@ class Section extends BaseModel
         return $this->belongsTo(Course::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function gradingScale()
-    {
-        return $this->hasOne(GradeScale::class);
-    }
-
 }

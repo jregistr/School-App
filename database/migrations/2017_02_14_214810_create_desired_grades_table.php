@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGradesTable extends Migration
+class CreateDesiredGradesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateGradesTable extends Migration
      */
     public function up()
     {
-        Schema::create('grades', function (Blueprint $table) {
-            $table->unsignedInteger('weight_id');
+        Schema::create('desired_grades', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('section_id');
             $table->unsignedInteger('student_id');
-            $table->float('grade', 6, 2);
-            $table->string('assignment');
+            $table->unsignedSmallInteger('desired_grade');
         });
 
-        Schema::table('grades', function (Blueprint $table) {
-            $table->foreign('weight_id')
+        Schema::table('desired_grades', function (Blueprint $table) {
+            $table->foreign('section_id')
                 ->references('id')
-                ->on('weights')
+                ->on('sections')
                 ->onDelete('cascade');
 
             $table->foreign('student_id')
@@ -40,6 +40,6 @@ class CreateGradesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grades');
+        Schema::dropIfExists('desired_grades');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Student;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -80,7 +80,7 @@ class RegisterController extends Controller
             $info['school_id'] = $data['school_id'];
         }
 
-        return User::create($info);
+        return Student::create($info);
     }
 
     private function scrubSchoolId($data)

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateScheduleSectionTable extends Migration
+class CreateSectionsMeetingTimesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,23 @@ class CreateScheduleSectionTable extends Migration
      */
     public function up()
     {
-        Schema::create('schedule_section', function (Blueprint $table) {
-            $table->unsignedInteger('schedule_id');
+        Schema::create('sections_meeting_times', function (Blueprint $table) {
             $table->unsignedInteger('section_id');
+            $table->unsignedInteger('meeting_time_id');
         });
 
-        Schema::table('schedule_section', function (Blueprint $table) {
-            $table->foreign('schedule_id')
-                ->references('id')
-                ->on('schedules')
-                ->onDelete('cascade');
-
+        Schema::table('sections_meeting_times', function (Blueprint $table) {
             $table->foreign('section_id')
                 ->references('id')
                 ->on('sections')
                 ->onDelete('cascade');
-            $table->primary(['schedule_id', 'section_id']);
+
+            $table->foreign('meeting_time_id')
+                ->references('id')
+                ->on('meeting_times')
+                ->onDelete('cascade');
+
+            $table->primary(['section_id', 'meeting_time_id']);
         });
     }
 
@@ -39,6 +40,6 @@ class CreateScheduleSectionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedule_section');
+        Schema::dropIfExists('sections_meeting_times');
     }
 }

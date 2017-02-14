@@ -15,7 +15,7 @@ use Illuminate\Validation\Validator;
  * @property string email
  * @property string password
  */
-class User extends Authenticatable
+class Student extends Authenticatable
 {
     use Notifiable;
 
