@@ -23,7 +23,7 @@ class CreateActivitiesTable extends Migration
         Schema::table('activities', function (Blueprint $table) {
             $table->foreign('student_id')
                 ->references('id')
-                ->on('students')
+                ->on('users')
                 ->onDelete('cascade');
         });
     }
