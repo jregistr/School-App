@@ -20,7 +20,6 @@ class Schedule extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-
     public function sections()
     {
         return Section::join('courses', 'sections.class_id', '=', 'courses.id')
