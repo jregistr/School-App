@@ -1,0 +1,90 @@
+@import url(http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext);
+
+html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Lato', 'sans-serif';
+    font-weight: 300;
+    }
+body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #636b6f;
+    background-color: #F8FDFF;
+}
+
+.navbar{
+    position: relative;
+    height: 70px;
+}
+
+.navbar-default {
+    background-color: #ffffff;
+}
+
+.navbar-header{
+    padding: 0% 4%;
+    display: inline-block;
+    margin-top: -15px;
+}
+
+.navbar-brand{
+    font-size: 20px;
+
+    display: inline;
+}
+.navbar-brand img{
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-left: 25px;
+    margin-bottom: -5px;
+}
+
+.login, .email{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+}
+
+
+.form{
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1), 0 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+form label{
+    font-weight: normal;
+}
+
+.panel-default .panel-heading{
+    background-color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.1);
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+.form-group .col-md-8 .btn-link{
+    text-align: center;
+}
+
+.form-group .formbtn{
+    background-color: #047D99;
+    border-color: #04718A;
+    border-radius: 0px !important;
+}
+
+.form-group .signupbtn{
+    margin-top: 1%;
+}
+
+form a{
+    font-weight: 300;
+    color: #0071BC;
+}
+
+form input, select{
+    border-radius: 0px !important;
+}
