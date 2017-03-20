@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.register')
 
 @section('content')
-<div class="container">
+<div class="container register">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -108,11 +108,15 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                            <div class="col-md-4 col-md-offset-5">
+                                <button type="submit" class="form-control btn btn-primary formbtn">
                                     Register
                                 </button>
                             </div>
+                        </div>
+                        <div class="col-md-6 col-md-offset-5">
+                            <p>Already have an account? <a href="{{ url('/login') }}">Login
+                                </a></p>
                         </div>
                     </form>
                 </div>

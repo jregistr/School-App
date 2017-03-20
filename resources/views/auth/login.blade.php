@@ -1,11 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.register')
 
 @section('content')
-<div class="container">
+<div class="container login">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-5 col-md-offset-4">
             <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
+                <div class="panel-heading">
+                    Login
+                </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                         {{ csrf_field() }}
@@ -29,6 +31,8 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
+                                <a href="{{ url('/password/reset') }}">Forgot Password?
+                                </a>
 
                                 @if ($errors->has('password'))
                                     <span class="help-block">
@@ -38,25 +42,23 @@
                             </div>
                         </div>
 
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class=" form-control btn btn-primary formbtn">
                                     Login
                                 </button>
-
-                                <a class="btn btn-link" href="{{ url('/password/reset') }}">
-                                    Forgot Your Password?
-                                </a>
+                            </div>
+                            <div class="col-md-8 col-md-offset-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+                                </label>
+                            </div>
+                                </div>
+                            <div class="col-md-8 col-md-offset-4 signupbtn">
+                                <p>Don't have an account? <a href="{{ url('/register') }}">Sign up
+                                </a></p>
                             </div>
                         </div>
                     </form>
