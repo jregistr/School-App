@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ActivationService;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
+
 
 class RegisterController extends Controller
 {
@@ -30,14 +33,28 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/';
 
+    protected $activationService;
+
     /**
      * Create a new controller instance.
-     *
+     * @param $activationService - Activation service.
      * @return void
      */
-    public function __construct()
+    public function __construct(ActivationService $activationService)
     {
         $this->middleware('guest');
+        $this->activationService = $activationService;
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->activationService->createActivation($user);
+        $this->activationService->sendActivationMail($user);
+
+        return redirect('/login')->with('status', 'We\'ve sent you an email to confirm your account.');
     }
 
     /**
@@ -48,47 +65,26 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-
-        $values = $this->scrubSchoolId($data);
-
-        return Validator::make($values, [
-            'first_name' => 'required|max:191',
-            'last_name' => 'required|max:191',
+        return Validator::make($data, [
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:8|confirmed',
-            'school_id' => 'sometimes|integer|exists:schools,id'
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $dataRaw
+     * @param  array $data
      * @return User
      */
-    protected function create($dataRaw)
+    protected function create($data)
     {
-        $data = $this->scrubSchoolId($dataRaw);
         $info = [
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ];
 
-        if (array_key_exists('school_id', $data)) {
-            $info['school_id'] = $data['school_id'];
-        }
-
         return User::create($info);
-    }
-
-    private function scrubSchoolId($data)
-    {
-        if ($data['school_id'] == 'none') {
-            unset($data['school_id']);
-        }
-        return $data;
     }
 
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAccountConfirmationsTable extends Migration
+class CreateProfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,16 @@ class CreateAccountConfirmationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_confirmations', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
-            $table->string('token')->unique();;
-            $table->timestamp('created');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->unsignedInteger('school_id')->nullable()->default(null);
+            $table->enum('year', ['Freshman', 'Sophomore', 'Junior', 'Senior'])->nullable();
+            $table->string('major')->nullable()->default(null);
         });
 
-        Schema::table('account_confirmations', function (Blueprint $table) {
+        Schema::table('profiles', function (Blueprint $table) {
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -34,6 +37,6 @@ class CreateAccountConfirmationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account_confirmations');
+        Schema::dropIfExists('profiles');
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\ActivationService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -27,13 +29,32 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/';
 
+    protected $activationService;
+
     /**
      * Create a new controller instance.
-     *
-     * @return void
+     * @param $activationService
      */
-    public function __construct()
+    public function __construct(ActivationService $activationService)
     {
         $this->middleware('guest', ['except' => 'logout']);
+        $this->activationService = $activationService;
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if(!$user->activated) {
+            auth()->logout();
+            $conf = $this->activationService->getActivationByUID($user->id);
+            if(!$conf) {
+                $this->activationService->createActivation($user);
+            }
+            $this->activationService->sendActivationMail($user);
+            return redirect('/login')->with('status', 'You need to confirm your email. We\'ve resent the email.');
+        }
+
+        return redirect()->intended($this->redirectPath());
+    }
+
+
 }
