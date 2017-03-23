@@ -30,7 +30,7 @@ class ActivationController extends Controller
                     $this->activationService->activateUser($user);
                     $this->activationService->deleteActivation($user);
                     Auth::login($user);
-                    return redirect('/');
+                    return redirect('/profile');
                 } else {
                     $this->activationService->updateActivation($user);
                     $this->activationService->sendActivationMail($user);

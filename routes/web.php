@@ -19,6 +19,8 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index');
 
+Route::get('/profile', 'HomeController@editProfile');
+
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');
 
 

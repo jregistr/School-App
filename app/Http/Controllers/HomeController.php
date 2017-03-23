@@ -26,6 +26,11 @@ class HomeController extends Controller
         return view('home');
     }
 
+    public function editProfile()
+    {
+        return view('editprofile');
+    }
+
     public function doCoolStuff() {
         return view('coolview');
     }
