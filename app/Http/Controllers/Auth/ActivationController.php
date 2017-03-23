@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\ActivationService;
+use Illuminate\Support\Facades\Auth;
 
 class ActivationController extends Controller
 {
@@ -28,7 +29,8 @@ class ActivationController extends Controller
                 if ($this->activationService->isLessThan24($conf)) {
                     $this->activationService->activateUser($user);
                     $this->activationService->deleteActivation($user);
-                    return redirect('/login')->with('status', 'We successfully confirmed your email');
+                    Auth::login($user);
+                    return redirect('/');
                 } else {
                     $this->activationService->updateActivation($user);
                     $this->activationService->sendActivationMail($user);
