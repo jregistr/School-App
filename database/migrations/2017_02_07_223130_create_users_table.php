@@ -18,6 +18,13 @@ class CreateUsersTable extends Migration
             $table->boolean('activated')->default(false);
             $table->string('email')->unique();
             $table->string('password');
+
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->unsignedInteger('school_id')->nullable()->default(null);
+            $table->enum('year', ['Freshman', 'Sophomore', 'Junior', 'Senior'])->nullable();
+            $table->string('major')->nullable()->default(null);
+
             $table->rememberToken();
             $table->timestamps();
         });
