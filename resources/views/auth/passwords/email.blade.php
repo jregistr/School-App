@@ -1,4 +1,4 @@
-@extends('layouts.register')
+@extends('layouts.loginsignuplayout')
 
 @section('content')
 <div class="container email">

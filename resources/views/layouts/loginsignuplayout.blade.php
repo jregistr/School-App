@@ -11,12 +11,11 @@
     <title>{{ config('app.name', 'Set The Title') }}</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
 
     <link href="/css/register.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-
+    <link rel="icon" href="/images/favicon.png" />
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -34,6 +33,7 @@
                     {{ config('app.name', 'Set the title') }}
                 </a>
             </div>
+        </div>
     </nav>
 
     @yield('content')
@@ -41,5 +41,7 @@
 
 <!-- Scripts -->
 <script src="/js/app.js"></script>
+<script src="/js/jquery-3.2.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 </body>
 </html>
