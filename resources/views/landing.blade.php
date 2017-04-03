@@ -15,7 +15,7 @@
 
     <link href="/css/register.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <link rel="icon" href="/images/favicon.png"/>
+    <link rel="icon" href="/images/graduation-school-hat.png"/>
     <link rel="stylesheet" href="/css/landing.css"/>
     <!-- Scripts -->
     <script>
