@@ -18,7 +18,7 @@ class CreateWeightsTable extends Migration
             $table->unsignedInteger('section_id');
             $table->unsignedInteger('student_id');
             $table->string('category');
-            $table->float('points_percentage', 6, 2);
+            $table->float('points', 6, 2);
         });
 
         Schema::table('weights', function (Blueprint $table) {

@@ -12,7 +12,9 @@ class Grade extends BaseModel
 
     protected $rules = array(
         'weight_id' => 'required|integer',
-        'grade' => 'required|regex:/^(?:[0-9]{1,3})+(?:\.\d{1,2})?$/'
+        'student_id' => 'required|integer',
+        'assignment' => 'required|alpha_num',
+        'grade' => 'required|regex:/^(?:[0-9]{1,4})(?:\.\d{1,2})?$/'
     );
 
     public function weight()
