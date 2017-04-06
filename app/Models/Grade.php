@@ -3,9 +3,10 @@
 namespace App\Models;
 
 /**
- * @property integer id
+ * @property integer student_id
  * @property integer weight_id
  * @property float grade
+ * @property string assignment
  */
 class Grade extends BaseModel
 {

@@ -4,9 +4,10 @@ namespace App\Models;
 
 /**
  * @property integer id
- * @property integer grade_scale_id
- * @property string name
- * @property float value
+ * @property integer section_id
+ * @property integer student_id
+ * @property string category
+ * @property float points
  */
 class Weight extends BaseModel
 {
@@ -22,7 +23,7 @@ class Weight extends BaseModel
         return $this->hasMany(Grade::class);
     }
 
-    public function getWithGrades($studentId, $sectionId)
+    public static function getWithGrades($studentId, $sectionId)
     {
         $weightsRaw = Weight::where([['student_id', '=', $studentId],
             ['section_id', '=', $sectionId]])->get();
@@ -30,7 +31,7 @@ class Weight extends BaseModel
 
         if ($weights) {
             foreach ($weights as $weight) {
-                $weight -> grades = $weight->grades()->get();
+                $weight->grades = $weight->grades()->get();
             }
             return $weights;
         }

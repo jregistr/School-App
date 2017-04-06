@@ -14,6 +14,7 @@ class CreateGradesTable extends Migration
     public function up()
     {
         Schema::create('grades', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('weight_id');
             $table->unsignedInteger('student_id');
             $table->float('grade', 6, 2);
