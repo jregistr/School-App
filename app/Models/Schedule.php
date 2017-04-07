@@ -20,15 +20,4 @@ class Schedule extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function sections()
-    {
-        return Section::join('courses', 'sections.class_id', '=', 'courses.id')
-                        ->whereIn('sections.id',
-                                DB::table('schedule_section')
-                                    ->select('section_id')
-                                    ->where('schedule_id', $this->id)
-                            );
-
-    }
-
 }

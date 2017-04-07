@@ -26,7 +26,12 @@ class OverviewController extends Controller
 
     public function summary(Request $request)
     {
-        return $this->result(['name' => 'Abigail', 'state' => 'CA']);
+        $data = $this->gradeService->summary($this->studentId());
+        if ($data != null) {
+            return $this->result($data);
+        } else {
+            return $this->fail('No summary');
+        }
     }
 
     public function getWeight(Request $request)
@@ -46,7 +51,12 @@ class OverviewController extends Controller
             $sectionId = $request->input(C::SECTION_ID);
             $category = $request->input(C::CATEGORY);
             $points = $request->input(C::POINTS);
-            return $this->result($this->gradeService->addWeight($this->studentId(), $sectionId, $category, $points));
+
+            if ($points < 0 || $points > 100) {
+                return $this->fail('Points should be between 0 and 100. Points:' . $points);
+            } else {
+                return $this->result($this->gradeService->addWeight($this->studentId(), $sectionId, $category, $points));
+            }
         } else {
             return $this->missingParameter($checks[C::NAME]);
         }
@@ -72,9 +82,14 @@ class OverviewController extends Controller
             }
 
             if (count($updates) > 0) {
-                return $this->result($this->gradeService->updateWeight(
-                    $this->studentId(), $sectionId, $weightId, $updates)
-                );
+
+                if ($points != null && ($points < 0 || $points > 100)) {
+                    return $this->fail('Points should be between 0 and 100. Points:' . $points);
+                } else {
+                    return $this->result($this->gradeService->updateWeight(
+                        $this->studentId(), $sectionId, $weightId, $updates)
+                    );
+                }
             } else {
                 return $this->fail('Not fields to update provided');
             }
@@ -115,7 +130,12 @@ class OverviewController extends Controller
             $weightId = $request->input(C::WEIGHT_ID);
             $assign = $request->input(C::ASSIGNMENT);
             $grade = $request->input(C::GRADE);
-            return $this->result($this->gradeService->addGrade($this->studentId(), $weightId, $assign, $grade));
+
+            if ($grade < 0 || $grade > 100) {
+                return $this->fail('Grade should between 0 and 100. Grade:' . $grade);
+            } else {
+                return $this->result($this->gradeService->addGrade($this->studentId(), $weightId, $assign, $grade));
+            }
         } else {
             return $this->missingParameter($checks[C::NAME]);
         }
@@ -141,7 +161,12 @@ class OverviewController extends Controller
             }
 
             if (count($updates) > 0) {
-                return $this->result($this->gradeService->updateGrade($this->studentId(), $weightId, $gradeId, $updates));
+
+                if ($grade != null && ($grade < 0 || $grade > 100)) {
+                    return $this->fail('Grade should between 0 and 100. Grade:' . $grade);
+                } else {
+                    return $this->result($this->gradeService->updateGrade($this->studentId(), $weightId, $gradeId, $updates));
+                }
             } else {
                 return $this->fail('Not fields to update provided');
             }

@@ -18,13 +18,6 @@ class Grade extends BaseModel
         'grade'
     ];
 
-    protected $rules = array(
-        'weight_id' => 'required|integer',
-        'student_id' => 'required|integer',
-        'assignment' => 'required|alpha_num',
-        'grade' => 'required|regex:/^(?:[0-9]{1,4})(?:\.\d{1,2})?$/'
-    );
-
     public function weight()
     {
         return $this->belongsTo(Weight::class);

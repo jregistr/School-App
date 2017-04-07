@@ -13,13 +13,6 @@ class Weight extends BaseModel
 {
     public $timestamps = false;
 
-    protected $rules = array(
-        'student_id' => 'required|integer',
-        'section_id' => 'required|integer',
-        'category' => 'required|alpha|max:191',
-        'points' => 'required|regex:/^(?:\d{1,4})(?:\.\d{1,2})?$/'
-    );
-
     protected $fillable = [
         'category', 'points'
     ];
