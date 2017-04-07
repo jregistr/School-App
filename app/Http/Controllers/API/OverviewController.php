@@ -6,25 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\GradeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Util\C;
 
-class C
-{
-    const STUDENT_ID = 'student_id';
-    const WEIGHT_ID = 'weight_id';
-    const SECTION_ID = 'section_id';
-    const GRADE_ID = 'grade_id';
-
-    const CATEGORY = 'category';
-    const POINTS = 'points';
-
-    const GRADE = 'grade';
-    const ASSIGNMENT = 'assignment';
-
-    const NAME = 'name';
-    const SUCCESS = 'success';
-    const DATA = 'data';
-    const MESSAGE = 'message';
-}
 
 class OverviewController extends Controller
 {
