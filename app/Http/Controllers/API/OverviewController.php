@@ -26,11 +26,16 @@ class OverviewController extends Controller
 
     public function summary(Request $request)
     {
-        $data = $this->gradeService->summary($this->studentId());
-        if ($data != null) {
-            return $this->result($data);
+        $sectionId = $request->input(C::SECTION_ID);
+        if ($sectionId == null) {
+            $data = $this->gradeService->summary($this->studentId());
+            if ($data != null) {
+                return $this->result($data);
+            } else {
+                return $this->fail('No summary');
+            }
         } else {
-            return $this->fail('No summary');
+            return $this->result($this->gradeService->summaryForSection($this->studentId(), $sectionId));
         }
     }
 

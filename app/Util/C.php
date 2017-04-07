@@ -20,4 +20,16 @@ class C
     const SUCCESS = 'success';
     const DATA = 'data';
     const MESSAGE = 'message';
+
+    const AVERAGE = 'average';
+    const SEMESTER_GPA = 'semester_gpa';
+    const SELECTED = 'selected';
+    const OVERALL = 'overall';
+    const SECTION_AVERAGES = 'section_averages';
+
+    const SCHEDULE_ID = 'schedule_id';
+
+
+    const TABLE_SCHEDULE_SECTION = 'schedule_section';
+
 }

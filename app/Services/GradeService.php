@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\Grade;
 use App\Models\Schedule;
+use App\Models\Section;
 use App\Models\Weight;
 use App\Util\C;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class GradeService
 
     public function summary($studentId)
     {
-        $selectedSchedule = Schedule::where([['student_id', '=', $studentId], ['selected', '=', true]])->get();
+        $selectedSchedule = Schedule::where([[C::STUDENT_ID, '=', $studentId], [C::SELECTED, '=', true]])->get();
         if ($selectedSchedule != null && $selectedSchedule->count() > 0) {
             $selectedSchedule = $selectedSchedule[0];
         } else {
@@ -37,9 +38,9 @@ class GradeService
         }
 
         if ($selectedSchedule != null) {
-            $sectionIds = DB::table('schedule_section')
-                ->select('section_id')
-                ->where('schedule_id', '=', $selectedSchedule->id)
+            $sectionIds = DB::table(C::TABLE_SCHEDULE_SECTION)
+                ->select(C::SECTION_ID)
+                ->where(C::SCHEDULE_ID, '=', $selectedSchedule->id)
                 ->get();
             if ($sectionIds != null && $sectionIds->count() > 0) {
 
@@ -54,16 +55,22 @@ class GradeService
                     if ($weights != null && $weights->count() > 0) {
                         $average = $this->classSummary($weights);
                     }
-                    array_push($sectionAverages, [C::SECTION_ID => $sectionId, 'average' => $average]);
+                    array_push($sectionAverages, [C::SECTION_ID => $sectionId, C::AVERAGE => $average]);
                 }
 
-                $data['overall'] = $this->overall($sectionAverages);
-                $data['sectionAverages'] = $sectionAverages;
+                $data[C::OVERALL] = $this->overall($sectionAverages);
+                $data[C::SECTION_AVERAGES] = $sectionAverages;
                 return $data;
             }
         }
 
         return null;
+    }
+
+    public function summaryForSection($studentId, $sectionId)
+    {
+        $weights = $this->getWeights($studentId, $sectionId);
+        return [C::SECTION_ID => $sectionId, C::AVERAGE => $this->classSummary($weights)];
     }
 
     public function getWeights($studentId, $sectionId)
@@ -101,7 +108,7 @@ class GradeService
 
     public function getGrades($studentId, $weightId)
     {
-        return Grade::where([['student_id', '=', $studentId], ['weight_id', '=', $weightId]])->get();
+        return Grade::where([[C::STUDENT_ID, '=', $studentId], [C::WEIGHT_ID, '=', $weightId]])->get();
     }
 
     public function addGrade($studentId, $weightId, $assignment, $grade)
@@ -135,12 +142,36 @@ class GradeService
 
     private function overall($classGradeSummaries)
     {
-        return ['Hello' => 'World'];
+        $count = 0;
+        $total = 0;
+        $totalAttemptedCredits = 0;
+
+        $classAverageTotal = 0;
+        foreach ($classGradeSummaries as $classGradeSummary) {
+            $count += 1;
+            $sectionId = $classGradeSummary[C::SECTION_ID];
+            $credits = Section::find($sectionId)->course()->get()[0]->credits;
+
+            $totalAttemptedCredits += $credits;
+            $classAverage = $classGradeSummary[C::AVERAGE];
+
+            $letterGrade = $this->gradeToLetter($classAverage);
+
+            $gradePoint = $this->letterToGradePoint($letterGrade, $credits);
+            $total += $gradePoint;
+            $classAverageTotal += $classAverage;
+        }
+
+        $gpa = $totalAttemptedCredits > 0 ? (float)$total / $totalAttemptedCredits : 0;
+        $totalAverage = $count > 0 ? (float)$classAverageTotal / $count : 0;
+
+        return [C::AVERAGE => $totalAverage, C::SEMESTER_GPA => $gpa];
     }
 
-    private function gradePoint($gradeLetter, $credits)
+    private function letterToGradePoint($gradeLetter, $credits)
     {
-
+        $basePoints = $this->gradePointTable[$gradeLetter];
+        return $credits * $basePoints;
     }
 
     private function gradeToLetter($grade)
