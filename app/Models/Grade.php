@@ -11,6 +11,13 @@ namespace App\Models;
 class Grade extends BaseModel
 {
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'assignment',
+        'grade'
+    ];
+
     protected $rules = array(
         'weight_id' => 'required|integer',
         'student_id' => 'required|integer',

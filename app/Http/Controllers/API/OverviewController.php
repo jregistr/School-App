@@ -86,7 +86,7 @@ class OverviewController extends Controller
 
     public function deleteWeight(Request $request)
     {
-        $checks = $this->exist($request, [C::STUDENT_ID, C::SECTION_ID, C::WEIGHT_ID]);
+        $checks = $this->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $sectionId = $request->input(C::SECTION_ID);
@@ -98,7 +98,8 @@ class OverviewController extends Controller
 
     public function getGrade(Request $request)
     {
-        if (($this->exist($request, [C::WEIGHT_ID]))[C::SUCCESS]) {
+        $check = $this->exist($request, [C::WEIGHT_ID]);
+        if ($check[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $studentId = $this->studentId();
             return $this->result($this->gradeService->getGrades($studentId, $weightId));
