@@ -10,9 +10,17 @@ use App\Models\Weight;
 use App\Util\C;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Service to provide methods to interact with grades and weights.
+ * Class GradeService
+ * @package App\Services
+ */
 class GradeService
 {
 
+    /**
+     * @var array - Array of the letter grades and their corresponding grade point.
+     */
     private $gradePointTable = [
         'A' => 4,
         'A-' => 3.7,
@@ -28,6 +36,11 @@ class GradeService
         'F' => 0
     ];
 
+    /**
+     * Calculates grades for all sections in the selected schedule as well as an overall summary.
+     * @param int $studentId - The id of the student.
+     * @return array|null - A key value pair array containing the summarized data or null if no calculations could be made.
+     */
     public function summary($studentId)
     {
         $selectedSchedule = Schedule::where([[C::STUDENT_ID, '=', $studentId], [C::SELECTED, '=', true]])->get();
@@ -67,17 +80,37 @@ class GradeService
         return null;
     }
 
+    /**
+     * Summarized grade data for a specific section.
+     * @param int $studentId - The id of the student.
+     * @param int $sectionId - The id of the section.
+     * @return array - A key value pair array containing the summarized data for the section.
+     */
     public function summaryForSection($studentId, $sectionId)
     {
         $weights = $this->getWeights($studentId, $sectionId);
         return [C::SECTION_ID => $sectionId, C::AVERAGE => $this->classSummary($weights)];
     }
 
+    /**
+     * Retrieves the weights and their grades.
+     * @param int $studentId - The id of the student.
+     * @param int $sectionId - The id of the section.
+     * @return array|null - An array containing the weights and their grades.
+     */
     public function getWeights($studentId, $sectionId)
     {
         return Weight::getWithGrades($studentId, $sectionId);
     }
 
+    /**
+     * Adds a weight to a section and returns the newly updated list of weights.
+     * @param $studentId - The id of the student.
+     * @param $sectionId - The id of the section.
+     * @param $category - The category of the weight to add.
+     * @param $points - The point value of the weight.
+     * @return array|null - An array containing the weights and their grades.
+     */
     public function addWeight($studentId, $sectionId, $category, $points)
     {
         $weight = new Weight;
@@ -93,6 +126,14 @@ class GradeService
         }
     }
 
+    /**
+     * Updates the given fields in a weight.
+     * @param $studentId - The id of the student.
+     * @param $sectionId - The id of the section.
+     * @param $weightId - The id of the weight to update.
+     * @param $updates - The fields to update.
+     * @return array|null - An array containing the weights and their grades.
+     */
     public function updateWeight($studentId, $sectionId, $weightId, $updates)
     {
         Weight::find($weightId)
@@ -100,17 +141,38 @@ class GradeService
         return $this->getWeights($studentId, $sectionId);
     }
 
+    /**
+     * Deletes a weight from a section.
+     * @param $studentId - The id of the student.
+     * @param $sectionId - The id of the section.
+     * @param $weightId - The id of the weight to delete.
+     * @return array|null - An array containing the weights and their grades.
+     */
     public function deleteWeight($studentId, $sectionId, $weightId)
     {
         Weight::find($weightId)->delete();
         return $this->getWeights($studentId, $sectionId);
     }
 
+    /**
+     * Retrieves the grades for a given weight.
+     * @param $studentId - The id of the student.
+     * @param $weightId - The id of the weight.
+     * @return array - A collection of the grades for the given weight.
+     */
     public function getGrades($studentId, $weightId)
     {
         return Grade::where([[C::STUDENT_ID, '=', $studentId], [C::WEIGHT_ID, '=', $weightId]])->get();
     }
 
+    /**
+     * Adds a grade to a weight.
+     * @param $studentId - The id of the student.
+     * @param $weightId - The id of the weight.
+     * @param $assignment - The name of the assignment.
+     * @param $grade - The grade received on the assignment.
+     * @return array|null - A collection of the grades for the given weight.
+     */
     public function addGrade($studentId, $weightId, $assignment, $grade)
     {
         $gradeObj = new Grade;
@@ -127,6 +189,14 @@ class GradeService
 
     }
 
+    /**
+     * Updates the provided fields of a grade.
+     * @param $studentId - The id of the student.
+     * @param $weightId - The id of the weight.
+     * @param $gradeId - The id of the grade to update.
+     * @param $updates - An array of the updates to be made.
+     * @return array - A collection of the grades for the given weight.
+     */
     public function updateGrade($studentId, $weightId, $gradeId, $updates)
     {
         Grade::find($gradeId)
@@ -134,12 +204,24 @@ class GradeService
         return $this->getGrades($studentId, $weightId);
     }
 
+    /**
+     * Deletes a grade from a weight.
+     * @param $studentId - The id of the student.
+     * @param $weightId - The id of the weight.
+     * @param $gradeId - The id of the grade to delete.
+     * @return array - A collection of the grades for the given weight.
+     */
     public function deleteGrade($studentId, $weightId, $gradeId)
     {
         Grade::find($gradeId)->delete();
         return $this->getGrades($studentId, $weightId);
     }
 
+    /**
+     * Summarizes overall grade data based on the given section grades.
+     * @param $classGradeSummaries - The array of pairs of section id to average.
+     * @return array - An array of pairs summarizing grades.
+     */
     private function overall($classGradeSummaries)
     {
         $count = 0;
@@ -168,12 +250,23 @@ class GradeService
         return [C::AVERAGE => $totalAverage, C::SEMESTER_GPA => $gpa];
     }
 
+    /**
+     * Converts a letter grade to grade points.
+     * @param $gradeLetter - The letter grade attained.
+     * @param $credits - The number of credits for the course.
+     * @return float - The grade points for the letter grade.
+     */
     private function letterToGradePoint($gradeLetter, $credits)
     {
         $basePoints = $this->gradePointTable[$gradeLetter];
         return $credits * $basePoints;
     }
 
+    /**
+     * Converts a number grade to a letter grade.
+     * @param $grade - The number grade.
+     * @return string - The letter grade appropriate for the number grade.
+     */
     private function gradeToLetter($grade)
     {
         if ($grade >= 93) {
@@ -203,6 +296,11 @@ class GradeService
         }
     }
 
+    /**
+     * Summarizes the grades for a class based on all the weights for that class.
+     * @param $weights - The weights for the section.
+     * @return float - The weighted average for the section.
+     */
     private function classSummary($weights)
     {
         $collected = [];
@@ -220,6 +318,11 @@ class GradeService
         return $total / 100.0;
     }
 
+    /**
+     * Calculates the average grade for a particular weight.
+     * @param $weight - The weight.
+     * @return float - The average for the weight.
+     */
     private function averageWeightGrades($weight)
     {
         $grades = $weight->grades;
@@ -230,7 +333,7 @@ class GradeService
             $total += $grade->grade;
         }
 
-        return $count > 0 ? (float)$total / $count : 0;
+        return $count > 0 ? (float)$total / $count : 0.0;
     }
 
 }

@@ -24,6 +24,12 @@ class OverviewController extends Controller
         $this->gradeService = $gradeService;
     }
 
+    /**
+     * Calculates and returns grade and gpa data based on the weights and grades for a particular section or
+     * for sections in the student's current selected schedule.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json response containing the grade summary data.
+     */
     public function summary(Request $request)
     {
         $sectionId = $request->input(C::SECTION_ID);
@@ -39,6 +45,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Retrieves all the weights with their grades for a section.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the weights for the given section.
+     */
     public function getWeight(Request $request)
     {
         $sectionId = $request->input(C::SECTION_ID);
@@ -49,6 +60,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Adds a weight to a section.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the weights for the section.
+     */
     public function addWeight(Request $request)
     {
         $checks = $this->exist($request, [C::SECTION_ID, C::CATEGORY, C::POINTS]);
@@ -67,6 +83,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Updates the given fields for a weight.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the weights for the section.
+     */
     public function updateWeight(Request $request)
     {
         $checks = $this->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
@@ -104,6 +125,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Deletes a weight and returns updated list of weights for the section.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the weights for the section.
+     */
     public function deleteWeight(Request $request)
     {
         $checks = $this->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
@@ -116,6 +142,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Gets the list of grades in a given weight.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the grades for the given weight.
+     */
     public function getGrade(Request $request)
     {
         $check = $this->exist($request, [C::WEIGHT_ID]);
@@ -128,6 +159,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Adds a grade to a weight.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json containing the grades.
+     */
     public function addGrade(Request $request)
     {
         $checks = $this->exist($request, [C::WEIGHT_ID, C::ASSIGNMENT, C::GRADE]);
@@ -146,6 +182,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Updates the provided fields for a grade.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json view of the grades for the weight for which a grade was updated.
+     */
     public function updateGrade(Request $request)
     {
         $checks = $this->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
@@ -180,6 +221,11 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * Deletes a grade from a given weight.
+     * @param Request $request - The http request object.
+     * @return \Illuminate\Http\JsonResponse - A json response made from the weight the grade was deleted from.
+     */
     public function deleteGrade(Request $request)
     {
         $checks = $this->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
@@ -192,11 +238,19 @@ class OverviewController extends Controller
         }
     }
 
+    /**
+     * @return int|null - The id of the authenticated user.
+     */
     private function studentId()
     {
         return Auth::id();
     }
 
+    /**
+     * Creates a success json providing data to the user.
+     * @param $data - The payload.
+     * @return \Illuminate\Http\JsonResponse - Response is of the form {'success' : true, data: {}}
+     */
     private function result($data)
     {
         return response()->json(
@@ -207,6 +261,11 @@ class OverviewController extends Controller
         );
     }
 
+    /**
+     * Creates a failure json informing of a missing parameter.
+     * @param $paramName - The name of the missing parameter.
+     * @return \Illuminate\Http\JsonResponse - The response to send to the user.
+     */
     private function missingParameter($paramName)
     {
         return response()->json(
@@ -215,6 +274,11 @@ class OverviewController extends Controller
         );
     }
 
+    /**
+     * Creates a failure json message.
+     * @param $message - The message for the error.
+     * @return \Illuminate\Http\JsonResponse - The response to send to the user.
+     */
     private function fail($message)
     {
         return response()->json(
@@ -226,9 +290,10 @@ class OverviewController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param $parameters
-     * @return array
+     * Checks that all parameters exist in request input. Stops at the first missing one if found.
+     * @param Request $request - The controller request object.
+     * @param array $parameters - The array of parameters to check for.
+     * @return array - An array of the form ['success' => 'true', 'name' => 'parameter']
      */
     private function exist($request, $parameters)
     {
@@ -238,6 +303,7 @@ class OverviewController extends Controller
             if ($request->input($p) == null) {
                 $result[C::SUCCESS] = false;
                 $result[C::NAME] = $p;
+                break;
             }
         }
 
