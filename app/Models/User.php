@@ -14,6 +14,9 @@ use Illuminate\Validation\Validator;
  * @property integer school_id
  * @property string email
  * @property string password
+ * @property string major
+ * @property string year
+ * @property boolean activated
  */
 class User extends Authenticatable
 {

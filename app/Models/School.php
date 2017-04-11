@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Util\C;
+
 /**
  * Class School
  * @property integer id
@@ -13,6 +15,15 @@ namespace App\Models;
  */
 class School extends BaseModel
 {
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        C::NAME,
+        C::COUNTRY,
+        C::STATE,
+        C::CITY
+    ];
 
     public function courses()
     {

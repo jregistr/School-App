@@ -24,11 +24,9 @@ Route::get('/dashboard', 'HomeController@dashboard');
 Route::get('/profile', 'HomeController@editProfile');
 
 Route::group(['middleware' => 'auth'], function () {
-
     Route::get('/overview', function ()    {
         return view('overview');
     });
-
 });
 
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');

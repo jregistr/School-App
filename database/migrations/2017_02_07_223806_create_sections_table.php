@@ -15,9 +15,8 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('class_id');
+            $table->unsignedInteger('course_id');
             $table->string('instructors')->nullable()->default(null); //ie ProfA, ProfB
-//            $table->string('location')->nullable()->default(null); //ie Shineman 444
         });
 
         Schema::table('sections', function (Blueprint $table){

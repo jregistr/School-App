@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Util\C;
 
 /**
  * @property integer id
@@ -13,6 +14,15 @@ namespace App\Models;
 class Course extends BaseModel
 {
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        C::NAME,
+        C::CRN,
+        C::CREDITS,
+        C::SCHOOL_ID
+    ];
+
     public function school()
     {
         return $this->belongsTo(School::class);
@@ -21,6 +31,21 @@ class Course extends BaseModel
     public function sections()
     {
         return $this->hasMany(Section::class);
+    }
+
+    /**
+     * @return Course
+     */
+    public function sectionsWithMeetings()
+    {
+        $course = $this;
+        $sections = $this->sections()->get();
+        foreach ($sections as $section) {
+            $meetings = $section->meetings()->get();
+            $section->meetings = $meetings;
+        }
+        $course[C::SECTIONS] = $sections;
+        return $course;
     }
 
 }
