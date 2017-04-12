@@ -29,4 +29,5 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
+
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');

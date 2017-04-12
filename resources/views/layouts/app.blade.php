@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
+    <link rel="icon" href="/images/graduation-school-hat.png"/>
 
     <!-- Scripts -->
     <script>

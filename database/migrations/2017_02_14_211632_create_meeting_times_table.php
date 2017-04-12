@@ -15,8 +15,8 @@ class CreateMeetingTimesTable extends Migration
     {
         Schema::create('meeting_times', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('start');
-            $table->string('end');
+            $table->string('start')->nullable()->default(null);
+            $table->string('end')->nullable()->default(null);
             $table->string('location')->nullable()->default(null);
             $table->boolean('sunday')->default(false);
             $table->boolean('monday')->default(false);
