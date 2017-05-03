@@ -20,7 +20,7 @@ class CreateSectionsTable extends Migration
         });
 
         Schema::table('sections', function (Blueprint $table){
-            $table->foreign('class_id')
+            $table->foreign('course_id')
                 ->references('id')
                 ->on('courses')
                 ->onDelete('cascade');
