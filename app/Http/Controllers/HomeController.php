@@ -22,7 +22,7 @@ class HomeController extends Controller
     public function index()
     {
         if (Auth::user()) {
-            return redirect("/dashboard");
+            return redirect("/addclass");
         } else {
             return view('landing');
         }
@@ -30,12 +30,22 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        return view('home');
+        return view('/addclass');
     }
 
     public function editProfile()
     {
         return view('editprofile');
+    }
+
+    public function addclass()
+    {
+        return view('addclass');
+    }
+    
+    public function selectClass()
+    {
+        return view('selectclass');
     }
 
 }

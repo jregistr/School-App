@@ -30,3 +30,9 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');
+
+Route::get('/addclass', 'HomeController@addclass');
+
+Route::get('/selectclass', 'HomeController@selectclass');
+
+Route::resource('classes', 'Auth\ClassController');
