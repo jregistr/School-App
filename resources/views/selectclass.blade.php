@@ -31,7 +31,7 @@
                         <td>{{$meeting->location}}</td>
 
                         <?php
-
+ 
                             $days = "";
                             if($meeting->monday == 1){
                                 $days = $days . "M";
