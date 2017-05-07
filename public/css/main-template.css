@@ -32,7 +32,7 @@
 }
 
 #content-wrapper {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
 }
 
 body {
@@ -44,7 +44,14 @@ body {
     margin-left: 150px;
 }
 
-.page-content-wrapper .row {
+/*.page-content-wrapper .row {*/
+    /*margin-left: 0;*/
+    /*margin-right: 0;*/
+    /*padding-right: 10px;*/
+    /*padding-left: 10px;*/
+/*}*/
+
+.add-margin-padding {
     margin-left: 0;
     margin-right: 0;
     padding-right: 10px;
@@ -141,21 +148,6 @@ body {
 .sidebar-nav li a {
     margin-bottom: 5px;
 }
-
-.temp-test {
-    display: block;
-    float: right;
-    margin-left: 0px;
-    margin:0;
-    padding:0;
-}
-
-.temp-test ul li {
-    float: left;
-    list-style: circle;
-    text-align: left;
-}
-
 
 .sub-pairs {
     display: block;
