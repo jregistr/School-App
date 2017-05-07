@@ -12,6 +12,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        factory(App\Models\User::class,50)->create();
+
+
+
 //        DB::table('weights')->insert([
 //            [
 //                'category' => 'Homework',
@@ -33,42 +37,42 @@ class DatabaseSeeder extends Seeder
 //            ]
 //        ]);
 
-
-        DB::table('grades')->insert([
-            [
-                'weight_id' => 1,
-                'student_id' => 3,
-                'grade' => 70,
-                'assignment' => 'Btree'
-            ],
-            [
-                'weight_id' => 1,
-                'student_id' => 3,
-                'grade' => 100,
-                'assignment' => 'HashMap'
-            ],
-
-
-            [
-                'weight_id' => 2,
-                'student_id' => 3,
-                'grade' => 100,
-                'assignment' => 'Exam 1'
-            ],
-            [
-                'weight_id' => 2,
-                'student_id' => 3,
-                'grade' => 100,
-                'assignment' => 'Exam 2'
-            ],
-
-            [
-                'weight_id' => 3,
-                'student_id' => 3,
-                'grade' => 20,
-                'assignment' => 'First Entry'
-            ]
-        ]);
+//
+//        DB::table('grades')->insert([
+//            [
+//                'weight_id' => 1,
+//                'student_id' => 3,
+//                'grade' => 70,
+//                'assignment' => 'Btree'
+//            ],
+//            [
+//                'weight_id' => 1,
+//                'student_id' => 3,
+//                'grade' => 100,
+//                'assignment' => 'HashMap'
+//            ],
+//
+//
+//            [
+//                'weight_id' => 2,
+//                'student_id' => 3,
+//                'grade' => 100,
+//                'assignment' => 'Exam 1'
+//            ],
+//            [
+//                'weight_id' => 2,
+//                'student_id' => 3,
+//                'grade' => 100,
+//                'assignment' => 'Exam 2'
+//            ],
+//
+//            [
+//                'weight_id' => 3,
+//                'student_id' => 3,
+//                'grade' => 20,
+//                'assignment' => 'First Entry'
+//            ]
+//        ]);
 
     }
 }

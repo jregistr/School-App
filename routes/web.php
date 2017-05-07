@@ -19,15 +19,13 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index');
 
-Route::get('/dashboard', 'HomeController@dashboard');
-
 Route::get('/profile', 'HomeController@editProfile');
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/overview', function ()    {
-        return view('overview');
-    });
-});
+Route::get('/schedules', 'HomeController@schedules');
+
+Route::get('/overview', 'HomeController@overview');
+
+Route::get('/create', 'HomeController@create');
 
 
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');

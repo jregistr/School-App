@@ -11,9 +11,11 @@
     <title>{{ config('app.name', 'Set The Title') }}</title>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
+    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"--}}
+    {{--integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"--}}
+    {{--crossorigin="anonymous">--}}
+
+    <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/main-template.css" rel="stylesheet">
     <link rel="icon" href="/images/graduation-school-hat.png"/>
 @yield('stylesheets')
@@ -27,14 +29,74 @@
 </head>
 <body>
 
-<div id="wrapper">
+<div id="wrapper" class="">
 
     <div id="sidebar-wrapper">
-
+        <ul id="sidebar-menu" class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a id="sidebar-menu-toggle" href="#">
+                    <img src="/images/logo.png" />
+                    <span id="main-icon" class="glyphicon glyphicon-align-justify"></span>
+                </a>
+            </li>
+        </ul>
+        <ul class="sidebar-nav" id="sidebar">
+            <li>
+                <a href="/profile" class="{{$index == 0 ? "active" : ""}}">
+                    Account<span class="side-icon glyphicon glyphicon-user"></span>
+                </a>
+                <div class="sub-pairs">
+                    <div>
+                        {{--<h5>Name</h5>--}}
+                        <h5>Jeff</h5>
+                    </div>
+                    <div>
+                        {{--<h5>Major</h5>--}}
+                        <h5>Computer Science</h5>
+                    </div>
+                    <div>
+                        {{--<h5>Year</h5>--}}
+                        <h5>Senior</h5>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="/overview" class="{{$index == 1 ? "active" : ""}}">Overview
+                    <span class="side-icon glyphicon glyphicon-eye-open"></span>
+                </a>
+            </li>
+            <li>
+                <a href="schedules" class="{{$index == 2 ? "active" : ""}}">
+                    Schedules
+                    <span class="side-icon glyphicon glyphicon-calendar"></span>
+                </a>
+                <div>
+                    {{--<h6 style="visibility: hidden">.</h6>--}}
+                    <h6>d</h6>
+                    <h6>d</h6>
+                </div>
+            </li>
+            <li>
+                <a href="/create" class="{{$index == 3 ? "active" : ""}}">
+                    Create
+                    <span class="side-icon glyphicon glyphicon-plus-sign"></span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                    Sign Out
+                    <span class="side-icon glyphicon glyphicon-log-out"></span>
+                </a>
+                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
+            </li>
+        </ul>
     </div>
 
     <div id="content-wrapper">
-        <div class="page-content-wrapper inset">
+        <div class="page-content-wrapper">
             @yield('content')
         </div>
     </div>

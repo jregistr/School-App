@@ -22,20 +22,30 @@ class HomeController extends Controller
     public function index()
     {
         if (Auth::user()) {
-            return redirect("/addclass");
+            return redirect("/schedules");
         } else {
-            return view('landing');
+            return view('activities.landing');
         }
     }
 
-    public function dashboard()
+    public function schedules()
     {
-        return view('/addclass');
+        return view('activities.schedules');
+    }
+
+    public function overview()
+    {
+        return view('activities.overview');
+    }
+
+    public function create()
+    {
+        return view('activities.create');
     }
 
     public function editProfile()
     {
-        return view('editprofile');
+        return view('activities.editprofile');
     }
 
     public function addclass()
