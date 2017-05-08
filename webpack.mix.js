@@ -1,15 +1,19 @@
-// const { mix } = require('laravel-mix');
-//
-// /*
-//  |--------------------------------------------------------------------------
-//  | Mix Asset Management
-//  |--------------------------------------------------------------------------
-//  |
-//  | Mix provides a clean, fluent API for defining some Webpack build steps
-//  | for your Laravel application. By default, we are compiling the Sass
-//  | file for the application as well as bundling up all the JS files.
-//  |
-//  */
-//
-// mix.js('resources/assets/js/app.js', 'public/js')
-//    .sass('resources/assets/sass/app.scss', 'public/css');
+var mixImport = require('laravel-mix');
+const mix = mixImport.mix;
+
+// var glob = require('glob');
+// const path = require('path');
+
+// mix.js('resources/assets/js/common.js', 'public/js')
+//     .sass('resources/assets/sass/common.scss', 'public/css');
+
+// mix.js('resources/assets/js/common/common.js', 'public/js/bootstrap.js');
+// mix.js('resources/assets/js/programs/**/*.js', 'public/js');
+
+// mix.sass('resources/assets/sass/bootstrap/bootstrap.scss', 'public/css');
+// mix.sass('resources/assets/sass/styles/**/*.scss', 'public/css');
+
+// for (var file in glob.sync('resources/assets/js/programs/**/*.js')) {
+//     console.log(path.basename(file));
+// }
+
