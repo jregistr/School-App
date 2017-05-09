@@ -3,7 +3,7 @@ const glob = require('glob');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const extractPlugin = new ExtractTextPlugin({
-   filename : '[name].build.css'
+    filename: '[name].build.css'
 });
 
 var entries = {};
@@ -13,10 +13,13 @@ glob.sync('./resources/assets/js/outs/*.js').forEach(function (fn) {
     entries[name] = fn;
 });
 
-// console.log(entries);
+glob.sync('./resources/assets/sass/styles/*.scss').forEach(function (fn) {
+    var name = "css-".concat(path.basename(fn).replace(".scss", ""));
+    entries[name] = fn;
+});
 
 module.exports = {
-    entry : entries,
+    entry: entries,
     output: {
         path: __dirname + '/public/dist',
         filename: '[name].bundle.js'
@@ -31,7 +34,7 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: extractPlugin.extract({
-                    use : [
+                    use: [
                         'css-loader',
                         'sass-loader'
                     ]
