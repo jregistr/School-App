@@ -11,12 +11,13 @@
     <title>{{ config('app.name', 'Set The Title') }}</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    {{--<link rel="stylesheet" href="/css/bootstrap.min.css"/>--}}
 
-    <link href="/css/register.css" rel="stylesheet">
+    {{--<link href="/css/register.css" rel="stylesheet">--}}
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
-    <link rel="stylesheet" href="/css/landing.css"/>
+    {{--<link rel="stylesheet" href="/css/landing.css"/>--}}
+    <link rel="stylesheet" href="dist/landing.build.css" />
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -98,7 +99,8 @@
     </div>
 </footer>
 
-<script src="/js/jquery-3.2.0.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
+{{--<script src="/js/jquery-3.2.0.min.js"></script>--}}
+{{--<script src="/js/bootstrap.min.js"></script>--}}
+<script src="dist/landing.bundle.js"></script>
 </body>
 </html>

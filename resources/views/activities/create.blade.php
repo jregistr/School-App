@@ -1,5 +1,14 @@
 @extends('layouts.main', ["index" => 3])
 
+@section("stylesheets")
+{{--<link rel="stylesheet" href="dist/" />--}}
+@endsection
+
+@section("javascripts")
+
+@endsection
+
+
 @section('content')
     <div class="container">
         <div class="row">

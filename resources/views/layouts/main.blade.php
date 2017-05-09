@@ -10,13 +10,6 @@
 
     <title>{{ config('app.name', 'Set The Title') }}</title>
 
-    <!-- Styles -->
-    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"--}}
-    {{--integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"--}}
-    {{--crossorigin="anonymous">--}}
-
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/main-template.css" rel="stylesheet">
     <link rel="icon" href="/images/graduation-school-hat.png"/>
 @yield('stylesheets')
 
@@ -103,16 +96,6 @@
 
 </div>
 
-
-<script
-        src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<script src="js/ app.js"></script>
-<script src="js/main-template.js"></script>
 @yield('javascripts')
 </body>
 </html>
