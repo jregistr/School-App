@@ -1,11 +1,9 @@
 @extends('layouts.main', ["index" => 2])
 
 @section('stylesheets')
-    <link rel="stylesheet" href="dist/schedules.bundle.css">
 @endsection
 
 @section('javascripts')
-    <script src="dist/schedules.bundle.js"></script>
 @endsection
 
 @section('content')

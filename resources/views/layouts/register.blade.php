@@ -14,7 +14,8 @@
 
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
-    <link rel="stylesheet" href="dist/register.bundle.css" />
+    <link rel="stylesheet" href="dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/register.css" />
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -38,6 +39,6 @@
     @yield('content')
 </div>
 
-<script src="dist/register.bundle.js"></script>
+<script src="dist/js/common.js"></script>
 </body>
 </html>

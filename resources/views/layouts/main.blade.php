@@ -11,6 +11,8 @@
     <title>{{ config('app.name', 'Set The Title') }}</title>
 
     <link rel="icon" href="/images/graduation-school-hat.png"/>
+    <link rel="stylesheet" href="dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/mainTemplate.css" />
 @yield('stylesheets')
 
 <!-- Scripts -->
@@ -96,6 +98,8 @@
 
 </div>
 
+<script src="dist/js/common.js"></script>
+<script src="js/mainTemplate.js"></script>
 @yield('javascripts')
 </body>
 </html>

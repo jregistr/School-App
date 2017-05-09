@@ -17,7 +17,8 @@
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
     {{--<link rel="stylesheet" href="/css/landing.css"/>--}}
-    <link rel="stylesheet" href="dist/landing.bundle.css" />
+    <link rel="stylesheet" href="dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/landing.css" />
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -101,6 +102,6 @@
 
 {{--<script src="/js/jquery-3.2.0.min.js"></script>--}}
 {{--<script src="/js/bootstrap.min.js"></script>--}}
-<script src="dist/landing.bundle.js"></script>
+<script src="dist/js/common.js"></script>
 </body>
 </html>
