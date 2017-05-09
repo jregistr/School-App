@@ -1,13 +1,12 @@
 @extends('layouts.main', ["index" => 2])
 
 @section('stylesheets')
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="dist/schedules.bundle.css">
 @endsection
 
 @section('javascripts')
-    <script src="js/dashboard.js"></script>
+    <script src="dist/schedules.bundle.js"></script>
 @endsection
-
 
 @section('content')
     {{--<div class="container">--}}

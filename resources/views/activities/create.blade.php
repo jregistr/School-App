@@ -1,11 +1,11 @@
 @extends('layouts.main', ["index" => 3])
 
-@section("stylesheets")
-{{--<link rel="stylesheet" href="dist/" />--}}
+@section('stylesheets')
+    <link rel="stylesheet" href="dist/create.bundle.css">
 @endsection
 
-@section("javascripts")
-
+@section('javascripts')
+    <script src="dist/create.bundle.js"></script>
 @endsection
 
 

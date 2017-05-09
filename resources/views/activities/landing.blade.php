@@ -17,7 +17,7 @@
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
     {{--<link rel="stylesheet" href="/css/landing.css"/>--}}
-    <link rel="stylesheet" href="dist/landing.build.css" />
+    <link rel="stylesheet" href="dist/landing.bundle.css" />
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
