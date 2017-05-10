@@ -5,6 +5,11 @@
 @endsection
 
 @section('javascripts')
+    {{--<script src="dist/js/schedule/manifest.js"></script>--}}
+    {{--<script src="dist/js/schedule/schedule-vendors.js"></script>--}}
+    {{--<script src="dist/js/schedule/schedule.js"></script>--}}
+    {{--<script src="dist/js/schedule-vendors.js"></script>--}}
+    {{--<script src="dist/js/schedule/schedule.js"></script>--}}
 @endsection
 
 @section('content')

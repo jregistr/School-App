@@ -1,7 +1,9 @@
 {
-  "/dist/js/common.js": "/dist/js/common.js",
+  "/dist/js/schedule/schedule.js": "/dist/js/schedule/schedule.js",
+  "/dist/js/c.js": "/dist/js/c.js",
+  "/dist/js/temp.js": "/dist/js/temp.js",
   "/dist/css/bootstrap.css": "/dist/css/bootstrap.css",
   "/dist/css/mainTemplate.css": "/dist/css/mainTemplate.css",
   "/dist/css/schedules.css": "/dist/css/schedules.css",
-  "/dist/js/hello.js": "/dist/js/hello.js"
+  "/dist/js/manifest.js": "/dist/js/manifest.js"
 }

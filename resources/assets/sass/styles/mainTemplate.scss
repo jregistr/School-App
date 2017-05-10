@@ -1,4 +1,5 @@
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "../common/styleVariables";
 
 $sidebar-width-large: 200px;
 $sidebar-left-pad-large: 50px;
@@ -9,7 +10,7 @@ $wrapper-margin-left-small: 0px;
 
 body {
   background-size: 100%;
-  background-color: #F8FDFF;
+  background-color: $body-background-color;
 }
 
 #wrapper {
@@ -44,7 +45,7 @@ body {
   margin-left: -200px;
   left: $sidebar-left-pad-large;
   width: $sidebar-width-large;
-  background: rgb(245, 245, 245);
+  background: $sidebar-background;
   position: fixed;
   height: 100%;
   z-index: 10000;
@@ -92,12 +93,12 @@ body {
       text-decoration: none;
 
       &.active {
-        background: rgb(210, 210, 210);
+        background: $sidebar-tabs-back-active;
       }
 
       &:hover {
         text-decoration: none;
-        background: rgb(230, 230, 230);
+        background: $sidebar-tabs-back-hover;
       }
 
       &:active, &:focus {
@@ -129,14 +130,14 @@ body {
 }
 
 #sidebar-menu li a, .sidebar-nav li a {
-  color: rgb(23, 23, 25);
+  color: $sidebar-tabs-text-color;
   display: block;
   float: left;
   text-decoration: none;
   width: $sidebar-width-large;
-  background: rgb(240, 240, 240);
-  border-top: 1px solid rgb(231, 231, 231);
-  border-bottom: 1px solid rgb(221, 221, 221);
+  background: $sidebar-tabs-back;
+  border-top: 1px solid $sidebar-tabs-border-top-color;
+  border-bottom: 1px solid $sidebar-tabs-border-bottom-color;
   -webkit-transition: background .5s;
   -moz-transition: background .5s;
   -o-transition: background .5s;
@@ -206,7 +207,7 @@ body {
   #wrapper.active #content-wrapper {
     //margin-left: 1000px;
     margin-right: -500px;
-    transition: all .8s ease .2s;
+    transition: all .5s ease .1s;
   }
 
   #content-wrapper {

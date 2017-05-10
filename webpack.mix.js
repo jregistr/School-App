@@ -17,15 +17,27 @@ mix.webpackConfig({
     }
 });
 
-mix.js('resources/assets/js/common/common.js', 'public/dist/js');
+mix.js('resources/assets/js/common/common.js', 'public/dist/js/temp.js');
 mix.sass('resources/assets/sass/common/bootstrap.scss', 'public/dist/css');
-
-glob.sync('./resources/assets/ts/*.ts').forEach(function (fn) {
-    mix.js(fn, 'public/dist/js');
-});
 
 glob.sync('./resources/assets/sass/styles/*.scss').forEach(function (fn) {
     mix.sass(fn, 'public/dist/css');
 });
+
+// programs
+mix.js('./resources/assets/js/programs/schedule.js', 'public/dist/js/schedule');
+
+
+
+//extract
+mix.extract([
+        'jquery',
+        'lodash',
+        'bootstrap-sass'
+    ],
+    'public/dist/js/c');
+
+//schedule extract
+// mix.extract(['fullcalendar'], 'public/dist/js/s');
 
 

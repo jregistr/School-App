@@ -113,8 +113,10 @@
 
 </div>
 
-<script src="dist/js/common.js"></script>
-<script src="js/mainTemplate.js"></script>
+{{--<script src="dist/js/common.js"></script>--}}
+<script src="dist/js/manifest.js"></script>
+<script src="dist/js/c.js"></script>
+{{--<script src="js/mainTemplate.js"></script>--}}
 @yield('javascripts')
 </body>
 </html>
