@@ -1,0 +1,44 @@
+
+.schedule-bar {
+
+  //display: inline-block;
+
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+  .schedule-title {
+    padding-top: 8px;
+    float: left;
+  }
+
+  .schedule-button-group {
+    float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+.rm-pad {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.toggle-col {
+  margin:0;
+  padding:0;
+}
+
+.toggle-heading {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

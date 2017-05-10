@@ -12,7 +12,7 @@
 
     <link rel="icon" href="/images/graduation-school-hat.png"/>
     <link rel="stylesheet" href="dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="css/mainTemplate.css" />
+    <link rel="stylesheet" href="dist/css/mainTemplate.css" />
 @yield('stylesheets')
 
 <!-- Scripts -->
@@ -23,6 +23,22 @@
     </script>
 </head>
 <body>
+
+<nav class="navbar navbar-default hidden-lg hidden-md hidden-sm" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <button id="small-nav-toggle" type="button" class="navbar-toggle active" data-toggle="collapse" data-target="#navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+    <div>
+        <a class="brand">
+            <img src="images/logo.png" />
+        </a>
+    </div>
+</nav>
 
 <div id="wrapper" class="">
 
@@ -66,7 +82,6 @@
                     <span class="side-icon glyphicon glyphicon-calendar"></span>
                 </a>
                 <div>
-                    {{--<h6 style="visibility: hidden">.</h6>--}}
                     <h6>d</h6>
                     <h6>d</h6>
                 </div>

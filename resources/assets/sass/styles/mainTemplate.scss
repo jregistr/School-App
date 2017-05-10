@@ -1,0 +1,246 @@
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
+
+$sidebar-width-large: 200px;
+$sidebar-left-pad-large: 50px;
+$wrapper-margin-left-large: 150px;
+$sidebar-width-small: 100%;
+$sidebar-left-pad-small: 0px;
+$wrapper-margin-left-small: 0px;
+
+body {
+  background-size: 100%;
+  background-color: #F8FDFF;
+}
+
+#wrapper {
+  padding-left: $sidebar-left-pad-large;
+  transition: all .4s ease 0s;
+  height: 100%;
+
+  &.active {
+
+    #sidebar-wrapper {
+      left: $sidebar-width-large;
+      border-right: 2px solid rgba(0, 0, 0, 0.04);
+    }
+
+    #content-wrapper {
+      margin-left: $wrapper-margin-left-large;
+    }
+
+    #sidebar-wrapper ul li div {
+      display: block;
+    }
+
+  }
+
+  #sidebar-wrapper ul li div {
+    display: none;
+  }
+
+}
+
+#sidebar-wrapper {
+  margin-left: -200px;
+  left: $sidebar-left-pad-large;
+  width: $sidebar-width-large;
+  background: rgb(245, 245, 245);
+  position: fixed;
+  height: 100%;
+  z-index: 10000;
+  transition: all .5s ease 0s;
+}
+
+#page-content-wrapper {
+  padding-left: 0;
+  margin-left: 0;
+  width: 100%;
+  height: auto;
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+}
+
+#content-wrapper {
+  padding-left: 20px;
+  padding-right: 20px;
+  transition: all .4s ease 0s;
+}
+
+.sidebar-nav {
+  display: block;
+  float: right;
+  width: $sidebar-width-large;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    line-height: 40px;
+    text-indent: 20px;
+    display: inline-block;
+
+    a {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      text-decoration: none;
+
+      &.active {
+        background: rgb(210, 210, 210);
+      }
+
+      &:hover {
+        text-decoration: none;
+        background: rgb(230, 230, 230);
+      }
+
+      &:active, &:focus {
+        text-decoration: none;
+      }
+
+    }
+
+  }
+
+  > .sidebar-brand {
+    height: 65px;
+    line-height: 90px;
+    font-size: 22px;
+  }
+
+}
+
+.add-margin-padding {
+  margin-left: 0;
+  margin-right: 0;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.sidebar-brand a img {
+  height: 40px;
+  width: 120px;
+}
+
+#sidebar-menu li a, .sidebar-nav li a {
+  color: rgb(23, 23, 25);
+  display: block;
+  float: left;
+  text-decoration: none;
+  width: $sidebar-width-large;
+  background: rgb(240, 240, 240);
+  border-top: 1px solid rgb(231, 231, 231);
+  border-bottom: 1px solid rgb(221, 221, 221);
+  -webkit-transition: background .5s;
+  -moz-transition: background .5s;
+  -o-transition: background .5s;
+  -ms-transition: background .5s;
+  transition: background .5s;
+  cursor: pointer;
+}
+
+#sidebar-menu li a {
+  margin-top: 0 !important;
+}
+
+#main-icon {
+  float: right;
+  padding-right: 15px;
+  padding-top: 30px;
+}
+
+.side-icon {
+  float: right;
+  padding-right: 18px;
+  padding-top: 12px;
+}
+
+.sub-pairs {
+  display: block;
+
+  div {
+    padding-right: 5px;
+    overflow: hidden;
+    display: block;
+
+    > :first-child {
+      float: left;
+    }
+
+    > :nth-child(2) {
+      float: right;
+    }
+
+  }
+}
+
+.brand {
+  display: block;
+  position: absolute;
+  left: 50%;
+  margin-left: -100px !important; /* 50% of your logo width */
+  top: 20%;
+
+  img {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: $screen-xs + 1) {
+
+  #main-icon, .side-icon {
+    display: none;
+  }
+
+  #wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  #wrapper.active #content-wrapper {
+    //margin-left: 1000px;
+    margin-right: -500px;
+    transition: all .8s ease .2s;
+  }
+
+  #content-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 10px;
+  }
+
+  #sidebar-menu {
+    display: none;
+  }
+
+  #sidebar-wrapper {
+    width: $sidebar-width-small;
+    left: -200px;
+    display: block;
+  }
+
+  .sidebar-nav {
+    left: $sidebar-width-small;
+
+    li:first-of-type a {
+      margin-top: 0;
+    }
+
+  }
+
+  #sidebar-menu, .sidebar-nav {
+    width: 100%;
+    li {
+      width: 100%;
+      a {
+        width: 100%;
+      }
+    }
+  }
+}
