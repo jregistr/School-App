@@ -37,4 +37,30 @@ class ScheduleController extends Controller
         }
     }
 
+    public function updateSchedule(Request $request)
+    {
+        $studentId = $request->input(C::STUDENT_ID);
+        $scheduleId = $request->input(C::SCHEDULE_ID);
+        $name = $request->input(C::NAME);
+        $selected = $request->input(C::SELECTED);
+
+        if ($studentId != null && $scheduleId != null) {
+            return $this->res->result($this->service->updateScheduleInfo($studentId, $scheduleId, $name, $selected));
+        } else {
+            return $this->res->missingParameter(implode(', ', [C::STUDENT_ID, C::SCHEDULE_ID]));
+        }
+    }
+
+    public function deleteSchedule(Request $request)
+    {
+        $studentId = $request->input(C::STUDENT_ID);
+        $scheduleId = $request->input(C::SCHEDULE_ID);
+
+        if ($studentId != null && $scheduleId != null) {
+            return $this->res->result($this->service->deleteSchedule($studentId, $scheduleId));
+        } else {
+            return $this->res->missingParameter(implode(', ', [C::STUDENT_ID, C::SCHEDULE_ID]));
+        }
+    }
+
 }

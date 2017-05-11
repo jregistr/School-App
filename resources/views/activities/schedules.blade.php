@@ -27,6 +27,7 @@
                         <button style="display: none" id="setting-bar-save-btn" class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span></button>
 
                         <button style="display: none;" id="setting-bar-star" class="btn btn-default"><span class="glyphicon glyphicon-star-empty"></span></button>
+                        <button style="display: none;" id="setting-bar-delete-btn" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
                         <button id="setting-bar-schedules-btn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">
                             Schedules
                             <span class="caret"></span>

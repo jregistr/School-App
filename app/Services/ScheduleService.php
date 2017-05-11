@@ -29,4 +29,39 @@ class ScheduleService
         return $schedules;
     }
 
+    public function updateScheduleInfo($studentId, $scheduleId, $name, $primary)
+    {
+        if ($name || $primary) {
+            $forId = Schedule::find($scheduleId);
+            if ($forId != null) {
+                if ($primary != null) {
+                    $already = Schedule::where([
+                        [C::STUDENT_ID, '=', $studentId],
+                        [C::SELECTED, '=', 1]
+                    ])->first();
+
+                    if ($already != null) {
+                        $already->selected = false;
+                        $already->save();
+                    }
+
+                    $forId->selected = true;
+                }
+
+                if ($name != null) {
+                    $forId->name = $name;
+                }
+
+                $forId->save();
+            }
+        }
+        return $this->getUserSchedules($studentId);
+    }
+
+    public function deleteSchedule($studentId, $scheduleId)
+    {
+        Schedule::destroy($scheduleId);
+        return $this->getUserSchedules($studentId);
+    }
+
 }

@@ -2,17 +2,9 @@ import {Schedule} from './interfaces';
 
 export module settingbar {
 
-    const ID_SCHEDULE_LIST: string = 'setting-bar-schedules-list';
-    const ID_SCHEDULES_BTN: string = 'setting-bar-schedules-btn';
-    const ID_EDIT_BTN: string = 'setting-bar-edit-btn';
-    const ID_SAVE_BTN: string = 'setting-bar-save-btn';
-    const ID_NAME: string = 'setting-bar-schedule-name';
-    const ID_NAME_EDIT: string = 'setting-bar-schedule-name-edit';
-    const ID_STAR: string = 'setting-bar-star';
-
     export let onSelectSchedule: (schedule: Schedule) => void;
     export let onEditClicked: () => boolean;
-    export let onSaveClicked: (newValue: string, starred: boolean) => void;
+    export let onSaveClicked: (newValue: string, starred: boolean, deleted: boolean) => void;
 
     let schedulesUl: JQuery;
     let schedulesBtn: JQuery;
@@ -21,8 +13,10 @@ export module settingbar {
     let nameText: JQuery;
     let nameTextInput: JQuery;
     let starBtn: JQuery;
+    let delBtn: JQuery;
 
     let starred: boolean = false;
+    let deleted: boolean = false;
 
     function populateDropdown(schedules: Schedule[]): void {
         schedulesUl.empty();
@@ -66,10 +60,15 @@ export module settingbar {
             nameText.hide();
             nameTextInput.show();
 
+            deleted = false;
+            delBtn.show();
+
             if (onEditClicked != null) {
                 const isSelected = starred = onEditClicked();
-                starBtnStarConfig(isSelected);
-                starBtn.show();
+                if (!isSelected) {
+                    starBtnStarConfig(isSelected);
+                    starBtn.show();
+                }
             }
 
         });
@@ -88,21 +87,28 @@ export module settingbar {
             nameText.show();
 
             if (onSaveClicked != null)
-                onSaveClicked(name, starred);
+                onSaveClicked(name, starred, deleted);
 
             starred = false;
+            deleted = false;
             starBtn.hide();
+            delBtn.hide();
         });
     }
 
     export function init(schedules: Schedule[]): void {
-        schedulesUl = $('#'.concat(ID_SCHEDULE_LIST));
-        schedulesBtn = $('#'.concat(ID_SCHEDULES_BTN));
-        editBtn = $('#'.concat(ID_EDIT_BTN));
-        saveBtn = $('#'.concat(ID_SAVE_BTN));
-        nameText = $('#'.concat(ID_NAME));
-        nameTextInput = $('#'.concat(ID_NAME_EDIT));
-        starBtn = $('#'.concat(ID_STAR));
+        schedulesUl = $('#setting-bar-schedules-list');
+        schedulesBtn = $('#setting-bar-schedules-btn');
+        editBtn = $('#setting-bar-edit-btn');
+        saveBtn = $('#setting-bar-save-btn');
+        nameText = $('#setting-bar-schedule-name');
+        nameTextInput = $('#setting-bar-schedule-name-edit');
+        starBtn = $('#setting-bar-star');
+        delBtn = $('#setting-bar-delete-btn');
+        delBtn.on('click', () => {
+            delBtn.toggleClass('active');
+            deleted = !deleted;
+        });
 
         if (schedules.length > 0) {
             populateDropdown(schedules);
@@ -124,6 +130,17 @@ export module settingbar {
     export function update(schedules: Schedule[], selected: Schedule): void {
         populateDropdown(schedules);
         setText(selected.name);
+    }
+
+    export function updateCurrent(schedule: Schedule) {
+        starred = false;
+        setText(schedule.name);
+    }
+
+    export function off() {
+        setText('No schedules found');
+        schedulesBtn.hide();
+        editBtn.hide();
     }
 
 
