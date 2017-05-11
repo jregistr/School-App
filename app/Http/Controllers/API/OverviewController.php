@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Services\GradeService;
+use App\Services\PrecondResultsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Util\C;
@@ -13,15 +14,18 @@ class OverviewController extends Controller
 {
 
     private $gradeService;
+    private $res;
 
     /**
      * OverviewController constructor.
      * @param GradeService $gradeService
+     * @param PrecondResultsService $precondResultsService
      */
-    public function __construct(GradeService $gradeService)
+    public function __construct(GradeService $gradeService, PrecondResultsService $precondResultsService)
     {
         $this->middleware('auth');
         $this->gradeService = $gradeService;
+        $this->res = $precondResultsService;
     }
 
     /**
@@ -36,12 +40,12 @@ class OverviewController extends Controller
         if ($sectionId == null) {
             $data = $this->gradeService->summary($this->studentId());
             if ($data != null) {
-                return $this->result($data);
+                return $this->res->result($data);
             } else {
-                return $this->fail('No summary');
+                return $this->res->fail('No summary');
             }
         } else {
-            return $this->result($this->gradeService->summaryForSection($this->studentId(), $sectionId));
+            return $this->res->result($this->gradeService->summaryForSection($this->studentId(), $sectionId));
         }
     }
 
@@ -54,9 +58,9 @@ class OverviewController extends Controller
     {
         $sectionId = $request->input(C::SECTION_ID);
         if ($sectionId != null) {
-            return $this->result($this->gradeService->getWeights($this->studentId(), $sectionId));
+            return $this->res->result($this->gradeService->getWeights($this->studentId(), $sectionId));
         } else {
-            return $this->missingParameter(C::SECTION_ID);
+            return $this->res->missingParameter(C::SECTION_ID);
         }
     }
 
@@ -67,19 +71,19 @@ class OverviewController extends Controller
      */
     public function addWeight(Request $request)
     {
-        $checks = $this->exist($request, [C::SECTION_ID, C::CATEGORY, C::POINTS]);
+        $checks = $this->res->exist($request, [C::SECTION_ID, C::CATEGORY, C::POINTS]);
         if ($checks[C::SUCCESS]) {
             $sectionId = $request->input(C::SECTION_ID);
             $category = $request->input(C::CATEGORY);
             $points = $request->input(C::POINTS);
 
             if ($points < 0 || $points > 100) {
-                return $this->fail('Points should be between 0 and 100. Points:' . $points);
+                return $this->res->fail('Points should be between 0 and 100. Points:' . $points);
             } else {
-                return $this->result($this->gradeService->addWeight($this->studentId(), $sectionId, $category, $points));
+                return $this->res->result($this->gradeService->addWeight($this->studentId(), $sectionId, $category, $points));
             }
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -90,7 +94,7 @@ class OverviewController extends Controller
      */
     public function updateWeight(Request $request)
     {
-        $checks = $this->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
+        $checks = $this->res->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $sectionId = $request->input(C::SECTION_ID);
@@ -110,18 +114,18 @@ class OverviewController extends Controller
             if (count($updates) > 0) {
 
                 if ($points != null && ($points < 0 || $points > 100)) {
-                    return $this->fail('Points should be between 0 and 100. Points:' . $points);
+                    return $this->res->fail('Points should be between 0 and 100. Points:' . $points);
                 } else {
-                    return $this->result($this->gradeService->updateWeight(
+                    return $this->res->result($this->gradeService->updateWeight(
                         $this->studentId(), $sectionId, $weightId, $updates)
                     );
                 }
             } else {
-                return $this->fail('Not fields to update provided');
+                return $this->res->fail('Not fields to update provided');
             }
 
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -132,13 +136,13 @@ class OverviewController extends Controller
      */
     public function deleteWeight(Request $request)
     {
-        $checks = $this->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
+        $checks = $this->res->exist($request, [C::SECTION_ID, C::WEIGHT_ID]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $sectionId = $request->input(C::SECTION_ID);
-            return $this->result($this->gradeService->deleteWeight($this->studentId(), $sectionId, $weightId));
+            return $this->res->result($this->gradeService->deleteWeight($this->studentId(), $sectionId, $weightId));
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -149,13 +153,13 @@ class OverviewController extends Controller
      */
     public function getGrade(Request $request)
     {
-        $check = $this->exist($request, [C::WEIGHT_ID]);
+        $check = $this->res->exist($request, [C::WEIGHT_ID]);
         if ($check[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $studentId = $this->studentId();
-            return $this->result($this->gradeService->getGrades($studentId, $weightId));
+            return $this->res->result($this->gradeService->getGrades($studentId, $weightId));
         } else {
-            return $this->missingParameter(C::WEIGHT_ID);
+            return $this->res->missingParameter(C::WEIGHT_ID);
         }
     }
 
@@ -166,19 +170,19 @@ class OverviewController extends Controller
      */
     public function addGrade(Request $request)
     {
-        $checks = $this->exist($request, [C::WEIGHT_ID, C::ASSIGNMENT, C::GRADE]);
+        $checks = $this->res->exist($request, [C::WEIGHT_ID, C::ASSIGNMENT, C::GRADE]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $assign = $request->input(C::ASSIGNMENT);
             $grade = $request->input(C::GRADE);
 
             if ($grade < 0 || $grade > 100) {
-                return $this->fail('Grade should between 0 and 100. Grade:' . $grade);
+                return $this->res->fail('Grade should between 0 and 100. Grade:' . $grade);
             } else {
-                return $this->result($this->gradeService->addGrade($this->studentId(), $weightId, $assign, $grade));
+                return $this->res->result($this->gradeService->addGrade($this->studentId(), $weightId, $assign, $grade));
             }
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -189,7 +193,7 @@ class OverviewController extends Controller
      */
     public function updateGrade(Request $request)
     {
-        $checks = $this->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
+        $checks = $this->res->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $gradeId = $request->input(C::GRADE_ID);
@@ -209,15 +213,15 @@ class OverviewController extends Controller
             if (count($updates) > 0) {
 
                 if ($grade != null && ($grade < 0 || $grade > 100)) {
-                    return $this->fail('Grade should between 0 and 100. Grade:' . $grade);
+                    return $this->res->fail('Grade should between 0 and 100. Grade:' . $grade);
                 } else {
-                    return $this->result($this->gradeService->updateGrade($this->studentId(), $weightId, $gradeId, $updates));
+                    return $this->res->result($this->gradeService->updateGrade($this->studentId(), $weightId, $gradeId, $updates));
                 }
             } else {
-                return $this->fail('Not fields to update provided');
+                return $this->res->fail('Not fields to update provided');
             }
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -228,13 +232,13 @@ class OverviewController extends Controller
      */
     public function deleteGrade(Request $request)
     {
-        $checks = $this->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
+        $checks = $this->res->exist($request, [C::WEIGHT_ID, C::GRADE_ID]);
         if ($checks[C::SUCCESS]) {
             $weightId = $request->input(C::WEIGHT_ID);
             $gradeId = $request->input(C::GRADE_ID);
-            return $this->result($this->gradeService->deleteGrade($this->studentId(), $weightId, $gradeId));
+            return $this->res->result($this->gradeService->deleteGrade($this->studentId(), $weightId, $gradeId));
         } else {
-            return $this->missingParameter($checks[C::NAME]);
+            return $this->res->missingParameter($checks[C::NAME]);
         }
     }
 
@@ -244,70 +248,6 @@ class OverviewController extends Controller
     private function studentId()
     {
         return Auth::id();
-    }
-
-    /**
-     * Creates a success json providing data to the user.
-     * @param $data - The payload.
-     * @return \Illuminate\Http\JsonResponse - Response is of the form {'success' : true, data: {}}
-     */
-    private function result($data)
-    {
-        return response()->json(
-            [
-                C::SUCCESS => true,
-                C::DATA => $data
-            ]
-        );
-    }
-
-    /**
-     * Creates a failure json informing of a missing parameter.
-     * @param $paramName - The name of the missing parameter.
-     * @return \Illuminate\Http\JsonResponse - The response to send to the user.
-     */
-    private function missingParameter($paramName)
-    {
-        return response()->json(
-            [C::SUCCESS => false,
-                C::MESSAGE => 'Parameter ' . $paramName . ' is missing']
-        );
-    }
-
-    /**
-     * Creates a failure json message.
-     * @param $message - The message for the error.
-     * @return \Illuminate\Http\JsonResponse - The response to send to the user.
-     */
-    private function fail($message)
-    {
-        return response()->json(
-            [
-                C::SUCCESS => false,
-                C::MESSAGE => $message
-            ]
-        );
-    }
-
-    /**
-     * Checks that all parameters exist in request input. Stops at the first missing one if found.
-     * @param Request $request - The controller request object.
-     * @param array $parameters - The array of parameters to check for.
-     * @return array - An array of the form ['success' => 'true', 'name' => 'parameter']
-     */
-    private function exist($request, $parameters)
-    {
-        $result = [C::SUCCESS => true, C::NAME => 'none'];
-
-        foreach ($parameters as $p) {
-            if ($request->input($p) == null) {
-                $result[C::SUCCESS] = false;
-                $result[C::NAME] = $p;
-                break;
-            }
-        }
-
-        return $result;
     }
 
 }

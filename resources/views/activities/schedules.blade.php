@@ -1,15 +1,14 @@
 @extends('layouts.main', ["index" => 2])
 
 @section('stylesheets')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />
     <link rel="stylesheet" href="dist/css/schedules.css"/>
 @endsection
 
 @section('javascripts')
-    {{--<script src="dist/js/schedule/manifest.js"></script>--}}
-    {{--<script src="dist/js/schedule/schedule-vendors.js"></script>--}}
-    {{--<script src="dist/js/schedule/schedule.js"></script>--}}
-    {{--<script src="dist/js/schedule-vendors.js"></script>--}}
-    {{--<script src="dist/js/schedule/schedule.js"></script>--}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    <script src="dist/js/schedule.js"></script>
 @endsection
 
 @section('content')
@@ -19,28 +18,34 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rm-pad">
             <div class="panel panel-default">
                 <div class="panel-heading schedule-bar">
-                    <strong class="schedule-title">My Classes</strong>
+
+                    <strong id="setting-bar-schedule-name" class="schedule-title">My Classes</strong>
+                    <input style="display: none" class="input-sm schedule-title" id="setting-bar-schedule-name-edit" type="text" placeholder="name" />
+
                     <div class="schedule-button-group dropdown">
-                        <button class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">
+                        <button id="setting-bar-edit-btn" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button style="display: none" id="setting-bar-save-btn" class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span></button>
+
+                        <button style="display: none;" id="setting-bar-star" class="btn btn-default"><span class="glyphicon glyphicon-star-empty"></span></button>
+                        <button id="setting-bar-schedules-btn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">
                             Schedules
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu pull-right scrollable-menu" role="menu" aria-labelledby="dropdownMenu1">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
+                        <ul id="setting-bar-schedules-list" class="dropdown-menu pull-right scrollable-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            {{--<li><a href="#">Action</a></li>--}}
+                            {{--<li><a href="#">Another action</a></li>--}}
+                            {{--<li><a href="#">Something else here</a></li>--}}
+                            {{--<li><a href="#">Action</a></li>--}}
+                            {{--<li><a href="#">Another action</a></li>--}}
+                            {{--<li><a href="#">Something else here</a></li>--}}
+                            {{--<li><a href="#">Action</a></li>--}}
+                            {{--<li><a href="#">Another action</a></li>--}}
+                            {{--<li><a href="#">Something else here</a></li>--}}
+                            {{--<li><a href="#">Action</a></li>--}}
+                            {{--<li><a href="#">Another action</a></li>--}}
+                            {{--<li><a href="#">Something else here</a></li>--}}
+                            {{--<li><a href="#">Action</a></li>--}}
+                            {{--<li><a href="#">Another action</a></li>--}}
                         </ul>
                     </div>
                     <div class="clearfix"></div>
@@ -49,7 +54,7 @@
         </div>
     </div>
     <div class="row">
-        <div id="calender"></div>
+        <div id="calendar"></div>
     </div>
     {{--</div>--}}
 @endsection

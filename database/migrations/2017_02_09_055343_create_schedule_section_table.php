@@ -16,6 +16,7 @@ class CreateScheduleSectionTable extends Migration
         Schema::create('schedule_section', function (Blueprint $table) {
             $table->unsignedInteger('schedule_id');
             $table->unsignedInteger('section_id');
+            $table->unsignedInteger('meeting_time_id');
         });
 
         Schema::table('schedule_section', function (Blueprint $table) {
@@ -28,6 +29,12 @@ class CreateScheduleSectionTable extends Migration
                 ->references('id')
                 ->on('sections')
                 ->onDelete('cascade');
+
+            $table->foreign('meeting_time_id')
+                ->references('id')
+                ->on('meeting_times')
+                ->onDelete('cascade');
+
             $table->primary(['schedule_id', 'section_id']);
         });
     }

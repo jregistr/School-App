@@ -26,3 +26,5 @@ Route::get('/overview/grade', 'API\OverviewController@getGrade');
 Route::post('/overview/grade', 'API\OverviewController@addGrade');
 Route::put('/overview/grade', 'API\OverviewController@updateGrade');
 Route::delete('/overview/grade', 'API\OverviewController@deleteGrade');
+
+Route::get('/schedule', 'API\ScheduleController@getUserSchedules');

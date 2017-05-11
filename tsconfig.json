@@ -18,7 +18,7 @@
     "outDir": "public/dist/js"
   },
   "include": [
-    "./resources/assets/ts/**/*.ts"
+    "./resources/assets/js/programs/*.ts"
   ],
   "compileOnSave": false
 }

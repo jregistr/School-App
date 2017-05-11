@@ -42,3 +42,18 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
+#calendar .fc-header-toolbar {
+  display: none;
+}
+
+.fc-today {
+  background: none !important;
+  //border: none !important;
+  //border-top: 1px solid #ddd !important;
+  //font-weight: bold;
+}
+
+input.schedule-title {
+  margin-top: 3px;
+}

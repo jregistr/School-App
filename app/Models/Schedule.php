@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Util\C;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Schedule
  * @package App\Models
  * @property integer id
  * @property integer student_id
+ * @property string name
  * @property boolean selected
  */
 class Schedule extends BaseModel
@@ -18,7 +20,8 @@ class Schedule extends BaseModel
 
     protected $fillable = [
         C::STUDENT_ID,
-        C::SELECTED
+        C::SELECTED,
+        C::NAME
     ];
 
     public function user()
@@ -26,27 +29,22 @@ class Schedule extends BaseModel
         return $this->belongsTo(User::class, C::STUDENT_ID);
     }
 
-    public function sections()
+    public function courses()
     {
-        return $this->belongsToMany(Section::class);
-    }
+        $scheduleSections = DB::table('schedule_section')->where('schedule_id', $this->id)->get();
+        $outer = [];
 
-    public function sectionsWithMeetings()
-    {
-        $sections = $this->sections()->get();
-        if ($sections->count() > 0) {
-            $outer = [];
-            foreach ($sections as $section) {
-                $course = $section->course();
-                $course->section = $section;
-                $meets = $section->meetings()->get();
-                $section->meetings = $meets;
-                array_push($outer, $course);
-            }
-            return $outer;
-        } else {
-            return [];
+        foreach ($scheduleSections as $scheduleSection) {
+            $section = Section::find($scheduleSection->section_id);
+            $meeting = MeetingTime::find($scheduleSection->meeting_time_id);
+            $course = $section->course();
+
+            $section->meeting = $meeting;
+            $course->section = $section;
+
+            array_push($outer, $course);
         }
+        return $outer;
     }
 
 }

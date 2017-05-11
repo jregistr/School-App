@@ -17,6 +17,7 @@ class CreateSchedulesTable extends Migration
         Schema::create('schedules', function (Blueprint $table){
             $table->increments('id');
             $table->unsignedInteger('student_id');
+            $table->string('name', 155);
             $table->boolean('selected');
         });
 
