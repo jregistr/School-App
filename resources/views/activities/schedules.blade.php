@@ -33,20 +33,6 @@
                             <span class="caret"></span>
                         </button>
                         <ul id="setting-bar-schedules-list" class="dropdown-menu pull-right scrollable-menu" role="menu" aria-labelledby="dropdownMenu1">
-                            {{--<li><a href="#">Action</a></li>--}}
-                            {{--<li><a href="#">Another action</a></li>--}}
-                            {{--<li><a href="#">Something else here</a></li>--}}
-                            {{--<li><a href="#">Action</a></li>--}}
-                            {{--<li><a href="#">Another action</a></li>--}}
-                            {{--<li><a href="#">Something else here</a></li>--}}
-                            {{--<li><a href="#">Action</a></li>--}}
-                            {{--<li><a href="#">Another action</a></li>--}}
-                            {{--<li><a href="#">Something else here</a></li>--}}
-                            {{--<li><a href="#">Action</a></li>--}}
-                            {{--<li><a href="#">Another action</a></li>--}}
-                            {{--<li><a href="#">Something else here</a></li>--}}
-                            {{--<li><a href="#">Action</a></li>--}}
-                            {{--<li><a href="#">Another action</a></li>--}}
                         </ul>
                     </div>
                     <div class="clearfix"></div>

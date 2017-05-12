@@ -27,6 +27,8 @@ Route::get('/overview', 'HomeController@overview');
 
 Route::get('/create', 'HomeController@create');
 
+Route::post('/profile', 'MiscController@updateProfile');
+
 
 Route::get('/user/activation/{confirm_token}', 'Auth\ActivationController@activateUser')->name('user.activate');
 
