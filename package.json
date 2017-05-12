@@ -11,7 +11,6 @@
   },
   "devDependencies": {
     "@types/bootstrap": "^3.3.33",
-    "@types/fullcalendar": "^2.7.42",
     "@types/jquery": "^2.0.43",
     "cross-env": "^3.2.3",
     "glob": "^7.1.1",

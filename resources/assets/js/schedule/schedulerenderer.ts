@@ -2,7 +2,8 @@ import {Course, Meeting, Schedule, Section} from "./interfaces";
 const moment = window['moment'];
 export module ScheduleRenderer {
 
-    const calendarDom = $('#calendar');
+    let calendarDom = $('#calendar');
+    const parentDom = $('#parentDom');
 
     function viewConfig() {
         return {
@@ -12,10 +13,11 @@ export module ScheduleRenderer {
                 right: '',
             },
             firstDay: 1,
-            editable: true,
+            editable: false,
             defaultView: 'agendaWeek',
             allDaySlot: false,
-            columnFormat: 'ddd'
+            columnFormat: 'ddd',
+            height: 800
         };
     }
 
@@ -119,18 +121,24 @@ export module ScheduleRenderer {
         }
     }
 
-    export function off() {
-        // calendarDom.empty();
-        // calendarDom.fullCalendar(viewConfig());
-        calendarDom.fullCalendar('destroy');
+    export function init() {
         calendarDom.fullCalendar(viewConfig());
-        // console.log('HERE 2');
+    }
+
+    export function off() {
+        parentDom.empty();
+        parentDom.append($('<div id="calendar"></div>'));
+        calendarDom = $('#calendar');
+        calendarDom.fullCalendar(viewConfig());
     }
 
     export function render(schedule: Schedule) {
-        console.log(schedule);
         const courses = schedule.courses;
         if (courses.length > 0) {
+            parentDom.empty();
+            parentDom.append($('<div id="calendar"></div>'));
+            calendarDom = $('#calendar');
+
             const config = viewConfig();
 
             const minMax = getMinMaxTimes(schedule.courses);
@@ -142,7 +150,6 @@ export module ScheduleRenderer {
             config['events'] = makeEvents(schedule.courses);
             calendarDom.fullCalendar(config);
         } else {
-            console.log('HERE');
             off();
         }
     }

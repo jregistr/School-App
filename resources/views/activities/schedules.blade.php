@@ -54,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="parentDom">
         <div id="calendar"></div>
     </div>
     {{--</div>--}}

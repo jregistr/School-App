@@ -40,6 +40,8 @@ module  Schedule {
             settingbar.onEditClicked = onEditBegin.bind(Schedule);
             settingbar.onSaveClicked = onSaveClicked.bind(Schedule);
             settingbar.init(schedules);
+
+            scheduleRenderer.init();
             renderCurrentSchedule();
         }
 
