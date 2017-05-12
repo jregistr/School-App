@@ -63,4 +63,10 @@ class ScheduleController extends Controller
         }
     }
 
+    public function addCourse(Request $request)
+    {
+        //$studentId, $subj, $number, $crn, $credits, $instructors, $location,
+        //$start, $end, $sunday, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday
+    }
+
 }

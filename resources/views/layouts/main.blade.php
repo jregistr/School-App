@@ -62,15 +62,15 @@
                 <div class="sub-pairs">
                     <div>
                         {{--<h5>Name</h5>--}}
-                        <h5>Jeff</h5>
+                        <h5>{{$user->first_name ? $user->first_name : 'fill name'}}</h5>
                     </div>
                     <div>
                         {{--<h5>Major</h5>--}}
-                        <h5>Computer Science</h5>
+                        <h5>{{$user->major ? $user->major : 'fill major'}}</h5>
                     </div>
                     <div>
                         {{--<h5>Year</h5>--}}
-                        <h5>Senior</h5>
+                        <h5>{{$user->year ? $user->year : 'fill year'}}</h5>
                     </div>
                 </div>
             </li>
@@ -84,10 +84,10 @@
                     Schedules
                     <span class="side-icon glyphicon glyphicon-calendar"></span>
                 </a>
-                <div>
-                    <h6>d</h6>
-                    <h6>d</h6>
-                </div>
+                {{--<div>--}}
+                    {{--<h6>d</h6>--}}
+                    {{--<h6>d</h6>--}}
+                {{--</div>--}}
             </li>
             <li>
                 <a href="/create" class="{{$index == 3 ? "active" : ""}}">

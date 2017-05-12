@@ -47,7 +47,6 @@ class MiscController extends Controller
         $v = Validator::make($request->all(), $rules);
 
         if ($v->fails()) {
-            error_log('Not Accepting');
             return redirect()->back()->withErrors($v->errors());
         } else {
             if ($have != null && $have == 1) {

@@ -30,3 +30,5 @@ Route::delete('/overview/grade', 'API\OverviewController@deleteGrade');
 Route::get('/schedule', 'API\ScheduleController@getUserSchedules');
 Route::post('/schedule', 'API\ScheduleController@updateSchedule');
 Route::delete('/schedule', 'API\ScheduleController@deleteSchedule');
+
+Route::post('/schedule/course', 'API\ScheduleController@addCourse');

@@ -25,7 +25,7 @@ glob.sync('./resources/assets/sass/styles/*.scss').forEach(function (fn) {
 });
 
 mix.js('./resources/assets/js/programs/schedule.ts', 'public/dist/js/schedule.js');
-
+mix.js('./resources/assets/js/programs/create.ts', 'public/dist/js/create.js');
 
 
 // mix.copy('node_modules/fullcalendar/dist/fullcalendar.js', 'public/dist/js/fullcalendar.js');
@@ -35,14 +35,9 @@ mix.js('./resources/assets/js/programs/schedule.ts', 'public/dist/js/schedule.js
 //
 
 
-
-
-
-
 // glob.sync('./resources/assets/js/programs/*.js').forEach(function (fn) {
 //     mix.sass(fn, 'public/dist/js');
 // });
-
 
 
 // mix.combine([
