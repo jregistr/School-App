@@ -53,6 +53,7 @@ module  Schedule {
         function onSelectSchedule(schedule: Schedule): void {
             viewingSchedule = schedule;
             settingbar.updateCurrent(schedule);
+            renderCurrentSchedule();
             // console.log(viewingSchedule.name);
         }
 
@@ -143,6 +144,8 @@ module  Schedule {
         function renderCurrentSchedule() {
             if (viewingSchedule != null) {
                 scheduleRenderer.render(viewingSchedule);
+            } else {
+                console.log('null');
             }
         }
 
