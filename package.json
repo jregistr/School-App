@@ -12,7 +12,11 @@
   "devDependencies": {
     "@types/bootstrap": "^3.3.33",
     "@types/bootstrap-table": "^1.11.2",
+    "@types/fullcalendar": "^2.7.42",
     "@types/jquery": "^2.0.43",
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.0",
+    "babel-preset-react": "^6.24.1",
     "cross-env": "^3.2.3",
     "glob": "^7.1.1",
     "laravel-mix": "^0.11.4",
@@ -20,11 +24,13 @@
     "typescript": "^2.3.2"
   },
   "dependencies": {
-    "@types/moment": "^2.13.0",
     "bootstrap-sass": "^3.3.7",
+    "bootstrap-table": "^1.11.2",
     "fullcalendar": "^3.4.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
   }
 }

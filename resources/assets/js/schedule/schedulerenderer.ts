@@ -1,5 +1,5 @@
 import {Course, Meeting, Schedule, Section} from "./interfaces";
-const moment = window['moment'];
+import * as moment from 'moment';
 export module ScheduleRenderer {
 
     let calendarDom = $('#calendar');

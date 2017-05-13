@@ -116,6 +116,12 @@
 
 </div>
 
+
+
+{{--<script src="dist/js/common.js"></script>--}}
+
+<script src="dist/extract/manifest.js"></script>
+<script src="dist/extract/common-vendors.js"></script>
 <script src="dist/js/common.js"></script>
 <script src="js/mainTemplate.js"></script>
 @yield('javascripts')

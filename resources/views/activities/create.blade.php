@@ -6,7 +6,9 @@
 @endsection
 
 @section('javascripts')
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    {{--<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>--}}
+    {{--<script src="dist/js/create.js"></script>--}}
+    {{--<script src="dist/extract/create-vendor.js"></script>--}}
     <script src="dist/js/create.js"></script>
 @endsection
 

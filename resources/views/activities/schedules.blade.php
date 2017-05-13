@@ -1,13 +1,14 @@
 @extends('layouts.main', ["index" => 2])
 
 @section('stylesheets')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />
+    {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />--}}
+    <link rel="stylesheet" href="../node_modules/fullcalendar/dist/fullcalendar.min.css" />
     <link rel="stylesheet" href="dist/css/schedules.css"/>
 @endsection
 
 @section('javascripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>--}}
+    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>--}}
     <script src="dist/js/schedule.js"></script>
 @endsection
 
