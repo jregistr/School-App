@@ -24,7 +24,7 @@ mix.autoload({
 mix.js('resources/assets/js/common/common.js', 'public/dist/js/common.js');
 mix.sass('resources/assets/sass/common/bootstrap.scss', 'public/dist/css');
 
-glob.sync('./resources/assets/sass/styles/*.scss').forEach(function (fn) {
+glob.sync('./resources/assets/sass/styles/*.{scss, sass}').forEach(function (fn) {
     mix.sass(fn, 'public/dist/css');
 });
 
