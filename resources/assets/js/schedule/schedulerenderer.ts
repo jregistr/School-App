@@ -1,4 +1,4 @@
-import {Course, Meeting, Schedule, Section} from "./interfaces";
+import {Course, Meeting, Schedule, Section} from "../data/interfaces";
 import * as moment from 'moment';
 export module ScheduleRenderer {
 
@@ -59,23 +59,23 @@ export module ScheduleRenderer {
 
         const begin = moment();
         courses.forEach((course) => {
-            const section = course.section;
-            const meeting = section.meeting;
-
-            [
-                meeting.sunday,
-                meeting.monday,
-                meeting.tuesday,
-                meeting.wednesday,
-                meeting.thursday,
-                meeting.friday,
-                meeting.saturday
-            ].forEach(function (value: number, index: number) {
-                if (value === 1) {
-                    const day = begin.isoWeekday(index);
-                    events.push(makeEvent(course, section, meeting, day));
-                }
-            });
+            // const section = course.section;
+            // const meeting = section.meeting;
+            //
+            // [
+            //     meeting.sunday,
+            //     meeting.monday,
+            //     meeting.tuesday,
+            //     meeting.wednesday,
+            //     meeting.thursday,
+            //     meeting.friday,
+            //     meeting.saturday
+            // ].forEach(function (value: number, index: number) {
+            //     if (value === 1) {
+            //         const day = begin.isoWeekday(index);
+            //         events.push(makeEvent(course, section, meeting, day));
+            //     }
+            // });
         });
 
         return events;
@@ -89,20 +89,20 @@ export module ScheduleRenderer {
         // let maxMinute: string = '00';
 
         courses.forEach((course: Course) => {
-            const meeting = course.section.meeting;
-            const startSplit = meeting.start.split(':');
-            const endSplit = meeting.end.split(':');
-
-            const startHour = parseInt(startSplit[0]);
-            const endHour = parseInt(endSplit[0]);
-
-            if (startHour < parseInt(minHour)) {
-                minHour = startSplit[0];
-            }
-
-            if (endHour > parseInt(maxHour)) {
-                maxHour = endSplit[0];
-            }
+            // const meeting = course.section.meeting;
+            // const startSplit = meeting.start.split(':');
+            // const endSplit = meeting.end.split(':');
+            //
+            // const startHour = parseInt(startSplit[0]);
+            // const endHour = parseInt(endSplit[0]);
+            //
+            // if (startHour < parseInt(minHour)) {
+            //     minHour = startSplit[0];
+            // }
+            //
+            // if (endHour > parseInt(maxHour)) {
+            //     maxHour = endSplit[0];
+            // }
         });
 
         if (minHour !== '24' && maxHour !== '00') {
@@ -133,25 +133,25 @@ export module ScheduleRenderer {
     }
 
     export function render(schedule: Schedule) {
-        const courses = schedule.courses;
-        if (courses.length > 0) {
-            parentDom.empty();
-            parentDom.append($('<div id="calendar"></div>'));
-            calendarDom = $('#calendar');
-
-            const config = viewConfig();
-
-            const minMax = getMinMaxTimes(schedule.courses);
-            if (minMax != null) {
-                config['minTime'] = minMax.min;
-                config['maxTime'] = minMax.max;
-            }
-
-            config['events'] = makeEvents(schedule.courses);
-            calendarDom.fullCalendar(config);
-        } else {
-            off();
-        }
+        // const courses = schedule.courses;
+        // if (courses.length > 0) {
+        //     parentDom.empty();
+        //     parentDom.append($('<div id="calendar"></div>'));
+        //     calendarDom = $('#calendar');
+        //
+        //     const config = viewConfig();
+        //
+        //     const minMax = getMinMaxTimes(schedule.courses);
+        //     if (minMax != null) {
+        //         config['minTime'] = minMax.min;
+        //         config['maxTime'] = minMax.max;
+        //     }
+        //
+        //     config['events'] = makeEvents(schedule.courses);
+        //     calendarDom.fullCalendar(config);
+        // } else {
+        //     off();
+        // }
     }
 
 }

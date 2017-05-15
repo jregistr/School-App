@@ -1,5 +1,5 @@
 import {ScheduleRenderer as scheduleRenderer} from '../schedule/schedulerenderer';
-import {Course, Section, Schedule, Meeting} from '../schedule/interfaces';
+import {Course, Section, Schedule, Meeting} from '../data/interfaces';
 import {settingbar} from "../schedule/settingbar";
 import onSaveClicked = settingbar.onSaveClicked;
 

@@ -12,10 +12,10 @@
   "devDependencies": {
     "@types/bootstrap": "^3.3.33",
     "@types/bootstrap-table": "^1.11.2",
+    "@types/eonasdan-bootstrap-datetimepicker": "^4.17.22",
     "@types/fullcalendar": "^2.7.42",
     "@types/jquery": "^2.0.43",
-    "@types/react": "^15.0.24",
-    "@types/react-dom": "^15.5.0",
+    "@types/lodash": "^4.14.64",
     "babel-preset-react": "^6.24.1",
     "cross-env": "^3.2.3",
     "glob": "^7.1.1",
@@ -26,11 +26,10 @@
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
     "bootstrap-table": "^1.11.2",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47",
     "fullcalendar": "^3.4.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
-    "moment": "^2.18.1",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "moment": "^2.18.1"
   }
 }

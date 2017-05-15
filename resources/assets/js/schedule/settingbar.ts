@@ -1,4 +1,4 @@
-import {Schedule} from './interfaces';
+import {Schedule} from '../data/interfaces';
 
 export module settingbar {
 
