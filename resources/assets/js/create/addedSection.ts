@@ -16,6 +16,7 @@ export class AddedSectionRenderer {
         const parentEl = typeof (parent) == "string" ? $('#' + parent) : parent;
 
         const outer = $('<div class="panel panel-default"></div>');
+        this.selfObj = outer;
         const removeBtn = $('<a href="#" class="pull-right"><span class="glyphicon glyphicon-remove"></span></a>');
 
         removeBtn.on('click', e => {

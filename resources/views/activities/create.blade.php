@@ -14,7 +14,7 @@
 @section('content')
     <div class="row pad hidden-sm hidden-xs"></div>
     <div class="row">
-        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#courses"><strong>View Courses</strong></a></li>
                 <li><a data-toggle="tab" href="#sections"><strong>View Course Sections</strong></a></li>
@@ -38,13 +38,11 @@
 
             </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <h3>Add a course/activity</h3>
             <div id="add-class">
 
             </div>
-
-
         </div>
     </div>
 

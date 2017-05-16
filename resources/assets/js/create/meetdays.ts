@@ -38,6 +38,13 @@ export class MeetingDaysRenderer {
         this.parent.append(this.jqueryOut());
     }
 
+    public clear(): void {
+        this.parent.find('input[type="checkbox"]').each((index, input) => {
+            $(input).prop('checked', false)
+                .trigger('change');
+        });
+    }
+
     private jqueryOut(): JQuery {
         const week = this.week;
         const outer = $('<div class="col-lg-12"></div>');
@@ -56,11 +63,8 @@ export class MeetingDaysRenderer {
         `);
 
         if (this.editable) {
-            input.on('click', () => {
-                console.log(input);
-                console.log(input.prop('checked'));
+            input.on('change', () => {
                 this.setDayValue(fullLabel, input.prop('checked') ? 1 : 0);
-                console.log(this.week);
             });
         }
         return $(`<label class="checkbox-inline"> </label>`)

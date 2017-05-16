@@ -2,6 +2,7 @@ import {Course, Section} from "../data/interfaces";
 import * as moment from 'moment';
 import {MeetingDaysRenderer} from "./meetdays";
 import {AddedSectionRenderer} from "./addedSection";
+import {clearInputs} from "../common/functions";
 
 export class AddCourse {
 
@@ -65,10 +66,15 @@ export class AddCourse {
 
     private addSectionBtnClicked(): void {
         const form = this.addSectionForm;
-        const ins = form.find('input[name="inst"]').val() || 'Not specified';
-        const loc = form.find('input[name="loc"]').val() || 'Not specified';
-        const start: string | null = form.find('input[name="start"]').val() || null;
-        const end: string | null = form.find('input[name="end"]').val() || null;
+        const insInput = form.find('input[name="inst"]');
+        const locInput = form.find('input[name="loc"]');
+        const startInput = form.find('input[name="start"]');
+        const endInput = form.find('input[name="end"]');
+
+        const ins = insInput.val() || 'Not specified';
+        const loc = locInput.val() || 'Not specified';
+        const start: string | null = startInput.val() || null;
+        const end: string | null = endInput.val() || null;
         if (start != null && end != null) {
             const startTime = moment(start, ["h:mm A"]).format("HH:mm");
             const endTime = moment(end, ['h:mm A']).format('HH:mm');
@@ -82,74 +88,109 @@ export class AddCourse {
                         location: loc,
                         start: startTime,
                         end: endTime,
-                        week: this.days.week
+                        week: Object.assign({}, this.days.week)
                     }
                 ]
             };
 
+            console.log(sec);
+
             this.sections.push(new AddedSectionRenderer(sec, this.sectionsParentEl, `section${++this.increment}`,
-                this.onDeleteSection));
+                this.onDeleteSection.bind(this)));
+
+            this.addSectionFormState();
+            clearInputs([insInput, locInput, startInput, endInput]);
         } else {
-            let warn = form.find('div[class="alert alert-warning alert-dismissible"]');
-            if (warn.length > 0) {
-                warn.show();
-                window.setTimeout(() => {
-                    warn.hide()
-                }, 2000);
-            } else {
-                let warn = $(`
-                    <div class="alert alert-warning alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span>&times;</span>
-                        </button>
-                        <strong>Warning!</strong> There are missing fields
-                    </div>
-                `);
-                form.prepend(warn);
-                warn.show();
-                window.setTimeout(() => {
-                    warn.hide()
-                }, 2000);
-            }
+            AddCourse.renderMissingFields(form);
         }
     }
 
     private onDeleteSection(deleted: AddedSectionRenderer): void {
-
+        this.sections.splice(this.sections.indexOf(deleted), 1);
+        this.addSectionFormState();
     }
 
     private onSubmitCourse(): void {
-
+        const queryData = this.collectCourseData();
+        console.log(queryData);
+        ///todo implement end point to add course.
+        ///todo implement endpoint to add section to course
+        ///todo implement endpoint to add meeting. or, add the meeting to the section add endpoint
+        ///todo add a user field to the school and the course, section, meeting times
     }
 
     private onClearedAllClicked(): void {
+        this.days.clear();
+        this.courseForm.find('input').each((index, el) => {
+            $(el).val('');
+        });
 
+        this.addSectionForm.find('input').each((index, el) => {
+            $(el).val('');
+        });
+
+        this.sectionsParentEl.empty();
+        this.sections = [];
+        this.addSectionFormState();
+    }
+
+    private collectCourseData(): Course | null {
+        let course: Course | null = null;
+        const courseForm = this.courseForm;
+
+        const subjInput = courseForm.find('input[name="subj"]');
+        const courseNumInput = courseForm.find('input[name="number"]');
+        const crnInput = courseForm.find('input[name="crn"]');
+        const creditsInput = courseForm.find('input[name="credits"]');
+
+        const subj = subjInput.val() || null;
+        const courseNum = courseNumInput.val() || null;
+        const crn = crnInput.val() || null;
+        const credits = creditsInput.val() || null;
+        const sections: Section[] | null = this.sections.length >= 1 ? this.sections.map(r => r.section) : null;
+
+        if (subj != null && courseNum != null && crn != null && credits != null && sections != null) {
+            course = {
+                id: 0,
+                school_id: 0,
+                name: subj.concat(courseNum),
+                crn,
+                credits,
+                sections
+            };
+            this.onClearedAllClicked();
+        } else {
+            AddCourse.renderMissingFields(courseForm);
+        }
+
+        return course;
     }
 
     private static createCourseForm(): JQuery {
         return $(`
             <form class="form-horizontal" role="form">
                 <div class="form-group row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Subject</label>
-                        <input class="form-control col-lg-12" type="text" name="subj" placeholder="CSC">
+                        <input class="form-control" type="text" name="subj" placeholder="CSC">
                     </div>
-                    <div class="col-lg-8">
-                        <label class="col-lg-12">Course number</label>
-                        <input class="form-control col-lg-12" type="number" name="number" placeholder="495">
+                    <div class="col-lg-7 col-md-6 col-sm-6 col-xs-6">
+                        <label class="col-lg-12">Number</label>
+                        <input class="form-control" type="number" min="0" max="99999" step="1" name="number" 
+                            placeholder="495">
                     </div>
                 </div>
 
 
                 <div class="form-group row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">crn</label>
-                        <input class="form-control col-lg-12" type="number" name="crn" value=""
+                        <input class="form-control col-lg-12" type="number" min="0" max="99999" step="1" name="crn"
                                placeholder="11111">
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Credits</label>
-                        <input class="form-control col-lg-12" type="number" name="credits" value="3"
+                        <input class="form-control col-lg-12" type="number" name="credits" min="0" max="99" value="3"
                                placeholder="3">
                     </div>
                 </div>
@@ -161,11 +202,11 @@ export class AddCourse {
         const outer = $(`
             <form class="form-horizontal" role="form">
                 <div class="form-group row">
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Instructor</label>
                         <input class="form-control col-lg-12" type="text" name="inst" placeholder="optional">
                     </div>
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Location</label>
                         <input class="form-control col-lg-12" type="text" name="loc" placeholder="optional">
                     </div>
@@ -180,13 +221,13 @@ export class AddCourse {
         `);
 
         const startOuter = $(
-            `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-6">
+            `<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                  <label class="col-lg-12">Start Time</label>
             </div>
         `);
 
         const endOuter = $(
-            `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-6">
+            `<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                  <label class="col-lg-12">End Time</label>
             </div>
         `);
@@ -247,6 +288,25 @@ export class AddCourse {
             .append(submitP.append(submitBtn))
             .append(cancelP.append(clearAllBtn));
     }
-}
 
-// const ins = courseForm.find('input[name="subj"]').val();
+    private static renderMissingFields(parent: JQuery): void {
+        let findAlert = parent.find('div[class="alert alert-warning alert-dismissible"]');
+        if (findAlert.length == 0) {
+            findAlert = $(`
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                    <strong>Warning!</strong> There are missing fields
+                </div>
+             `);
+            parent.prepend(findAlert);
+        }
+
+        findAlert.fadeIn(200);
+        window.setTimeout(() => {
+            findAlert.hide()
+        }, 2500);
+    }
+
+}
