@@ -31,4 +31,14 @@ Route::get('/schedule', 'API\ScheduleController@getUserSchedules');
 Route::post('/schedule', 'API\ScheduleController@updateSchedule');
 Route::delete('/schedule', 'API\ScheduleController@deleteSchedule');
 
+
+Route::get('/schedule/course', 'API\ScheduleController@getCourse');////todo Implement this endpoint
 Route::post('/schedule/course', 'API\ScheduleController@addCourse');
+
+
+Route::get('/course', 'API\CourseController@getCourses');
+Route::post('/course', 'API\CourseController@createCourse');////todo implement this endpoint
+
+Route::get('/course/section', 'API\CourseController@getSections'); ///todo implement
+Route::post('/course/section', 'API\CourseController@createSection'); ///todo implement
+

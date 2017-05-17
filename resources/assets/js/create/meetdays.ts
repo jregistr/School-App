@@ -1,5 +1,8 @@
 import {Week} from "../data/interfaces";
 
+/**
+ * Reusable component to render and
+ */
 export class MeetingDaysRenderer {
 
     private editable: boolean;
