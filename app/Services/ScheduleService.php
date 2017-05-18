@@ -20,13 +20,14 @@ class ScheduleService
         $this->courseSectionService = $courseSectionService;
     }
 
-
-    public function getUserSchedules($studentId)
-    {
-        $schedules = Schedule::where(C::STUDENT_ID, $studentId)->get();
-        return $schedules;
-    }
-
+    /**
+     * Updates name and/or primary parameters for a schedule.
+     * @param $studentId - The id of the student.
+     * @param $scheduleId - The schedule id.
+     * @param $name - The update name of the schedule.
+     * @param $primary - The update primary value.
+     * @return Schedule[] - An array of the student's schedules.
+     */
     public function updateScheduleInfo($studentId, $scheduleId, $name, $primary)
     {
         if ($name || $primary) {
@@ -56,12 +57,33 @@ class ScheduleService
         return $this->getUserSchedules($studentId);
     }
 
+    /**
+     * @param $studentId - The id of the student.
+     * @return Schedule[] - An array of the schedules for this user.
+     */
+    public function getUserSchedules($studentId)
+    {
+        $schedules = Schedule::where(C::STUDENT_ID, $studentId)->get();
+        return $schedules;
+    }
+
+    /**
+     * Deletes a student's schedule.
+     * @param $studentId - The student's id.
+     * @param $scheduleId - The schedule id.
+     * @return Schedule[] - An array of the schedules.
+     */
     public function deleteSchedule($studentId, $scheduleId)
     {
         Schedule::destroy($scheduleId);
         return $this->getUserSchedules($studentId);
     }
 
+    /**
+     * @param $studentId - The id of the student.
+     * @param $scheduleId - The id of the schedule.
+     * @return [] - courses formatted for schedule rendering.
+     */
     public function getScheduledCourses($studentId, $scheduleId)
     {
         $schedule = Schedule::find($scheduleId);

@@ -1,4 +1,4 @@
-import {Course, Section} from "../data/interfaces";
+import {Course, Meeting, Section} from "../data/interfaces";
 import * as moment from 'moment';
 import {MeetingDaysRenderer} from "./meetdays";
 import {AddedSectionRenderer} from "./addedSection";
@@ -93,8 +93,6 @@ export class AddCourse {
                 ]
             };
 
-            console.log(sec);
-
             this.sections.push(new AddedSectionRenderer(sec, this.sectionsParentEl, `section${++this.increment}`,
                 this.onDeleteSection.bind(this)));
 
@@ -112,11 +110,63 @@ export class AddCourse {
 
     private onSubmitCourse(): void {
         const queryData = this.collectCourseData();
-        console.log(queryData);
-        ///todo implement end point to add course.
-        ///todo implement endpoint to add section to course
-        ///todo implement endpoint to add meeting. or, add the meeting to the section add endpoint
-        ///todo add a user field to the school and the course, section, meeting times
+        if (queryData != null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': (window['Laravel'])['csrfToken']
+                },
+                url: '/api/course',
+                method: 'POST',
+                data: {
+                    student_id: window['student_id'],
+                    name: queryData.name,
+                    credits: queryData.credits,
+                    crn: queryData.crn
+                }
+            }).done(response => {
+                const sections = queryData.sections;
+                this.sendSections(sections, <Course>response.data['course']);
+            }).fail((jqXhr, status) => {
+                alert(status);
+            })
+        }
+    }
+
+    private sendSections(sections: Section[], course: Course) {
+        const queries: JQueryXHR[] = [];
+        sections.forEach(section => {
+            const meeting: Meeting = section.meetings[0];
+            const week = meeting.week;
+            queries.push(
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': (window['Laravel'])['csrfToken']
+                    },
+                    url: 'api/course/section',
+                    method: 'POST',
+                    data: {
+                        student_id: window['student_id'],
+                        course_id: course.id,
+                        instructors: section.instructors,
+                        location: meeting.location,
+                        start: meeting.start,
+                        end: meeting.end,
+                        days: `${week.sunday}, ${week.monday}, ${week.tuesday}, ${week.wednesday}, ${week.thursday},
+                            ${week.friday}, ${week.saturday}`
+                    }
+                })
+            );
+        });
+
+        $.when(queries).then(
+            () => {
+                this.postSubmit(course);
+            },
+            (xhr, status) => {
+                alert(status);
+                alert(xhr.responseText);
+            }
+        );
     }
 
     private onClearedAllClicked(): void {

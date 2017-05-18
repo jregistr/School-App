@@ -29,14 +29,12 @@ Route::get('/schedule', 'API\ScheduleController@getUserSchedules');
 Route::post('/schedule', 'API\ScheduleController@updateSchedule');
 Route::delete('/schedule', 'API\ScheduleController@deleteSchedule');
 
-
-Route::get('/schedule/course', 'API\ScheduleController@getScheduledCourses');////todo Implement this endpoint, working on it.
+Route::get('/schedule/course', 'API\ScheduleController@getScheduledCourses');
 
 Route::get('/schedule/generator', 'API\ScheduleGeneratorController@getGenerator'); ///todo
 Route::put('/schedule/generator', 'API\ScheduleGeneratorController@addToGenerator'); ///todo
 Route::delete('/schedule/generator', 'API\ScheduleGeneratorController@deleteOnGenerator'); ///todo
 Route::post('/schedule/generator/generate', 'API\ScheduleGeneratorController@generateSchedules');///todo
-
 
 Route::get('/course', 'API\CourseController@getCourses');
 Route::post('/course', 'API\CourseController@createCourse');

@@ -42,8 +42,6 @@ class CourseSectionService
             $temp = [];
             $week = [];
 
-            error_log($meeting->start);
-
             $temp[C::ID] = $meeting->id;
             $temp[C::START] = $meeting->start;
             $temp[C::END] = $meeting->end;
@@ -116,13 +114,13 @@ class CourseSectionService
                 C::START => $start,
                 C::END => $end,
                 C::LOCATION => $location,
-                C::SUNDAY => $days[0],
-                C::MONDAY => $days[1],
-                C::TUESDAY => $days[2],
-                C::WEDNESDAY => $days[3],
-                C::THURSDAY => $days[4],
-                C::FRIDAY => $days[5],
-                C::SATURDAY => $days[6]
+                C::SUNDAY => intval($days[0]),
+                C::MONDAY => intval($days[1]),
+                C::TUESDAY => intval($days[2]),
+                C::WEDNESDAY => intval($days[3]),
+                C::THURSDAY => intval($days[4]),
+                C::FRIDAY => intval($days[5]),
+                C::SATURDAY => intval($days[6])
             ]);
 
             DB::table('sections_meeting_times')->insert(

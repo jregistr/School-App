@@ -54,7 +54,8 @@ class PrecondResultsService
     {
         return response()->json(
             [C::SUCCESS => false,
-                C::MESSAGE => 'Parameter ' . $paramName . ' is missing']
+                C::MESSAGE => 'Parameter ' . $paramName . ' is missing'],
+            400
         );
     }
 
@@ -69,7 +70,8 @@ class PrecondResultsService
             [
                 C::SUCCESS => false,
                 C::MESSAGE => $message
-            ]
+            ],
+            400
         );
     }
 
