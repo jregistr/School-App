@@ -16,6 +16,7 @@ class Section extends BaseModel
 
     protected $fillable = [
         C::COURSE_ID,
+        C::STUDENT_ID,
         C::INSTRUCTORS
     ];
 

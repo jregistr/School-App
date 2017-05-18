@@ -9,23 +9,21 @@ use App\Util\C;
 class ScheduleService
 {
 
+    private $courseSectionService;
+
+    /**
+     * ScheduleService constructor.
+     * @param $courseSectionService
+     */
+    public function __construct(CourseSectionService $courseSectionService)
+    {
+        $this->courseSectionService = $courseSectionService;
+    }
+
+
     public function getUserSchedules($studentId)
     {
-        $schedules = [];
-        $rawSchedules = Schedule::where(C::STUDENT_ID, $studentId)->get();
-
-        if ($rawSchedules != null) {
-            foreach ($rawSchedules as $rawSchedule) {
-                $meetings = $rawSchedule->courses();
-                if ($meetings != null & !empty($meetings)) {
-                    $rawSchedule->courses = $meetings;
-                } else {
-                    $rawSchedule->courses = [];
-                }
-                array_push($schedules, $rawSchedule);
-            }
-        }
-
+        $schedules = Schedule::where(C::STUDENT_ID, $studentId)->get();
         return $schedules;
     }
 
@@ -62,6 +60,16 @@ class ScheduleService
     {
         Schedule::destroy($scheduleId);
         return $this->getUserSchedules($studentId);
+    }
+
+    public function getScheduledCourses($studentId, $scheduleId)
+    {
+        $schedule = Schedule::find($scheduleId);
+        if ($schedule->student_id == $studentId) {
+            return $schedule->courses(array($this->courseSectionService, 'formatSection'));
+        } else {
+            return null;
+        }
     }
 
 }

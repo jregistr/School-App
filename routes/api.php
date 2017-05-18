@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,13 +30,18 @@ Route::post('/schedule', 'API\ScheduleController@updateSchedule');
 Route::delete('/schedule', 'API\ScheduleController@deleteSchedule');
 
 
-Route::get('/schedule/course', 'API\ScheduleController@getCourse');////todo Implement this endpoint
-Route::post('/schedule/course', 'API\ScheduleController@addCourse');
+Route::get('/schedule/course', 'API\ScheduleController@getScheduledCourses');////todo Implement this endpoint, working on it.
+
+Route::get('/schedule/generator', 'API\ScheduleGeneratorController@getGenerator'); ///todo
+Route::put('/schedule/generator', 'API\ScheduleGeneratorController@addToGenerator'); ///todo
+Route::delete('/schedule/generator', 'API\ScheduleGeneratorController@deleteOnGenerator'); ///todo
+Route::post('/schedule/generator/generate', 'API\ScheduleGeneratorController@generateSchedules');///todo
 
 
 Route::get('/course', 'API\CourseController@getCourses');
-Route::post('/course', 'API\CourseController@createCourse');////todo implement this endpoint
+Route::post('/course', 'API\CourseController@createCourse');
 
-Route::get('/course/section', 'API\CourseController@getSections'); ///todo implement
-Route::post('/course/section', 'API\CourseController@createSection'); ///todo implement
+Route::get('/course/section', 'API\CourseController@getSections');
+Route::post('/course/section', 'API\CourseController@createSection');
+
 

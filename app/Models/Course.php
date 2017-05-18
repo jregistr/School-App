@@ -10,6 +10,7 @@ use App\Util\C;
  * @property string name
  * @property integer crn
  * @property integer credits
+ * @property  integer student_id
  */
 class Course extends BaseModel
 {
@@ -20,7 +21,8 @@ class Course extends BaseModel
         C::NAME,
         C::CRN,
         C::CREDITS,
-        C::SCHOOL_ID
+        C::SCHOOL_ID,
+        C::STUDENT_ID
     ];
 
     public function school()

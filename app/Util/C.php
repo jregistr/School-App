@@ -55,4 +55,7 @@ class C
     const CITY = 'city';
     const INSTRUCTORS = 'instructors';
 
+    const ID = 'id';
+    const DAYS = 'days';
+
 }

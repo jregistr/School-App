@@ -29,7 +29,7 @@ class Schedule extends BaseModel
         return $this->belongsTo(User::class, C::STUDENT_ID);
     }
 
-    public function courses()
+    public function courses($formatSectionFunc)
     {
         $scheduleSections = DB::table('schedule_section')->where('schedule_id', $this->id)->get();
         $outer = [];
@@ -39,9 +39,9 @@ class Schedule extends BaseModel
             $meeting = MeetingTime::find($scheduleSection->meeting_time_id);
             $course = $section->course();
 
-            $section->meeting = $meeting;
-            $course->section = $section;
+            $formattedSection = $formatSectionFunc($section, [$meeting]);
 
+            $course->section = $formattedSection;
             array_push($outer, $course);
         }
         return $outer;

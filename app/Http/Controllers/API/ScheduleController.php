@@ -63,10 +63,18 @@ class ScheduleController extends Controller
         }
     }
 
-    public function addCourse(Request $request)
+    public function getScheduledCourses(Request $request)
     {
-        //$studentId, $subj, $number, $crn, $credits, $instructors, $location,
-        //$start, $end, $sunday, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday
+        $checks = $this->res->exist($request, [C::STUDENT_ID, C::SCHEDULE_ID]);
+        if ($checks[C::SUCCESS]) {
+            $data = $this->service->getScheduledCourses(
+                $request->input(C::STUDENT_ID),
+                $request->input(C::SCHEDULE_ID)
+            );
+            return $this->res->result(['courses' => $data != null ? $data : []]);
+        } else {
+            return $this->res->missingParameter($checks[C::NAME]);
+        }
     }
 
 }
