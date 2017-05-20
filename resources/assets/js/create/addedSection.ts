@@ -1,15 +1,15 @@
 import {Section} from "../data/interfaces";
-import {MeetingDaysRenderer} from "./meetdays";
+import {MeetingDaysComponent} from "./meetdays";
 
-export class AddedSectionRenderer {
+export class AddedSectionComponent {
 
     private selfObj: JQuery;
     private _section: Section;
-    private onDelete: (data: AddedSectionRenderer) => void;
+    private onDelete: (data: AddedSectionComponent) => void;
 
-    private meetDays: MeetingDaysRenderer;
+    private meetDays: MeetingDaysComponent;
 
-    constructor(section: Section, parent: JQuery | string, id: string, onDelete: (data: AddedSectionRenderer) => void) {
+    constructor(section: Section, parent: JQuery | string, id: string, onDelete: (data: AddedSectionComponent) => void) {
         this._section = section;
         this.onDelete = onDelete;
 
@@ -64,7 +64,7 @@ export class AddedSectionRenderer {
         const meetTr = $('<tr></tr>');
         tbody.append(meetTr);
 
-        this.meetDays = new MeetingDaysRenderer(false, meetTr, section.meetings[0].week);
+        this.meetDays = new MeetingDaysComponent(false, meetTr, section.meetings[0].week);
 
         title.append(removeBtn);
         heading.append(title);

@@ -3,7 +3,7 @@ import {Week} from "../data/interfaces";
 /**
  * Reusable component to render and
  */
-export class MeetingDaysRenderer {
+export class MeetingDaysComponent {
 
     private editable: boolean;
     private parent: JQuery;

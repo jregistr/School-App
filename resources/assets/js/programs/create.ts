@@ -1,8 +1,8 @@
-import {AddCourse} from '../create/addcourse';
+import {AddCourseComponent} from '../create/addcourse';
 
 $(document).ready(() => {
 
-    const addCourseForm = new AddCourse($('#add-class'), afterCourseSubmit, 1);
+    const addCourseForm = new AddCourseComponent($('#add-class'), afterCourseSubmit, 1);
 
     function afterCourseSubmit() {
 

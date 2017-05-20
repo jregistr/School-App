@@ -1,13 +1,13 @@
 import {Course, Meeting, Section} from "../data/interfaces";
 import * as moment from 'moment';
-import {MeetingDaysRenderer} from "./meetdays";
-import {AddedSectionRenderer} from "./addedSection";
+import {MeetingDaysComponent} from "./meetdays";
+import {AddedSectionComponent} from "./addedSection";
 import {clearInputs} from "../common/functions";
 
 /**
  * Re-usable add course form component.
  */
-export class AddCourse {
+export class AddCourseComponent {
 
     private postSubmit: (course: Course) => void;
     private courseForm: JQuery;
@@ -15,11 +15,11 @@ export class AddCourse {
     private sectionsParentEl: JQuery;
     private addSectionForm: JQuery;
     private addSectionBtnForm: JQuery;
-    private days: MeetingDaysRenderer;
+    private days: MeetingDaysComponent;
     private sectionLimit: number | null = null;
     private increment: number = 0;
 
-    private sections: AddedSectionRenderer[] = [];
+    private sections: AddedSectionComponent[] = [];
 
     /**
      * Add course re-usable component constructor.
@@ -34,23 +34,23 @@ export class AddCourse {
         }
 
         const parentEl = typeof (parent) == "string" ? $('#' + parent) : parent;
-        this.courseForm = AddCourse.createCourseForm();
+        this.courseForm = AddCourseComponent.createCourseForm();
 
         parentEl.append(this.courseForm);
         this.sectionsLabel = $(`<h3>Sections</h3>`);
         parentEl.append(this.sectionsLabel);
         this.sectionsParentEl = $('<div class="panel-group"></div>');
         parentEl.append(this.sectionsParentEl);
-        this.addSectionForm = AddCourse.createAddSectionForm();
+        this.addSectionForm = AddCourseComponent.createAddSectionForm();
         parentEl.append(this.addSectionForm);
 
         const daysParent = $('<div class="form-group row"></div>');
         this.addSectionForm.append(daysParent);
-        this.days = new MeetingDaysRenderer(true, daysParent);
+        this.days = new MeetingDaysComponent(true, daysParent);
 
-        this.addSectionBtnForm = AddCourse.createAddSectionBtnForm(this.addSectionBtnClicked.bind(this));
+        this.addSectionBtnForm = AddCourseComponent.createAddSectionBtnForm(this.addSectionBtnClicked.bind(this));
         parentEl.append(this.addSectionBtnForm);
-        parentEl.append(AddCourse.createSubmitCourseBtn(this.onSubmitCourse.bind(this),
+        parentEl.append(AddCourseComponent.createSubmitCourseBtn(this.onSubmitCourse.bind(this),
             this.onClearedAllClicked.bind(this)));
 
         this.addSectionFormState();
@@ -108,17 +108,17 @@ export class AddCourse {
                 ]
             };
 
-            this.sections.push(new AddedSectionRenderer(sec, this.sectionsParentEl, `section${++this.increment}`,
+            this.sections.push(new AddedSectionComponent(sec, this.sectionsParentEl, `section${++this.increment}`,
                 this.onDeleteSection.bind(this)));
 
             this.addSectionFormState();
             clearInputs([insInput, locInput, startInput, endInput]);
         } else {
-            AddCourse.renderMissingFields(form);
+            AddCourseComponent.renderMissingFields(form);
         }
     }
 
-    private onDeleteSection(deleted: AddedSectionRenderer): void {
+    private onDeleteSection(deleted: AddedSectionComponent): void {
         this.sections.splice(this.sections.indexOf(deleted), 1);
         this.addSectionFormState();
     }
@@ -241,7 +241,7 @@ export class AddCourse {
             };
             this.onClearedAllClicked();
         } else {
-            AddCourse.renderMissingFields(courseForm);
+            AddCourseComponent.renderMissingFields(courseForm);
         }
 
         return course;
