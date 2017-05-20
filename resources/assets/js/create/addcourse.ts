@@ -4,6 +4,9 @@ import {MeetingDaysRenderer} from "./meetdays";
 import {AddedSectionRenderer} from "./addedSection";
 import {clearInputs} from "../common/functions";
 
+/**
+ * Re-usable add course form component.
+ */
 export class AddCourse {
 
     private postSubmit: (course: Course) => void;
@@ -18,6 +21,12 @@ export class AddCourse {
 
     private sections: AddedSectionRenderer[] = [];
 
+    /**
+     * Add course re-usable component constructor.
+     * @param parent - The parent object to house the elements this class generates.
+     * @param postSubmit - Callback after a course has been successfully created.
+     * @param sectionLimit - The max allowed number of sections.
+     */
     constructor(parent: JQuery | string, postSubmit: (course: Course) => void, sectionLimit?: number) {
         this.postSubmit = postSubmit;
         if (sectionLimit != null) {
@@ -48,6 +57,9 @@ export class AddCourse {
 
     }
 
+    /**
+     * Determines render state for form elements.
+     */
     private addSectionFormState(): void {
         if (this.sectionLimit != null && this.sections.length >= this.sectionLimit) {
             this.addSectionForm.hide();
@@ -64,6 +76,9 @@ export class AddCourse {
         }
     }
 
+    /**
+     * Call back function for add section button.
+     */
     private addSectionBtnClicked(): void {
         const form = this.addSectionForm;
         const insInput = form.find('input[name="inst"]');
@@ -108,6 +123,9 @@ export class AddCourse {
         this.addSectionFormState();
     }
 
+    /**
+     * Callback function for submission. Queries the server to create a course and added sections.
+     */
     private onSubmitCourse(): void {
         const queryData = this.collectCourseData();
         if (queryData != null) {
@@ -132,6 +150,11 @@ export class AddCourse {
         }
     }
 
+    /**
+     * Queries the server to create sections for a course.
+     * @param sections - The sections to be sent to the server.
+     * @param course - The course.
+     */
     private sendSections(sections: Section[], course: Course) {
         const queries: JQueryXHR[] = [];
         sections.forEach(section => {
@@ -169,6 +192,9 @@ export class AddCourse {
         );
     }
 
+    /**
+     * Clears all the inputs and resets added sections.
+     */
     private onClearedAllClicked(): void {
         this.days.clear();
         this.courseForm.find('input').each((index, el) => {
@@ -184,6 +210,11 @@ export class AddCourse {
         this.addSectionFormState();
     }
 
+    /**
+     * Gathers data from the forms and returns a course object or null if required inputs are missing(a warning is
+     * rendered to the user).
+     * @returns {Course|null} - Course object containing the form data or null.
+     */
     private collectCourseData(): Course | null {
         let course: Course | null = null;
         const courseForm = this.courseForm;
@@ -203,7 +234,7 @@ export class AddCourse {
             course = {
                 id: 0,
                 school_id: 0,
-                name: subj.concat(courseNum),
+                name: `${subj} ${courseNum}`,
                 crn,
                 credits,
                 sections
