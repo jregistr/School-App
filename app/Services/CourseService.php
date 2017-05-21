@@ -24,11 +24,12 @@ class CourseService
         if ($user != null) {
             $courses = Course::where(C::STUDENT_ID, $studentId)
                 ->orWhere(C::STUDENT_ID, null)
-                ->where(C::SCHOOL_ID, $user->school_id)->get();
+                ->where(C::SCHOOL_ID, $user->school_id)->get()->shuffle();
 
             $subjs = [];
             foreach ($courses as $course) {
                 $name = $course->name;
+                $course->name = ucwords(strtolower($name));
                 $split = explode(" ", $name);
                 if (count($split) == 2) {
                     if (!in_array($split[0], $subjs)) {

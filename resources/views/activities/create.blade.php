@@ -3,6 +3,7 @@
 @section('stylesheets')
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" >
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="dist/css/create.css"/>
 @endsection
 
@@ -22,8 +23,7 @@
             </ul>
             <div class="tab-content">
                 <div id="courses" class="tab-pane fade in active">
-                    <h3>HOME</h3>
-                    <p>Some content.</p>
+
                 </div>
                 <div id="sections" class="tab-pane fade">
                     <h3>Menu 1</h3>

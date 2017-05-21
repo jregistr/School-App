@@ -61,9 +61,18 @@ export class AddCourseComponent {
      * Determines render state for form elements.
      */
     private addSectionFormState(): void {
-        if (this.sectionLimit != null && this.sections.length >= this.sectionLimit) {
-            this.addSectionForm.hide();
-            this.addSectionBtnForm.hide();
+        if (this.sectionLimit != null) {
+            if (this.sections.length >= this.sectionLimit) {
+                this.addSectionForm.hide();
+                this.addSectionBtnForm.hide();
+            } else {
+                this.addSectionForm.show();
+                if (this.sectionLimit == 1) {
+                    this.addSectionBtnForm.hide();
+                } else {
+                    this.addSectionBtnForm.show();
+                }
+            }
         } else {
             this.addSectionForm.show();
             this.addSectionBtnForm.show();
@@ -80,20 +89,35 @@ export class AddCourseComponent {
      * Call back function for add section button.
      */
     private addSectionBtnClicked(): void {
+        const data = this.gatherSectionData();
+        if (data.section != null) {
+            this.sections.push(new AddedSectionComponent(data.section, this.sectionsParentEl, `section${++this.increment}`,
+                this.onDeleteSection.bind(this)));
+            this.addSectionFormState();
+            clearInputs(data.inputs);
+        } else {
+            AddCourseComponent.renderMissingFields(this.addSectionForm);
+        }
+    }
+
+    private gatherSectionData(): { section: Section | null, inputs: JQuery[] } {
         const form = this.addSectionForm;
         const insInput = form.find('input[name="inst"]');
         const locInput = form.find('input[name="loc"]');
         const startInput = form.find('input[name="start"]');
         const endInput = form.find('input[name="end"]');
 
+        const inputs = [insInput, locInput, startInput, endInput];
+
         const ins = insInput.val() || 'Not specified';
         const loc = locInput.val() || 'Not specified';
         const start: string | null = startInput.val() || null;
         const end: string | null = endInput.val() || null;
+
         if (start != null && end != null) {
             const startTime = moment(start, ["h:mm A"]).format("HH:mm");
             const endTime = moment(end, ['h:mm A']).format('HH:mm');
-            const sec: Section = {
+            const section: Section = {
                 id: 0,
                 course_id: 0,
                 instructors: ins,
@@ -107,14 +131,9 @@ export class AddCourseComponent {
                     }
                 ]
             };
-
-            this.sections.push(new AddedSectionComponent(sec, this.sectionsParentEl, `section${++this.increment}`,
-                this.onDeleteSection.bind(this)));
-
-            this.addSectionFormState();
-            clearInputs([insInput, locInput, startInput, endInput]);
+            return {section, inputs};
         } else {
-            AddCourseComponent.renderMissingFields(form);
+            return {section: null, inputs}
         }
     }
 
@@ -228,18 +247,33 @@ export class AddCourseComponent {
         const courseNum = courseNumInput.val() || null;
         const crn = crnInput.val() || null;
         const credits = creditsInput.val() || null;
-        const sections: Section[] | null = this.sections.length >= 1 ? this.sections.map(r => r.section) : null;
 
-        if (subj != null && courseNum != null && crn != null && credits != null && sections != null) {
-            course = {
-                id: 0,
-                school_id: 0,
-                name: `${subj} ${courseNum}`,
-                crn,
-                credits,
-                sections
-            };
-            this.onClearedAllClicked();
+        let sections: Section[] | null = null;
+
+        if (this.sectionLimit == 1) {
+            const data = this.gatherSectionData();
+            if (data.section != null) {
+                sections = [data.section];
+                clearInputs(data.inputs);
+            }
+        } else {
+            sections = this.sections.length >= 1 ? this.sections.map(r => r.section) : null;
+        }
+
+        if (subj != null && courseNum != null && crn != null && credits != null) {
+            if (sections != null) {
+                course = {
+                    id: 0,
+                    school_id: 0,
+                    name: `${subj} ${courseNum}`,
+                    crn,
+                    credits,
+                    sections
+                };
+                this.onClearedAllClicked();
+            } else {
+                AddCourseComponent.renderMissingFields(this.addSectionForm);
+            }
         } else {
             AddCourseComponent.renderMissingFields(courseForm);
         }

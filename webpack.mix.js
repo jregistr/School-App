@@ -18,7 +18,7 @@ mix.webpackConfig({
 });
 
 mix.autoload({
-    jquery : ['$', 'window.jQuery', 'jQuery']
+    jquery : ['$', 'window.jQuery', 'jQuery', 'select2']
 });
 
 mix.js('resources/assets/js/common/common.js', 'public/dist/js/common.js');
@@ -37,5 +37,6 @@ mix.extract([
     'bootstrap-table',
     'fullcalendar',
     'moment',
-    'eonasdan-bootstrap-datetimepicker'
+    'eonasdan-bootstrap-datetimepicker',
+    'select2'
 ], 'public/dist/extract/common-vendors.js');
