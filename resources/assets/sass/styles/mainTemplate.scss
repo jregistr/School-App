@@ -58,7 +58,7 @@ body {
   width: 100%;
   height: auto;
 
-  .row {
+  > .row {
     margin-left: 0;
     margin-right: 0;
     padding-right: 5px;
@@ -197,7 +197,7 @@ body {
   padding-top: 10px;
 }
 
-@media screen and (max-width: $screen-xs + 1) {
+@media screen and (max-width: $screen-xs) {
 
   #main-icon, .side-icon {
     display: none;

@@ -1,24 +1,28 @@
 import {headers, student_id} from "../common/functions";
+import {Course} from "../data/interfaces";
+
 export class ViewCoursesComponent {
 
     private parent: JQuery;
     private table: JQuery;
-    private categories: String[];
+    private categories: string[];
+    private courses: Course[];
+    private subjectParent: JQuery;
 
-    constructor(parent: JQuery, toolbarId?: string) {
+    constructor(parent: JQuery) {
         this.parent = parent;
         this.table = ViewCoursesComponent.createTableElem();
 
-        const tid = toolbarId != null ? toolbarId : 'tableToolbar';
-        const toolbaar = ViewCoursesComponent.createToolbar(tid);
-
-        this.parent.append(toolbaar);
-        this.parent.append(this.table);
-
-        this.initTable(tid);
+        this.parent.append($(`<div></div>`).append(this.table));
+        this.initTable();
+        const toolbar = ViewCoursesComponent.createToolbar(this.table);
+        this.subjectParent = toolbar.find('div[class="pull-left form-horizontal"]');
+        this.parent.prepend(toolbar);
     }
 
-    private initTable(toolbarId: string): void {
+    private initTable(): void {
+        const self = this;
+
         function ajax(this: ViewCoursesComponent, params: any) {
             $.ajax({
                 headers,
@@ -29,9 +33,11 @@ export class ViewCoursesComponent {
                 }
             }).done(r => {
                 const data = r.data;
-                this.categories = data.subjects;
+                self.categories = data.subjects;
                 const courses = data.courses;
+                self.courses = courses;
                 params.success(courses);
+                self.renderSubjects();
             }).fail((xhr, status) => {
                 alert('Fail to load course data');
             });
@@ -41,13 +47,50 @@ export class ViewCoursesComponent {
             striped: true,
             pagination: true,
             pageSize: 20,
-            ajax,
-            toolbar: '#' + toolbarId,
-            showRefresh: true,
-            showToggle: true,
-            showColumns: true,
-            // search: true
+            ajax
         });
+    }
+
+    private renderSubjects(): void {
+        if (this.categories.length > 0) {
+            this.categories.sort((a, b) => {
+                return a.localeCompare(b);
+            });
+            const outer = $(`
+                <div class="form-group" style="margin-bottom: 0!important;">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-top: 5px">Subjects</label>
+                </div>
+            `);
+            const sel = $(`
+                <select class="form-control">
+                    <option value="-1">All Subjects</option>
+                </select>
+            `);
+
+            this.categories.forEach(category => {
+                sel.append($(`<option value="${category}">${category}</option>`));
+            });
+
+            sel.on('change', () => {
+                this.table.bootstrapTable('filterBy', {name : sel.val()});
+            });
+
+            outer.append($(`<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8"></div>`).append(sel));
+            this.subjectParent.empty();
+            this.subjectParent.append(outer);
+
+
+        }
+        // <div class="form-group" style="margin-bottom: 0!important;">
+        // <label class="col-xs-4" style="margin-top: 5px">Subjects</label>
+        // <div class="col-xs-8">
+        // <select class=" form-control">
+        //     <option>Hello</option>
+        //     <option>Hello 1</option>
+        // <option>Hello 2</option>
+        // </select>
+        // </div>
+        // </div>
     }
 
     private static createTableElem(): JQuery {
@@ -64,26 +107,83 @@ export class ViewCoursesComponent {
         `);
     }
 
-    private static createToolbar(id: String): JQuery {
-        const div = $(`<div class="toolbar-group" id="${id}"></div>`);
-        const fg = $(`
-            <div class="form-group">
-                <span><strong>Subjects</strong></span>
+    private static createToolbar(table: JQuery): JQuery {
+        const outer = $(`<div class=""><div class="" style="padding: 5px"></div></div>`);
+        const refreshBtn = $(`
+            <button type="button" class="btn btn-default" style=";">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+        `);
+
+        const listViewBtn = $(`
+            <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-list-alt"></span>
+            </button>
+        `);
+
+        outer.append(
+            $(`<div class="btn-group pull-right"></div>`)
+                .append(refreshBtn)
+                .append(listViewBtn)
+        );
+
+        const selOuter = $(`
+            <div class="pull-left form-horizontal">
+               
             </div>
         `);
-        const sel = $(`
-            <select class="toolbar-select" multiple="multiple">
-                 <option>Hello</option>
-                 <option>Hello 2</option>
-                 <option>Hello 3</option>
-            </select>
-        `);
-        fg.append(sel);
 
-        sel.select2();
+        listViewBtn.on('click', () => {
+            table.bootstrapTable('toggleView');
+        });
 
-        div.append(fg);
-        return div;
+        refreshBtn.on('click', () => {
+            table.bootstrapTable('refresh')
+        });
+
+        outer.append(selOuter);
+
+        return outer.append($(`<div class="row" style="padding: 5px;"></div>`));
     }
+
+    // private static addSelect(parent:JQuery):void {
+    //     parent.append($(`
+    //         <div class="pull-right search form-group">
+    //             <!--<label>Search</label>-->
+    //             <!--<input class="form-control" type="text" placeholder="Searchies">-->
+    //             <select class="form-control">
+    //                 <option>Hello</option>
+    //                 <option>Hello 2</option>
+    //                 <option>Hello 3</option>
+    //             </select>
+    //         </div>
+    //     `));
+    // }
+
+    /* private static createToolbar(id: String): JQuery {
+     return $(`
+     <div id="${id}">
+     <!--<label class="pull-right">Subjects</label>-->
+     </div>
+     `);
+     // const div = $(`<div class="toolbar-group" id="${id}"></div>`);
+     // const fg = $(`
+     //     <div class="form-group">
+     //         <span><strong>Subjects</strong></span>
+     //     </div>
+     // `);
+     // const sel = $(`
+     //     <select class="toolbar-select">
+     //          <option>Hello</option>
+     //          <option>Hello 2</option>
+     //          <option>Hello 3</option>
+     //     </select>
+     // `);
+     // fg.append(sel);
+     //
+     //
+     // div.append(fg);
+     // return div;
+     }*/
 
 }
