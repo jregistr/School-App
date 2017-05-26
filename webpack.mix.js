@@ -38,5 +38,4 @@ mix.extract([
     'fullcalendar',
     'moment',
     'eonasdan-bootstrap-datetimepicker',
-    'select2'
 ], 'public/dist/extract/common-vendors.js');
