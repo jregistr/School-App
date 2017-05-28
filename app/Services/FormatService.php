@@ -52,12 +52,24 @@ class FormatService
     /**
      * @param Course $course - Course to format.
      * @param Section $section - The selected section.
+     * @param $meeting - The selected meeting.
      * @return Course - The formatted scheduled course.
      */
-    public function formatScheduledCourse($course, $section)
+    public function formatScheduledCourseMeeting($course, $section, $meeting)
     {
-        $formatedSection = $this->formatSection($section);
+        $formatedSection = $this->formatSection($section, [$meeting]);
         $course['section'] = $formatedSection;
+        return $course;
+    }
+
+    /**
+     * @param $course
+     * @param $formattedSection
+     * @return Course - The formatted course object.
+     */
+    public function formatScheduleCourse($course, $formattedSection)
+    {
+        $course['section'] = $formattedSection;
         return $course;
     }
 

@@ -10,7 +10,6 @@ use App\Util\C;
  * @property integer generator_list_id
  * @property integer section_id
  * @property integer meeting_id
- * @property integer section_id
  */
 class GeneratorListEntry extends BaseModel
 {

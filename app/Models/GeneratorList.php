@@ -15,7 +15,6 @@ class GeneratorList extends BaseModel
 
     public $timestamps = false;
     protected $fillable = [
-        C::ID,
         C::STUDENT_ID
     ];
 
