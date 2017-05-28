@@ -7,12 +7,17 @@ class CreateProgram {
 
     private static _instance: CreateProgram;
 
-    private genListElement = $('#generate-candidates-list');
+    private genListTable = $('#generate-candidates');
     private coursesTab = $('a[href="#courses"]');
     private sectionsTab = $('a[href="#sections"]');
     private generateTab = $('a[href="#added"]');
+    private courseInfoModal: JQuery = $('#courseInfoModal');
 
-    private genList: { course: ScheduledCourse, required: boolean }[] = [];
+    private addNewBtn = $('#addNew');
+    private clearBtn = $('#clearAll');
+    private genBtn = $('#genSch');
+
+    private genList: { course: ScheduledCourse, element: JQuery }[] = [];
 
     private constructor() {
 
@@ -26,6 +31,40 @@ class CreateProgram {
     }
 
     init(): void {
+
+        this.clearBtn.on('click', () => {
+            this.genList.forEach((gen) => {
+                gen.element.remove();
+            });
+            this.genList = [];
+        });
+
+        const self = this;
+        this.addNewBtn.on('click', () => {
+            const title = this.courseInfoModal.find('h4[class="modal-title"]');
+            const mBody = this.courseInfoModal.find('div[class="modal-body"]');
+            mBody.empty();
+            title.empty();
+            title.append('Add new Course');
+            new AddCourseComponent(mBody, (course, sections) => {
+                if (sections.length > 0) {
+                    const scheduledCourse: ScheduledCourse = {
+                        id: course.id,
+                        name: course.name,
+                        crn: course.crn,
+                        credits: course.credits,
+                        school_id: course.school_id,
+                        section: sections[0]
+                    };
+                    self.courseInfoModal.modal('hide');
+                    CreateProgram.addToGenList(scheduledCourse, self.genListTable, self.genList);
+                } else {
+                    alert('No sections received');
+                }
+            }, 1);
+            this.courseInfoModal.modal('show');
+        });
+
         const m: Meeting = {
             id: 0,
             start: "10:20",
@@ -57,92 +96,78 @@ class CreateProgram {
             credits: 4,
             section: s
         };
-
-        this.addToGenList(c, 0);
-        this.addToGenList(c, 1);
+        CreateProgram.addToGenList(c, this.genListTable, this.genList);
+        CreateProgram.addToGenList(c, this.genListTable, this.genList);
     }
 
-    private addToGenList(course: ScheduledCourse, trCount: number): void {
-        const id = `addedGenItem${trCount}`;
-        const section = course.section;
-
-        const outer = $('<div class="panel panel-default" style="margin-bottom: 0; padding: 0;"></div>');
-        const remove = $(`
-                <button style="padding: 0" href="#" class="pull-right btn btn-danger">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>`);
-
-        const title = $(`
-            <a class="panel-title">
-                <span class="active" data-toggle="collapse" data-parent="#accordion" href="#${id}" >
-                    ${course.name} - ${section.instructors != null ? section.instructors : ''}
-                </span>
-            </a>
-        `).append(remove)
-            .append(`
-                <div class="pull-right" style="margin-right: 10px">
-                    <input style="" class="" type="checkbox" />
-                    <label class="" style="padding-right: 10px">
-                        Required
-                    </label>
-                </div>`);
-
-        const heading = $(`
-            <div class="panel-heading" style="padding: 2px 10px 0 10px"></div>
+    private static addToGenList(course: ScheduledCourse, table: JQuery, array: { course: ScheduledCourse, element: JQuery }[]): void {
+        const sec = course.section;
+        const a = $(`
+            <a href="#"><strong>${course.name} - ${sec.instructors != null ? sec.instructors : 'Section'}</strong></a>
         `);
 
-        const bodyOuter = $(`<div id="${id}" class="panel-collapse collapse"> </div>`),
-            body = $(`<div class="panel-body" style="padding: 0"></div>`),
-            table = $(`<table class="table table-condensed" style="margin-bottom: 0"></table>`),
-            tbody = $(`<tbody></tbody>`);
+        const required = $(`<input type="checkbox" checked>`);
+        const del = $(`<a class="" href="#"><span class="glyphicon glyphicon-remove"></span></a>`);
+        const tr = $('<tr></tr>');
 
-        tbody.append($(`
-            <tr>
-                <td>Instructors</td>
-                <td>${section.instructors}</td>
-            </tr>
-            <tr>
-                <td>Location</td>
-                <td>${section.meetings[0].location}</td>
-            </tr>
-            <tr>
-                <td>Start</td>
-                <td>${section.meetings[0].start}</td>
-            </tr>
-            <tr>
-                <td>End</td>
-                <td>${section.meetings[0].end}</td>
-            </tr>
-        `));
-
-        const meetTr = $('<tr></tr>');
-        tbody.append(meetTr);
-
-        new MeetingDaysComponent(false, meetTr, section.meetings[0].week);
-
-        heading.append(title);
-        outer.append(heading);
-
-        table.append(tbody);
-        body.append(table);
-        bodyOuter.append(body);
-        outer.append(bodyOuter);
-
-        const self = this;
-        remove.on('click', () => {
-            console.log('HELLO');
-            outer.remove();
-            const index = self.genList.findIndex(e => e.course == course);
-            self.genList.splice(index, 1);
+        del.on('click', e => {
+            e.preventDefault();
+            const index = array.findIndex(v => v.course == course);
+            const item = array[index];
+            item.element.remove();
+            array.splice(index, 1);
         });
 
-        this.genListElement.append(outer);
+        a.on('click', e => {
+            e.preventDefault();
+            const modal = $('#courseInfoModal');
+            const mBody = modal.find('div[class="modal-body"]');
+            mBody.empty();
+            const table = $('<table class="table table-condensed"></table>');
+            const tbody = $('<tbody></tbody>');
+            table.append(tbody);
+            mBody.append(table);
+
+            tbody.append($(`
+                <tr>
+                    <td>Instructors</td>
+                    <td>${sec.instructors != null ? sec.instructors : 'Not specified'}</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>${sec.meetings[0].location != null ? sec.meetings[0].location : 'Not specified'}</td>
+                </tr>
+                <tr>
+                    <td>Start</td>
+                    <td>${sec.meetings[0].start}</td>
+                </tr>
+                <tr>
+                    <td>End</td>
+                    <td>${sec.meetings[0].end}</td>
+                </tr>
+            `));
+            const tr = $('<tr></tr>');
+            new MeetingDaysComponent(false, tr, sec.meetings[0].week);
+            tbody.append(tr);
+
+            const title = modal.find('h4[class="modal-title"]');
+            title.empty();
+            title.append($(`<strong>Course: ${course.name}, credits: ${course.credits}</strong>`));
+            modal.modal('show');
+        });
+
+        table.find('tbody').append(
+            tr.append($('<td></td>').append(a))
+                .append($('<td></td>').append(required))
+                .append($('<td></td>').append(del))
+        );
+        array.push({course, element: tr});
     }
+
 
 }
 
 $(document).ready(() => {
-
     CreateProgram.instance.init();
 
 

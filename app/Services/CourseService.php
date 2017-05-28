@@ -13,6 +13,16 @@ use App\Util\C;
  */
 class CourseService
 {
+    private $formatService;
+
+    /**
+     * CourseService constructor.
+     * @param FormatService $formatService
+     */
+    public function __construct(FormatService $formatService)
+    {
+        $this->formatService = $formatService;
+    }
 
     /**
      * @param $studentId - The id of the student to get course information for.

@@ -13,31 +13,32 @@
 
 
 @section('content')
-    <div class="row pad hidden-sm hidden-xs"></div>
-{{--    <div class="row">
-        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-            <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#courses"><strong>View Courses</strong></a></li>
-                <li><a data-toggle="tab" href="#sections"><strong>View Course Sections</strong></a></li>
-                <li><a data-toggle="tab" href="#added"><strong>Generate</strong></a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="courses" class="tab-pane fade in active">
+
+    <!-- Button trigger modal -->
+    {{--<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">--}}
+        {{--Launch demo modal--}}
+    {{--</button>--}}
+    <!-- Modal -->
+    <div class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
 
                 </div>
-                <div id="sections" class="tab-pane fade">
-                    <h3>Menu 1</h3>
-                    <p>Some content in menu 1.</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
-                <div id="added" class="tab-pane fade">
-                    <h3>Menu 2</h3>
-                    <p>Some content in menu 2.</p>
-                </div>
-            </div>
-            <div class="panel-footer">
-
             </div>
         </div>
+    </div>
+
+    <div class="row pad hidden-sm hidden-xs"></div>
+{{--    <div class="row">
+
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <h3>Add a course/activity</h3>
             <div id="add-class">
@@ -48,39 +49,51 @@
 
     {{--<h3>Add a course/activity</h3>--}}
     <div class="row generate-form">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 generate-list-box" style="padding-top: 10px">
-            {{--<table id="generate-candidates" class="table borderless">--}}
-                {{--<thead>--}}
-                    {{--<tr>--}}
-                        {{--<th class="col-lg-8 col-md-8 col-sm-8 col-xs-8">Section</th>--}}
-                        {{--<th class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Required</th>--}}
-                        {{--<th class="col-lg-3 col-md-3 col-sm-3 col-xs-3"></th>--}}
-                    {{--</tr>--}}
-                {{--</thead>--}}
-                {{--<tbody>--}}
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 ">
+            <table id="generate-candidates" class="table borderless">
+                <thead>
+                <tr>
+                    <th class="col-lg-8 col-md-8 col-sm-8 col-xs-8">Section</th>
+                    <th class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Required</th>
+                    <th class="col-lg-3 col-md-3 col-sm-3 col-xs-3"></th>
+                </tr>
+                </thead>
+                <tbody>
 
-                {{--</tbody>--}}
-            {{--</table>--}}
-            <div id="generate-candidates-list" role="tablist" class="panel-group" aria-multiselectable="true">
-
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12" style="margin-top: 10px!important;">
+            <div class="generate-form-small-controll-btn">
+                <button id="addNew" type="button" class="btn btn-default col-sm-4 col-xs-4">Add new</button>
+                <button id="clearAll" type="button" class="btn btn-default col-sm-2 col-xs-2">Clear</button>
+                <button id="genSch" type="button" class="btn btn-default col-sm-6 col-xs-6">Generate</button>
             </div>
         </div>
-        <div class="col-lg-2 col-md-2 hidden-sm hidden-xs">
-            {{--<div>--}}
-                {{--<div class="form-group generate-form-lg-control-btn">--}}
-                    {{--<button id="add1" class="btn btn-success form-control">Add new</button>--}}
-                    {{--<button id="clear1" class="btn btn-danger form-control">Clear All</button>--}}
-                    {{--<button id="gen1" class="btn btn-primary form-control">Generate</button>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        </div>
-        <div class="" style="margin-top: 10px!important;">
-            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <div class="generate-form-small-controll-btn">
-                    <button id="add2" type="button" class="btn btn-default col-sm-4 col-xs-4">Add new</button>
-                    <button id="clear2" type="button" class="btn btn-default col-sm-2 col-xs-2">Clear</button>
-                    <button id="gen2" type="button" class="btn btn-default col-sm-6 col-xs-6">Generate</button>
+    </div>
+
+    <div class="row" style="margin-top: 20px">
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+            <ul class="nav nav-tabs">
+                <li ><a data-toggle="tab" href="#courses"><strong>Courses</strong></a></li>
+                <li><a data-toggle="tab" href="#sections"><strong>Sections</strong></a></li>
+                <li class="active"><a data-toggle="tab" href="#added"><strong>Generated Schedules</strong></a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="courses" class="tab-pane fade active">
+
                 </div>
+                <div id="sections" class="tab-pane fade">
+                    <h3>Menu 1</h3>
+                    <p>Some content in menu 1.</p>
+                </div>
+                <div id="added" class="tab-pane in fade active">
+                    <h3>Menu 2</h3>
+                    <p>Some content in menu 2.</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+
             </div>
         </div>
     </div>

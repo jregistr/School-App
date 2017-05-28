@@ -16,52 +16,17 @@ use Illuminate\Support\Facades\DB;
 class CourseSectionService
 {
     private $courseService;
+    private $formatService;
 
     /**
      * CourseSectionService constructor.
-     * @param $courseService - Course service.
+     * @param CourseService $courseService - Course service.
+     * @param FormatService $formatService
      */
-    public function __construct(CourseService $courseService)
+    public function __construct(CourseService $courseService, FormatService $formatService)
     {
         $this->courseService = $courseService;
-    }
-
-    /**
-     * @param Section $section - The section to make formatted data with.
-     * @param MeetingTime[] $meetings - (optional) - The meetings for the section.
-     * @return Section - A section with it's meetings formatted.
-     */
-    public function formatSection($section, $meetings = null)
-    {
-        if ($meetings == null) {
-            $meetings = $section->meetings()->get();
-        }
-
-        $formattedMeets = [];
-        foreach ($meetings as $meeting) {
-            $temp = [];
-            $week = [];
-
-            $temp[C::ID] = $meeting->id;
-            $temp[C::START] = $meeting->start;
-            $temp[C::END] = $meeting->end;
-            $temp[C::LOCATION] = $meeting->location;
-
-            $week[C::SUNDAY] = $meeting->sunday;
-            $week[C::MONDAY] = $meeting->monday;
-            $week[C::TUESDAY] = $meeting->tuesday;
-            $week[C::WEDNESDAY] = $meeting->wednesday;
-            $week[C::THURSDAY] = $meeting->thursday;
-            $week[C::FRIDAY] = $meeting->friday;
-            $week[C::SATURDAY] = $meeting->saturday;
-
-            $temp['week'] = $week;
-            array_push($formattedMeets, $temp);
-        }
-
-        $section['meetings'] = $formattedMeets;
-
-        return $section;
+        $this->formatService = $formatService;
     }
 
     /**
@@ -83,7 +48,7 @@ class CourseSectionService
             $formatted = [];
             error_log(count($sections));
             foreach ($sections as $section) {
-                $f = $this->formatSection($section);
+                $f = $this->formatService->formatSection($section);
                 array_push($formatted, $f);
             }
             return $formatted;
@@ -127,7 +92,7 @@ class CourseSectionService
                 [C::SECTION_ID => $section->id, 'meeting_time_id' => $meeting->id, C::STUDENT_ID => $studentId]
             );
 
-            return $this->formatSection($section, [$meeting]);
+            return $this->formatService->formatSection($section, [$meeting]);
         } else {
             return null;
         }

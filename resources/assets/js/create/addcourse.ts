@@ -9,7 +9,7 @@ import {clearInputs} from "../common/functions";
  */
 export class AddCourseComponent {
 
-    private postSubmit: (course: Course) => void;
+    private postSubmit: (course: Course, sections: Section[]) => void;
     private courseForm: JQuery;
     private sectionsLabel: JQuery;
     private sectionsParentEl: JQuery;
@@ -27,7 +27,8 @@ export class AddCourseComponent {
      * @param postSubmit - Callback after a course has been successfully created.
      * @param sectionLimit - The max allowed number of sections.
      */
-    constructor(parent: JQuery | string, postSubmit: (course: Course) => void, sectionLimit?: number) {
+    constructor(parent: JQuery | string, postSubmit: (course: Course, sections: Section[]) => void,
+                sectionLimit?: number) {
         this.postSubmit = postSubmit;
         if (sectionLimit != null) {
             this.sectionLimit = sectionLimit;
@@ -176,6 +177,8 @@ export class AddCourseComponent {
      */
     private sendSections(sections: Section[], course: Course) {
         const queries: JQueryXHR[] = [];
+        const addedSections: Section[] = [];
+        const self = this;
         sections.forEach(section => {
             const meeting: Meeting = section.meetings[0];
             const week = meeting.week;
@@ -195,20 +198,53 @@ export class AddCourseComponent {
                         end: meeting.end,
                         days: `${week.sunday}, ${week.monday}, ${week.tuesday}, ${week.wednesday}, ${week.thursday},
                             ${week.friday}, ${week.saturday}`
+                    },
+                    success(resp) {
+                        addedSections.push(resp.data.section);
                     }
                 })
             );
         });
 
-        $.when(queries).then(
-            () => {
-                this.postSubmit(course);
-            },
-            (xhr, status) => {
-                alert(status);
-                alert(xhr.responseText);
-            }
-        );
+        $.when.apply($, queries).done(() => {
+            self.postSubmit(course, addedSections);
+        });
+
+        // $.when(queries).done((f) => {
+        //     if (f != null) {
+        //         f[0].done((t,v,w) => {
+        //             console.log(t);
+        //             console.log(v);
+        //             console.log(w);
+        //         });
+        //     } else {
+        //         console.log('it was null');
+        //     }
+        // });
+
+        // $.when(queries).then((data: any[], datas: any[], jxhr) => {
+        //         console.log(jxhr);
+        //         // console.log(data.responseText);
+        //         // this.postSubmit(course);
+        //         const sections: Section[] = [];
+        //         if (data != null) {
+        //             data.forEach(val => {
+        //                 console.log(val);
+        //                 // console.log(val.getJSON());
+        //                 console.log(Object.keys(val));
+        //                 const respTex = JSON.parse(val.responseText);
+        //                 const innerData = respTex.data;
+        //                 const section: Section = innerData.section;
+        //                 sections.push(section);
+        //             });
+        //         }
+        //         this.postSubmit(course, sections);
+        //     },
+        //     (xhr, status) => {
+        //         alert(status);
+        //         alert(xhr.responseText);
+        //     }
+        // );
     }
 
     /**

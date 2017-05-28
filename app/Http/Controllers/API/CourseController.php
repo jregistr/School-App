@@ -89,7 +89,7 @@ class CourseController extends Controller
                 $request->input(C::END),
                 $request->input(C::DAYS)
             );
-            return $this->res->result(['sections' => $section != null ? $section : []]);
+            return $this->res->result(['section' => $section != null ? $section : []]);
         } else {
             return $this->res->missingParameter($check[C::NAME]);
         }
