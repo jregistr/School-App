@@ -10,10 +10,12 @@ export class ViewCoursesComponent implements Component {
     private categories: string[];
     private courses: Course[];
     private searchMenu: SearchDropdownComponent;
+    private onRowClicked: (course: Course) => void;
 
-    constructor(parent: JQuery, toolbarId: string = 'tableToolbar') {
+    constructor(parent: JQuery, onRowClicked: (course: Course) => void, toolbarId: string = 'tableToolbar') {
         this.parent = parent;
         this.table = ViewCoursesComponent.createTableElem();
+        this.onRowClicked = onRowClicked;
 
         this.parent.append($(`<div></div>`).append(this.table));
         const tb = ViewCoursesComponent.createToolbar(toolbarId);
@@ -22,8 +24,6 @@ export class ViewCoursesComponent implements Component {
         this.searchMenu = new SearchDropdownComponent(tb, this.onSubjectSelect.bind(this),
             [], 'All subjects');
         this.loadData();
-
-        const self = this;
     }
 
     render(): void {
@@ -34,7 +34,7 @@ export class ViewCoursesComponent implements Component {
         this.parent.show();
     }
 
-    private loadData():void {
+    private loadData(): void {
         const self = this;
         self.table.bootstrapTable('showLoading');
         $.ajax({
@@ -73,8 +73,17 @@ export class ViewCoursesComponent implements Component {
             showRefresh: true,
             showToggle: true,
             showColumns: true,
-            onRefresh:function () {
+            onRefresh: function () {
                 self.loadData();
+            },
+            rowStyle: () => {
+                return {
+                    classes: '',
+                    css: {"cursor": "pointer"}
+                }
+            },
+            onClickRow: (row: Course) => {
+                self.onRowClicked(row);
             }
         });
     }
