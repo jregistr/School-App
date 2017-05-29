@@ -24,29 +24,42 @@ class FormatService
 
         $formattedMeets = [];
         foreach ($meetings as $meeting) {
-            $temp = [];
-            $week = [];
-
-            $temp[C::ID] = $meeting->id;
-            $temp[C::START] = $meeting->start;
-            $temp[C::END] = $meeting->end;
-            $temp[C::LOCATION] = $meeting->location;
-
-            $week[C::SUNDAY] = $meeting->sunday;
-            $week[C::MONDAY] = $meeting->monday;
-            $week[C::TUESDAY] = $meeting->tuesday;
-            $week[C::WEDNESDAY] = $meeting->wednesday;
-            $week[C::THURSDAY] = $meeting->thursday;
-            $week[C::FRIDAY] = $meeting->friday;
-            $week[C::SATURDAY] = $meeting->saturday;
-
-            $temp['week'] = $week;
-            array_push($formattedMeets, $temp);
+            $formattedMeet = $this->formatMeeting($meeting);
+            array_push($formattedMeets, $formattedMeet);
         }
 
         $section['meetings'] = $formattedMeets;
 
         return $section;
+    }
+
+    public function formatScheduledSection($section, $meeting)
+    {
+        $formattedMeeting = $this->formatMeeting($meeting);
+        $section['meeting'] = $formattedMeeting;
+        return $section;
+    }
+
+    public function formatMeeting($meeting)
+    {
+        $temp = [];
+        $week = [];
+
+        $temp[C::ID] = $meeting->id;
+        $temp[C::START] = $meeting->start;
+        $temp[C::END] = $meeting->end;
+        $temp[C::LOCATION] = $meeting->location;
+
+        $week[C::SUNDAY] = $meeting->sunday;
+        $week[C::MONDAY] = $meeting->monday;
+        $week[C::TUESDAY] = $meeting->tuesday;
+        $week[C::WEDNESDAY] = $meeting->wednesday;
+        $week[C::THURSDAY] = $meeting->thursday;
+        $week[C::FRIDAY] = $meeting->friday;
+        $week[C::SATURDAY] = $meeting->saturday;
+
+        $temp['week'] = $week;
+        return $temp;
     }
 
     /**
@@ -57,7 +70,7 @@ class FormatService
      */
     public function formatScheduledCourseMeeting($course, $section, $meeting)
     {
-        $formatedSection = $this->formatSection($section, [$meeting]);
+        $formatedSection = $this->formatScheduledSection($section, $meeting);
         $course['section'] = $formatedSection;
         return $course;
     }

@@ -30,7 +30,7 @@ class ScheduleGeneratorService
             $generator = GeneratorList::where(C::STUDENT_ID, $studentId)->first();
             if ($generator == null) {
                 $generator = GeneratorList::create([C::STUDENT_ID => $studentId]);
-                $generator['courses'] = [];
+                $generator['entries'] = [];
             }
             return $generator;
         } else {
@@ -46,18 +46,21 @@ class ScheduleGeneratorService
     {
         $generator = $this->getGenerator($studentId);
         if ($generator != null) {
-            $courses = [];
+            $formattedEntries = [];
             $entries = GeneratorListEntry::where(C::GENERATOR_LIST_ID, $generator->id)->get();
             foreach ($entries as $entry) {
                 $section = $entry->section();
                 $meeting = $entry->meeting();
                 $course = $section->course();
 
-                $formatted = $this->formatService->formatScheduledCourseMeeting($course, $section, $meeting);
-                array_push($courses, $formatted);
+                $formattedEntry = [C::REQUIRED => $entry->required];
+                $formattedCourse = $this->formatService->formatScheduledCourseMeeting($course, $section, $meeting);
+
+                $formattedEntry['course'] = $formattedCourse;
+                array_push($formattedEntries, $formattedEntry);
             }
 
-            $generator['courses'] = $courses;
+            $generator['entries'] = $formattedEntries;
 
             return $generator;
         } else {
@@ -81,7 +84,8 @@ class ScheduleGeneratorService
             GeneratorListEntry::create([
                 C::GENERATOR_LIST_ID => ($gen->id),
                 C::SECTION_ID => $sectionId,
-                C::MEETING_ID => $meetingId
+                C::MEETING_ID => $meetingId,
+                C::REQUIRED => false
             ]);
             return $this->getGeneratorWithCourses($studentId);
         } else {
@@ -118,6 +122,28 @@ class ScheduleGeneratorService
     {
         $status = GeneratorList::where(C::STUDENT_ID, $studentId)->delete();
         return $status > 0;
+    }
+
+    /**
+     * @param $studentId - The id of the student.
+     * @param $sectionId - The section id to identify the row.
+     * @param $meetingId - The meeting id to identify the row.
+     * @param $required - The update value.
+     * @return bool - True if data was updated.
+     */
+    public function updateRequiredValue($studentId, $sectionId, $meetingId, $required)
+    {
+        $gen = $this->getGenerator($studentId);
+        if ($gen != null) {
+            $status = GeneratorListEntry::where([
+                [C::GENERATOR_LIST_ID, '=', $gen->id],
+                [C::SECTION_ID, '=', $sectionId],
+                [C::MEETING_ID, '=', $meetingId]
+            ])->update([C::REQUIRED => $required]);
+            return $status > 0;
+        } else {
+            return false;
+        }
     }
 
 }

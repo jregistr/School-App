@@ -74,4 +74,19 @@ class ScheduleGeneratorController
         }
     }
 
+    public function modifyGeneratorEntry(Request $request)
+    {
+        $checks = $this->res->exist($request, [C::SECTION_ID, C::MEETING_ID]);
+        if ($checks[C::SUCCESS]) {
+            $studentId = Auth::id();
+            $sectionId = $request->input(C::SECTION_ID);
+            $meetingId = $request->input(C::MEETING_ID);
+            $requiredValue = $request->input(C::REQUIRED);
+            $this->genService->updateRequiredValue($studentId, $sectionId, $meetingId, $requiredValue);
+            return $this->res->result(['generator' => $this->genService->getGeneratorWithCourses($studentId)]);
+        } else {
+            return $this->res->missingParameter($checks[C::NAME]);
+        }
+    }
+
 }

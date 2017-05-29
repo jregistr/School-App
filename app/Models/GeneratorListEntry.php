@@ -10,6 +10,7 @@ use App\Util\C;
  * @property integer generator_list_id
  * @property integer section_id
  * @property integer meeting_id
+ * @property boolean required
  */
 class GeneratorListEntry extends BaseModel
 {
@@ -17,7 +18,8 @@ class GeneratorListEntry extends BaseModel
     protected $fillable = [
         C::GENERATOR_LIST_ID,
         C::SECTION_ID,
-        C::MEETING_ID
+        C::MEETING_ID,
+        C::REQUIRED
     ];
 
     public function section()

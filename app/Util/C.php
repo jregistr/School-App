@@ -59,5 +59,6 @@ class C
 
     const ID = 'id';
     const DAYS = 'days';
+    const REQUIRED = 'required';
 
 }

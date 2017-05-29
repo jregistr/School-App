@@ -33,7 +33,9 @@ Route::get('/schedule/course', 'API\ScheduleController@getScheduledCourses');
 
 Route::get('/schedule/generator', 'API\ScheduleGeneratorController@getGenerator');
 Route::put('/schedule/generator', 'API\ScheduleGeneratorController@addToGenerator');
-Route::delete('/schedule/generator', 'API\ScheduleGeneratorController@deleteOnGenerator'); ///todo - working on it
+Route::post('/schedule/generator', 'API\ScheduleGeneratorController@modifyGeneratorEntry');
+Route::delete('/schedule/generator', 'API\ScheduleGeneratorController@deleteOnGenerator');
+
 Route::post('/schedule/generator/generate', 'API\ScheduleGeneratorController@generateSchedules');///todo
 
 Route::get('/course', 'API\CourseController@getCourses');

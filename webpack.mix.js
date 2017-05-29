@@ -31,6 +31,8 @@ glob.sync('./resources/assets/sass/styles/*.{scss,sass}').forEach(function (fn) 
 mix.js('./resources/assets/js/programs/schedule.ts', 'public/dist/js/schedule.js');
 mix.js('./resources/assets/js/programs/create.ts', 'public/dist/js/create.js');
 
+mix.sourceMaps();
+
 mix.extract([
     'jquery',
     'bootstrap-sass',

@@ -3,7 +3,7 @@ export interface Schedule {
     student_id: number;
     selected: number;
     name: string;
-    scheduledCourses:ScheduledCourse[];
+    scheduledCourses: ScheduledCourse[];
 }
 
 interface _course {
@@ -15,18 +15,25 @@ interface _course {
 }
 
 export interface Course extends _course {
-    sections:Section[];
+    sections: Section[];
 }
 
 export interface ScheduledCourse extends _course {
-    section:Section;
+    section: ScheduledSection;
 }
 
-export interface Section {
+interface _section {
     id: number;
     course_id: number;
     instructors: string;
+}
+
+export interface Section extends _section {
     meetings: Meeting[];
+}
+
+export interface ScheduledSection extends _section {
+    meeting: Meeting
 }
 
 export interface Meeting {
@@ -34,7 +41,7 @@ export interface Meeting {
     start: string;
     end: string;
     location: string;
-    week:Week;
+    week: Week;
 }
 
 export interface Week {
@@ -45,6 +52,17 @@ export interface Week {
     thursday: number;
     friday: number;
     saturday: number;
+}
+
+export interface GeneratorList {
+    id: number,
+    student_id: number,
+    entries: GeneratorEntry[]
+}
+
+export interface GeneratorEntry {
+    required: boolean,
+    course: ScheduledCourse
 }
 
 

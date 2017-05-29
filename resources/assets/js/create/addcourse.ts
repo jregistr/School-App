@@ -209,42 +209,6 @@ export class AddCourseComponent {
         $.when.apply($, queries).done(() => {
             self.postSubmit(course, addedSections);
         });
-
-        // $.when(queries).done((f) => {
-        //     if (f != null) {
-        //         f[0].done((t,v,w) => {
-        //             console.log(t);
-        //             console.log(v);
-        //             console.log(w);
-        //         });
-        //     } else {
-        //         console.log('it was null');
-        //     }
-        // });
-
-        // $.when(queries).then((data: any[], datas: any[], jxhr) => {
-        //         console.log(jxhr);
-        //         // console.log(data.responseText);
-        //         // this.postSubmit(course);
-        //         const sections: Section[] = [];
-        //         if (data != null) {
-        //             data.forEach(val => {
-        //                 console.log(val);
-        //                 // console.log(val.getJSON());
-        //                 console.log(Object.keys(val));
-        //                 const respTex = JSON.parse(val.responseText);
-        //                 const innerData = respTex.data;
-        //                 const section: Section = innerData.section;
-        //                 sections.push(section);
-        //             });
-        //         }
-        //         this.postSubmit(course, sections);
-        //     },
-        //     (xhr, status) => {
-        //         alert(status);
-        //         alert(xhr.responseText);
-        //     }
-        // );
     }
 
     /**
