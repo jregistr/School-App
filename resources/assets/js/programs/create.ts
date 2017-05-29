@@ -26,7 +26,11 @@ class CreateProgram {
 
     init(): void {
         this.generatorList = new GeneratorListComponent($('#generate-candidates'),
-            $('#addNew'), $('#clearAll'), $('#genSch'), $('#courseInfoModal'));
+            $('#addNew'), $('#clearAll'), $('#genSch'), $('#courseInfoModal'), this.onGenerateClicked.bind(this));
+    }
+
+    private onGenerateClicked(): void {
+        alert('Not yet implemented');
     }
 
 }

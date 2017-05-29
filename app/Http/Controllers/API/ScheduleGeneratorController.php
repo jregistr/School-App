@@ -47,6 +47,7 @@ class ScheduleGeneratorController
     public function addToGenerator(Request $request)
     {
         $checks = $this->res->exist($request, [C::SECTION_ID, C::MEETING_ID]);
+
         if ($checks[C::SUCCESS]) {
             $studentId = Auth::id();
             $sectionId = $request->input(C::SECTION_ID);

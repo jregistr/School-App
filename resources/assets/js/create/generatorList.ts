@@ -1,25 +1,26 @@
 import {AddCourseComponent} from './addcourse';
-import {Course, GeneratorEntry, GeneratorList, Meeting, ScheduledCourse, Section} from "../data/interfaces";
+import {GeneratorEntry, GeneratorList, Meeting, ScheduledCourse, Section} from "../data/interfaces";
 import {MeetingDaysComponent} from "./meetdays";
+import {headers} from "../common/functions";
+import * as moment from 'moment';
 
 export class GeneratorListComponent {
 
     private genListTable: JQuery;
     private addNewBtn: JQuery;
     private clearBtn: JQuery;
-    private genBtn: JQuery;
     private courseInfoModal: JQuery;
 
-
-    constructor(genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery, genBtn: JQuery, courseInfoModal: JQuery) {
+    constructor(genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery, genBtn: JQuery, courseInfoModal: JQuery,
+                onGenerateClicked: () => void) {
         this.genListTable = genListTable;
         this.addNewBtn = addNewBtn;
         this.clearBtn = clearBtn;
-        this.genBtn = genBtn;
         this.courseInfoModal = courseInfoModal;
 
         this.clearBtn.on('click', this.clearBtnClicked.bind(this));
         this.addNewBtn.on('click', this.showAddCourseToGeneratorForm.bind(this));
+        genBtn.on('click', onGenerateClicked);
 
         const self = this;
         GeneratorListComponent.getGeneratorList((list: GeneratorList) => {
@@ -62,18 +63,46 @@ export class GeneratorListComponent {
     }
 
     private clearBtnClicked(): void {
-
-    }
-
-    private addToGeneratorList(course: ScheduledCourse): void {
         const self = this;
         $.ajax({
             url: '/api/schedule/generator',
-            method: 'put',
-            data: {
-                section_id: course.section.id,
-                meeting_id: course.section.meeting.id
+            headers,
+            method: 'DELETE',
+            success() {
+                GeneratorListComponent.getGeneratorList((list: GeneratorList) => {
+                    self.renderGenerator(list);
+                });
             },
+            error(xhr, status) {
+                alert('There was an error. Status:' + status);
+            }
+        });
+    }
+
+    private addToGeneratorList(course: ScheduledCourse): void {
+        this.updateQuery('PUT', course);
+    }
+
+    private updateGeneratorEntry(course: ScheduledCourse, checked: boolean): void {
+        this.updateQuery('POST', course, {
+            section_id: course.section.id,
+            meeting_id: course.section.meeting.id,
+            required: checked ? 1 : 0
+        });
+    }
+
+    private deleteGeneratorEntry(course: ScheduledCourse): void {
+        this.updateQuery('DELETE', course);
+    }
+
+    private updateQuery(method: string, course: ScheduledCourse,
+                        data: any = {section_id: course.section.id, meeting_id: course.section.meeting.id}): void {
+        const self = this;
+        $.ajax({
+            url: '/api/schedule/generator',
+            method: method,
+            headers,
+            data,
             success(response) {
                 const generatorObj = response.data.generator;
                 self.renderGenerator(generatorObj);
@@ -82,14 +111,6 @@ export class GeneratorListComponent {
                 alert('There was an error.')
             }
         })
-    }
-
-    private updateGeneratorEntry(course: ScheduledCourse): void {
-
-    }
-
-    private deleteGeneratorEntry(course: ScheduledCourse): void {
-
     }
 
     private renderGenerator(generatorListObj: GeneratorList): void {
@@ -111,7 +132,7 @@ export class GeneratorListComponent {
         const table = this.genListTable;
         const course = entry.course;
         const sec = course.section;
-        const meeting:Meeting = sec.meeting;
+        const meeting: Meeting = sec.meeting;
         const self = this;
         const a = $(`
             <a href="#"><strong>${course.name} - ${sec.instructors != null ? sec.instructors : 'Section'}</strong></a>
@@ -127,7 +148,7 @@ export class GeneratorListComponent {
         });
 
         required.on('click', () => {
-            self.updateGeneratorEntry(course);
+            self.updateGeneratorEntry(course, required.prop('checked'));
         });
 
         a.on('click', e => {
@@ -151,11 +172,11 @@ export class GeneratorListComponent {
                 </tr>
                 <tr>
                     <td>Start</td>
-                    <td>${meeting.start}</td>
+                    <td>${moment(meeting.start, ["HH:mm"]).format("h:mm A")}</td>
                 </tr>
                 <tr>
                     <td>End</td>
-                    <td>${meeting.end}</td>
+                    <td>${moment(meeting.end, ["HH:mm"]).format("h:mm A")}</td>
                 </tr>
             `));
             const tr = $('<tr></tr>');
