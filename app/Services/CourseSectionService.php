@@ -46,7 +46,6 @@ class CourseSectionService
                 })
                 ->get();
             $formatted = [];
-            error_log(count($sections));
             foreach ($sections as $section) {
                 $f = $this->formatService->formatSection($section);
                 array_push($formatted, $f);

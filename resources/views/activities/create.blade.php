@@ -37,18 +37,9 @@
     </div>
 
     <div class="row pad hidden-sm hidden-xs"></div>
-{{--    <div class="row">
 
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <h3>Add a course/activity</h3>
-            <div id="add-class">
-
-            </div>
-        </div>
-    </div>--}}
-
-    {{--<h3>Add a course/activity</h3>--}}
     <div class="row generate-form">
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
         <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 ">
             <table id="generate-candidates" class="table borderless">
                 <thead>
@@ -63,39 +54,58 @@
                 </tbody>
             </table>
         </div>
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+
+        <div class="col-lg-12 col-md-12 hidden-sm hidden-xs"></div>
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
         <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12" style="margin-top: 10px!important;">
             <div class="generate-form-small-controll-btn">
-                <button id="addNew" type="button" class="btn btn-default col-sm-4 col-xs-4">Add new</button>
+                <button id="addNew" type="button" class="btn btn-default col-sm-4 col-xs-4">Add New</button>
                 <button id="clearAll" type="button" class="btn btn-default col-sm-2 col-xs-2">Clear</button>
                 <button id="genSch" type="button" class="btn btn-default col-sm-6 col-xs-6">Generate</button>
             </div>
         </div>
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
     </div>
 
     <div class="row" style="margin-top: 20px">
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
         <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
             <ul class="nav nav-tabs">
-                <li ><a data-toggle="tab" href="#courses"><strong>Courses</strong></a></li>
+                <li class="active"><a data-toggle="tab" href="#courses"><strong>Courses</strong></a></li>
                 <li><a data-toggle="tab" href="#sections"><strong>Sections</strong></a></li>
-                <li class="active"><a data-toggle="tab" href="#added"><strong>Generated Schedules</strong></a></li>
+                <li><a data-toggle="tab" href="#added"><strong>Generated Schedules</strong></a></li>
             </ul>
             <div class="tab-content">
-                <div id="courses" class="tab-pane fade active">
+                <div id="courses" class="tab-pane fade in active">
+                    {{--<div class="table-filters">--}}
+                        {{--<div class="checkbox">--}}
+                            {{--<label style="margin-right: 10px">--}}
+                                {{--<input type="checkbox"> Added by me--}}
+                            {{--</label>--}}
+                            {{--<label>--}}
+                                {{--<input type="checkbox"> In my school--}}
+                            {{--</label>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    <div class="view-course-table">
 
+                    </div>
                 </div>
                 <div id="sections" class="tab-pane fade">
-                    <h3>Menu 1</h3>
-                    <p>Some content in menu 1.</p>
+                    {{--<h3>Menu 1</h3>--}}
+                    {{--<p>Some content in menu 1.</p>--}}
                 </div>
-                <div id="added" class="tab-pane in fade active">
+                <div id="added" class="tab-pane fade">
                     <h3>Menu 2</h3>
                     <p>Some content in menu 2.</p>
                 </div>
             </div>
-            <div class="panel-footer">
+            {{--<div class="panel-footer">--}}
 
-            </div>
+            {{--</div>--}}
         </div>
+        <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
     </div>
 
 @endsection

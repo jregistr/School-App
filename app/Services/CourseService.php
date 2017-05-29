@@ -68,9 +68,8 @@ class CourseService
     {
         $user = User::find($studentId);
         if ($user != null) {
-            $sid = $user->school_id;
-            $course = Course::create([C::NAME => $name, C::CRN => $crn, C::CREDITS => $credits,
-                C::SCHOOL_ID => $sid]);
+            $course = Course::create([C::NAME => $name, C::CRN => $crn,
+                C::CREDITS => $credits, C::STUDENT_ID => $user->id]);
             return $course;
         } else {
             return null;

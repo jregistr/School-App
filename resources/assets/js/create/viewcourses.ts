@@ -2,6 +2,7 @@ import {headers, student_id} from "../common/functions";
 import {Course} from "../data/interfaces";
 import {Component} from "../data/component";
 import {SearchDropdownComponent} from "../common/searchdropdown";
+import {AddCourseComponent} from "./addcourse";
 
 export class ViewCoursesComponent implements Component {
 
@@ -12,7 +13,8 @@ export class ViewCoursesComponent implements Component {
     private searchMenu: SearchDropdownComponent;
     private onRowClicked: (course: Course) => void;
 
-    constructor(parent: JQuery, onRowClicked: (course: Course) => void, toolbarId: string = 'tableToolbar') {
+    constructor(parent: JQuery, onRowClicked: (course: Course) => void,
+                modal: JQuery, toolbarId: string = 'tableToolbar') {
         this.parent = parent;
         this.table = ViewCoursesComponent.createTableElem();
         this.onRowClicked = onRowClicked;
@@ -23,6 +25,14 @@ export class ViewCoursesComponent implements Component {
         this.initTable(toolbarId);
         this.searchMenu = new SearchDropdownComponent(tb, this.onSubjectSelect.bind(this),
             [], 'All subjects');
+
+        const btToolbar = parent.find('div[class="columns columns-right btn-group pull-right"]');
+        const addNewBtn = $(`<button class="btn btn-default">Add New</button>`);
+        btToolbar.prepend(addNewBtn);
+
+        btToolbar.on('click', () => {
+            this.showAddCourseModal(modal);
+        });
         this.loadData();
     }
 
@@ -72,7 +82,7 @@ export class ViewCoursesComponent implements Component {
             toolbar: '#' + toolbarId,
             showRefresh: true,
             showToggle: true,
-            showColumns: true,
+            // showColumns: true,
             onRefresh: function () {
                 self.loadData();
             },
@@ -86,6 +96,21 @@ export class ViewCoursesComponent implements Component {
                 self.onRowClicked(row);
             }
         });
+    }
+
+    private showAddCourseModal(modal: JQuery): void {
+        const title = modal.find('h4[class="modal-title"]');
+        const mBody = modal.find('div[class="modal-body"]');
+        const self = this;
+        mBody.empty();
+        title.empty();
+        title.append('Add new Course & Sections');
+        new AddCourseComponent(mBody, ((course, sections) => {
+            modal.modal('hide');
+            self.courses.push(course);
+            self.table.bootstrapTable('prepend', course);
+        }), Infinity);
+        modal.modal('show');
     }
 
     private static createTableElem(): JQuery {

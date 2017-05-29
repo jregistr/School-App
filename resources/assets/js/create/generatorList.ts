@@ -34,7 +34,7 @@ export class GeneratorListComponent {
         const self = this;
         mBody.empty();
         title.empty();
-        title.append('Add new Course');
+        title.append('Add to Generate List');
         new AddCourseComponent(mBody, (course, sections) => {
             if (sections.length > 0) {
                 const s = sections[0];
@@ -124,7 +124,14 @@ export class GeneratorListComponent {
                 this.addEntryToGeneratorHtml(entry);
             });
         } else {
-            tbody.append($(`<tr><td colspan="3"><strong class="lead">No items added yet. Add new courses to get started.</strong></td></tr>`));
+            tbody.append($(`
+            <tr>
+                <td colspan="3">
+                    <strong class="lead">
+                        No items added yet. Add new courses to get started.
+                    </strong>
+                </td>
+            </tr>`));
         }
     }
 

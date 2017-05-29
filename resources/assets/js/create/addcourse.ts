@@ -2,7 +2,7 @@ import {Course, Meeting, Section} from "../data/interfaces";
 import * as moment from 'moment';
 import {MeetingDaysComponent} from "./meetdays";
 import {AddedSectionComponent} from "./addedSection";
-import {clearInputs} from "../common/functions";
+import {clearInputs, headers} from "../common/functions";
 
 /**
  * Re-usable add course form component.
@@ -150,9 +150,7 @@ export class AddCourseComponent {
         const queryData = this.collectCourseData();
         if (queryData != null) {
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': (window['Laravel'])['csrfToken']
-                },
+                headers,
                 url: '/api/course',
                 method: 'POST',
                 data: {

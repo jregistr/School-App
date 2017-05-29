@@ -1,18 +1,19 @@
-import {AddCourseComponent} from '../create/addcourse';
 import {ViewCoursesComponent} from "../create/viewcourses";
-import {Course, Meeting, ScheduledCourse, Section} from "../data/interfaces";
-import {MeetingDaysComponent} from "../create/meetdays";
+import {Course} from "../data/interfaces";
 import {GeneratorListComponent} from "../create/generatorList";
+import {ViewSectionsComponent} from "../create/viewSections";
 
 class CreateProgram {
 
     private static _instance: CreateProgram;
 
-    private coursesTab = $('a[href="#courses"]');
+    // private coursesTab = $('a[href="#courses"]');
     private sectionsTab = $('a[href="#sections"]');
-    private generateTab = $('a[href="#added"]');
+    // private generateTab = $('a[href="#added"]');
 
     private generatorList: GeneratorListComponent;
+    private viewCourses: ViewCoursesComponent;
+    private viewSections: ViewSectionsComponent;
 
     private constructor() {
     }
@@ -25,35 +26,28 @@ class CreateProgram {
     }
 
     init(): void {
+        const modal = $('#courseInfoModal');
         this.generatorList = new GeneratorListComponent($('#generate-candidates'),
-            $('#addNew'), $('#clearAll'), $('#genSch'), $('#courseInfoModal'), this.onGenerateClicked.bind(this));
+            $('#addNew'), $('#clearAll'), $('#genSch'), modal, this.onGenerateClicked.bind(this));
+
+        this.viewCourses = new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),
+            this.onViewCourseRowClicked.bind(this), modal,
+            'viewCourseToolbar');
+
+        this.viewSections = new ViewSectionsComponent($('#sections'));
     }
 
     private onGenerateClicked(): void {
         alert('Not yet implemented');
     }
 
+    private onViewCourseRowClicked(course: Course): void {
+        this.sectionsTab.tab('show');
+        this.viewSections.course = course;
+    }
+
 }
 
 $(document).ready(() => {
     CreateProgram.instance.init();
-
-
-    //
-    // const addCourseForm = new AddCourseComponent($('#add-class'), afterCourseSubmit, 1);
-    // const viewCoursesTable = new ViewCoursesComponent($('#courses'), onViewCourseRowClicked);
-    //
-    // function afterCourseSubmit() {
-    //
-    // }
-    //
-    // function onViewCourseRowClicked(course:Course) {
-    //    sectionsTab.tab('show');
-    // }
-
-    // function addToGenerateCandidates(section: Section): void {
-    //
-    // }
-
-
 });

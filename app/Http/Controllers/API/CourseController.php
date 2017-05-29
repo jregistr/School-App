@@ -9,6 +9,7 @@ use App\Services\CourseService;
 use App\Services\PrecondResultsService;
 use App\Util\C;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -32,9 +33,9 @@ class CourseController extends Controller
         $this->courseSectionService = $courseSectionService;
     }
 
-    public function getCourses(Request $request)
+    public function getCourses()
     {
-        $student_id = $request->input(C::STUDENT_ID);
+        $student_id = Auth::id();
         if ($student_id != null) {
             return $this->res->result($this->courseService->getCourses($student_id));
         } else {
@@ -44,9 +45,9 @@ class CourseController extends Controller
 
     public function createCourse(Request $request)
     {
-        $check = $this->res->exist($request, [C::STUDENT_ID, C::NAME, C::CREDITS, C::CRN]);
+        $check = $this->res->exist($request, [C::NAME, C::CREDITS, C::CRN]);
         if ($check[C::SUCCESS]) {
-            $studentId = $request->input(C::STUDENT_ID);
+            $studentId = Auth::id();
             $name = $request->input(C::NAME);
             $crn = $request->input(C::CRN);
             $credits = $request->input(C::CREDITS);
@@ -59,11 +60,11 @@ class CourseController extends Controller
 
     public function getSections(Request $request)
     {
-        $check = $this->res->exist($request, [C::STUDENT_ID, C::COURSE_ID]);
+        $check = $this->res->exist($request, [C::COURSE_ID]);
 
         if ($check[C::SUCCESS]) {
             $sections = $this->courseSectionService->getSections(
-                $request->input(C::STUDENT_ID),
+                Auth::id(),
                 $request->input(C::COURSE_ID)
             );
             return $this->res->result(['sections' => $sections]);
@@ -75,13 +76,13 @@ class CourseController extends Controller
     public function createSection(Request $request)
     {
         $check = $this->res->exist($request, [
-            C::STUDENT_ID, C::COURSE_ID, C::INSTRUCTORS, C::LOCATION,
+            C::COURSE_ID, C::INSTRUCTORS, C::LOCATION,
             C::START, C::END, C::DAYS
         ]);
 
         if ($check[C::SUCCESS]) {
             $section = $this->courseSectionService->createSection(
-                $request->input(C::STUDENT_ID),
+                Auth::id(),
                 $request->input(C::COURSE_ID),
                 $request->input(C::INSTRUCTORS),
                 $request->input(C::LOCATION),
