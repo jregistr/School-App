@@ -30,7 +30,8 @@ export class ViewCoursesComponent implements Component {
         const addNewBtn = $(`<button class="btn btn-default">Add New</button>`);
         btToolbar.prepend(addNewBtn);
 
-        btToolbar.on('click', () => {
+        addNewBtn.on('click', (e) => {
+            e.preventDefault();
             this.showAddCourseModal(modal);
         });
         this.loadData();
