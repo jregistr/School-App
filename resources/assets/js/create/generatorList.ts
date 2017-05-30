@@ -1,18 +1,21 @@
 import {AddCourseComponent} from './addcourse';
 import {GeneratorEntry, GeneratorList, Meeting, ScheduledCourse, Section} from "../data/interfaces";
-import {MeetingDaysComponent} from "./meetdays";
 import {headers} from "../common/functions";
 import * as moment from 'moment';
+import {renderMeetDaysDisplay} from "./renderMeetDisplay";
+import {Component} from "../data/component";
 
-export class GeneratorListComponent {
+export class GeneratorListComponent implements Component {
 
+    parent: JQuery;
     private genListTable: JQuery;
     private addNewBtn: JQuery;
     private clearBtn: JQuery;
     private courseInfoModal: JQuery;
 
-    constructor(genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery, genBtn: JQuery, courseInfoModal: JQuery,
-                onGenerateClicked: () => void) {
+    constructor(parent: JQuery, genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery,
+                genBtn: JQuery, courseInfoModal: JQuery, onGenerateClicked: () => void) {
+        this.parent = parent;
         this.genListTable = genListTable;
         this.addNewBtn = addNewBtn;
         this.clearBtn = clearBtn;
@@ -26,6 +29,18 @@ export class GeneratorListComponent {
         GeneratorListComponent.getGeneratorList((list: GeneratorList) => {
             self.renderGenerator(list);
         });
+    }
+
+    public addToGenList(sectionId: number, meetingId: number) {
+        this.updateQuery('PUT', {section_id: sectionId, meeting_id: meetingId});
+    }
+
+    render(): void {
+        this.parent.show();
+    }
+
+    hide(): void {
+        this.parent.hide();
     }
 
     private showAddCourseToGeneratorForm(): void {
@@ -80,23 +95,29 @@ export class GeneratorListComponent {
     }
 
     private addToGeneratorList(course: ScheduledCourse): void {
-        this.updateQuery('PUT', course);
+        this.updateQueryCourse('PUT', course);
     }
 
     private updateGeneratorEntry(course: ScheduledCourse, checked: boolean): void {
-        this.updateQuery('POST', course, {
+        const data = {
             section_id: course.section.id,
             meeting_id: course.section.meeting.id,
             required: checked ? 1 : 0
-        });
+        };
+        this.updateQuery('POST', data);
     }
 
     private deleteGeneratorEntry(course: ScheduledCourse): void {
-        this.updateQuery('DELETE', course);
+        this.updateQueryCourse('DELETE', course);
     }
 
-    private updateQuery(method: string, course: ScheduledCourse,
-                        data: any = {section_id: course.section.id, meeting_id: course.section.meeting.id}): void {
+    private updateQueryCourse(method: string, course: ScheduledCourse): void {
+        const data: any = {section_id: course.section.id, meeting_id: course.section.meeting.id};
+        this.updateQuery(method, data);
+    }
+
+    private updateQuery(method: string, data: { section_id: number, meeting_id: number }): void {
+        // const data: any = {section_id: course.section.id, meeting_id: course.section.meeting.id};
         const self = this;
         $.ajax({
             url: '/api/schedule/generator',
@@ -133,6 +154,7 @@ export class GeneratorListComponent {
                 </td>
             </tr>`));
         }
+        this.parent.scrollTop(this.parent.prop("scrollHeight"));
     }
 
     private addEntryToGeneratorHtml(entry: GeneratorEntry): void {
@@ -163,7 +185,16 @@ export class GeneratorListComponent {
             const modal = $('#courseInfoModal');
             const mBody = modal.find('div[class="modal-body"]');
             mBody.empty();
-            const table = $('<table class="table table-condensed"></table>');
+            const table = $(`
+                <table class="table table-condensed">
+                    <thead style="display: none;">
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                </table>
+            `);
             const tbody = $('<tbody></tbody>');
             table.append(tbody);
             mBody.append(table);
@@ -187,8 +218,14 @@ export class GeneratorListComponent {
                 </tr>
             `));
             const tr = $('<tr></tr>');
-            new MeetingDaysComponent(false, tr, meeting.week);
-            tbody.append(tr);
+            const td = $(`<td colspan="2"></td>`);
+            tr.append(td);
+
+            const week = meeting.week;
+            td.append(renderMeetDaysDisplay(week));
+
+            // new MeetingDaysComponent(false, td, meeting.week);
+            tbody.append(td);
 
             const title = modal.find('h4[class="modal-title"]');
             title.empty();

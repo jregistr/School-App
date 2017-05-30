@@ -40,7 +40,7 @@
 
     <div class="row generate-form">
         <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
-        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 ">
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 generate-list-box">
             <table id="generate-candidates" class="table borderless">
                 <thead>
                 <tr>
@@ -74,7 +74,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#courses"><strong>Courses</strong></a></li>
                 <li><a data-toggle="tab" href="#sections"><strong>Sections</strong></a></li>
-                <li><a data-toggle="tab" href="#added"><strong>Generated Schedules</strong></a></li>
+                <li><a data-toggle="tab" href="#added"><strong>Schedules</strong></a></li>
             </ul>
             <div class="tab-content">
                 <div id="courses" class="tab-pane fade in active">
@@ -93,12 +93,20 @@
                     </div>
                 </div>
                 <div id="sections" class="tab-pane fade">
-                    {{--<h3>Menu 1</h3>--}}
-                    {{--<p>Some content in menu 1.</p>--}}
+                    {{--<div class="">--}}
+                        {{--<div class="col-xs-12" style="">--}}
+                            {{--<div class="section-card">--}}
+                                {{----}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                 </div>
                 <div id="added" class="tab-pane fade">
                     <h3>Menu 2</h3>
                     <p>Some content in menu 2.</p>
+                    <div class="text">
+                        Some really long text!  Some really long text!  Some really long text!  Some really long text! The end! Some really long text! The end! Some really long text! The end! Some really long text! The end!
+                    </div>
                 </div>
             </div>
             {{--<div class="panel-footer">--}}

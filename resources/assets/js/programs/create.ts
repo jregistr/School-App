@@ -27,14 +27,15 @@ class CreateProgram {
 
     init(): void {
         const modal = $('#courseInfoModal');
-        this.generatorList = new GeneratorListComponent($('#generate-candidates'),
+        this.generatorList = new GeneratorListComponent($('.generate-list-box'), $('#generate-candidates'),
             $('#addNew'), $('#clearAll'), $('#genSch'), modal, this.onGenerateClicked.bind(this));
 
         this.viewCourses = new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),
             this.onViewCourseRowClicked.bind(this), modal,
             'viewCourseToolbar');
 
-        this.viewSections = new ViewSectionsComponent($('#sections'));
+        this.viewSections = new ViewSectionsComponent($('#sections'), 'viewSectionsToolbar',
+            this.addToGenerate.bind(this));
     }
 
     private onGenerateClicked(): void {
@@ -44,6 +45,10 @@ class CreateProgram {
     private onViewCourseRowClicked(course: Course): void {
         this.sectionsTab.tab('show');
         this.viewSections.course = course;
+    }
+
+    private addToGenerate(sectionId: number, meetingId: number): void {
+        this.generatorList.addToGenList(sectionId, meetingId);
     }
 
 }

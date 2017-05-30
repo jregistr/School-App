@@ -81,12 +81,20 @@ class ScheduleGeneratorService
         $sec = Section::find($sectionId);
         $meet = MeetingTime::find($meetingId);
         if ($gen != null && $sec != null && $meet != null) {
-            GeneratorListEntry::create([
-                C::GENERATOR_LIST_ID => ($gen->id),
-                C::SECTION_ID => $sectionId,
-                C::MEETING_ID => $meetingId,
-                C::REQUIRED => false
-            ]);
+            $exist = GeneratorListEntry::where
+            ([
+                [C::SECTION_ID, '=', $sectionId],
+                [C::MEETING_ID, '=', $meetingId]
+            ])->first();
+
+            if ($exist == null) {
+                GeneratorListEntry::create([
+                    C::GENERATOR_LIST_ID => ($gen->id),
+                    C::SECTION_ID => $sectionId,
+                    C::MEETING_ID => $meetingId,
+                    C::REQUIRED => false
+                ]);
+            }
             return $this->getGeneratorWithCourses($studentId);
         } else {
             return null;

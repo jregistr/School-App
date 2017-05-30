@@ -1,5 +1,7 @@
 import {Section} from "../data/interfaces";
 import {MeetingDaysComponent} from "./meetdays";
+import {renderMeetDaysDisplay} from "./renderMeetDisplay";
+import * as moment from 'moment';
 
 export class AddedSectionComponent {
 
@@ -53,18 +55,20 @@ export class AddedSectionComponent {
             </tr>
             <tr>
                 <td>Start</td>
-                <td>${section.meetings[0].start}</td>
+                <td>${moment(section.meetings[0].start, ["HH:mm"]).format("h:mm A")}</td>
             </tr>
             <tr>
                 <td>End</td>
-                <td>${section.meetings[0].end}</td>
+                <td>${moment(section.meetings[0].end, ["HH:mm"]).format("h:mm A")}</td>
             </tr>
         `));
 
         const meetTr = $('<tr></tr>');
         tbody.append(meetTr);
+        const week = section.meetings[0].week;
+        meetTr.append($(`<td colspan="2"></td>`).append(renderMeetDaysDisplay(week)));
 
-        this.meetDays = new MeetingDaysComponent(false, meetTr, section.meetings[0].week);
+        // this.meetDays = new MeetingDaysComponent(false, meetTr, section.meetings[0].week);
 
         title.append(removeBtn);
         heading.append(title);

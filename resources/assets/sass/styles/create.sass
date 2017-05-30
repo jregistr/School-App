@@ -2,30 +2,17 @@
 @import "../component/searchdropdown"
 @import "../component/addedSection"
 @import "../component/addcourse"
+@import "../component/viewSections"
+@import "../component/meetDaysDisplay"
 
 //.generate-form
-//  //height: 200px
-//  max-height: 300px
-//  overflow-y: scroll
-//
-//  &> div
-//    height: 100%
-//
-//  &>div:nth-of-type(2) > div,
-//  &>div:first-of-type
-//      height: 100%
-//  @media screen and (max-width: $screen-sm)
-//    &>div:nth-of-type(2) > div,
-//    &>div:first-of-type
-//      border: 1px solid rgb(221, 221, 221)
-//
-//.generate-form-lg-control-btn
-//  padding-top: 10px
+//  > div:first-of-type
+//    max-height: 300px
+//    overflow-y: scroll
 
-.generate-form
-  > div:first-of-type
-    max-height: 300px
-    overflow-y: scroll
+.generate-list-box
+  max-height: 300px
+  overflow-y: scroll
 
 .borderless
   th,
@@ -35,5 +22,14 @@
 
   tr td:nth-of-type(2)
     float: left
+
+.text
+  display: block
+  display: -webkit-box
+  max-width: 110px
+  height: 5px
+  -webkit-box-orient: vertical
+  text-overflow: ellipsis
+
 
 
