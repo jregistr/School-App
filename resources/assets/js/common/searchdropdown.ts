@@ -1,22 +1,21 @@
 import {Component} from "../data/component";
 
-export class SearchDropdownComponent implements Component {
+export class SearchDropdownComponent<T extends { name: string }> implements Component {
 
     parent: JQuery;
-    private onSelect: (selected: string) => void;
+    private onSelect: (selected: T) => void;
     private outer: JQuery;
-    private _data: string[];
-    private defaultSelected: string | null;
+    private _data: T[] = [];
+    private defaultSelected: T | null;
     private ul: JQuery;
     private currentSpan: JQuery;
-    private inputBox:JQuery;
+    private inputBox: JQuery;
 
-    constructor(parent: JQuery, onSelect: (selected: string) => void, data: string[] = [],
-                defaultSelected: string | null = null) {
+    constructor(parent: JQuery, onSelect: (selected: T) => void) {
 
         this.parent = parent;
         this.onSelect = onSelect;
-        this.defaultSelected = defaultSelected;
+        // this.defaultSelected = defaultSelected;
 
         const create = SearchDropdownComponent.init();
         this.outer = create.outer;
@@ -29,26 +28,17 @@ export class SearchDropdownComponent implements Component {
             this.onInputBoxChange(create.inputBox);
         });
 
-        this.data = data;
+        // this.data = data;
     }
 
-    set data(items: string[]) {
-        this._data = items;
-        this.renderItems(items);
-
-        let value: string | null = null;
-
-        if (this.defaultSelected != null) {
-            value = this.defaultSelected;
-        } else {
-            if (this._data.length > 0) {
-                value = this._data[0];
-            }
+    public setData(data: T[], defaultSelected: T | null): void {
+        this._data = data;
+        this.defaultSelected = data.length > 0 ? defaultSelected : null;
+        if (defaultSelected == null) {
+            this.defaultSelected = data[0];
         }
-
-        if (value != null) {
-            this.onItemClicked(value);
-        }
+        this.renderItems(this._data);
+        this.setSelected(this.defaultSelected);
     }
 
     render(): void {
@@ -59,20 +49,28 @@ export class SearchDropdownComponent implements Component {
         this.outer.hide();
     }
 
-    private onItemClicked(value: string): void {
-        this.currentSpan.text(value);
-        this.onSelect(value);
+    private onItemClicked(value: T): void {
+        this.setSelected(value);
         this.renderItems(this._data);
         this.inputBox.val('');
     }
 
-    private renderItems(items: string[]): void {
+    private setSelected(value: T | null): void {
+        if (value != null) {
+            this.currentSpan.text(value.name);
+            this.onSelect(value);
+        } else {
+            this.currentSpan.text('');
+        }
+    }
+
+    private renderItems(items: T[]): void {
         const ul = this.ul;
         const self = this;
         ul.empty();
 
-        function render(item: string) {
-            const a = $(`<a>${item}</a>`);
+        function render(item: T) {
+            const a = $(`<a>${item.name}</a>`);
             a.on('click', () => {
                 self.onItemClicked(item);
             });
@@ -82,16 +80,15 @@ export class SearchDropdownComponent implements Component {
 
         if (this.defaultSelected != null) {
             render(this.defaultSelected);
+            items.forEach(item => render(item));
         }
-
-        items.forEach(item => render(item));
     }
 
     private onInputBoxChange(inputBox: JQuery): void {
         const input = inputBox.val();
         if (input != null && input.length > 0) {
             const filtered = this._data
-                .filter(value => value.toLocaleLowerCase().indexOf(input.toLocaleLowerCase()) != -1);
+                .filter(value => value.name.toLocaleLowerCase().indexOf(input.toLocaleLowerCase()) != -1);
             this.renderItems(filtered);
         } else {
             this.renderItems(this._data);

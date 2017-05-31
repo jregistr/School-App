@@ -1,9 +1,9 @@
 @extends('layouts.main', ["index" => 2])
 
 @section('stylesheets')
-    {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />--}}
-    <link rel="stylesheet" href="../node_modules/fullcalendar/dist/fullcalendar.min.css" />
-    <link rel="stylesheet" href="dist/css/schedules.css"/>
+    {{--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">--}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />
+    <link rel="stylesheet" href="dist/css/schedule.css"/>
 @endsection
 
 @section('javascripts')
@@ -13,8 +13,36 @@
 @endsection
 
 @section('content')
-    {{--<div class="container">--}}
-    <div class="row">
+    {{--<div class="navbar navbar-default schedule-toolbar-navbar">--}}
+        {{--<div class="container-fluid">--}}
+            {{--<div class="pull-left">--}}
+                {{--<button class="navbar-btn btn btn-danger">Delete</button>--}}
+            {{--</div>--}}
+            {{--<div class="nav navbar-nav navbar-right">--}}
+                {{--<form class="navbar-form">--}}
+                    {{--<div class="form-group">--}}
+                        {{--<input type="text" class="form-control" name="username" placeholder="Username">--}}
+                    {{--</div>--}}
+                    {{--<div class="form-group">--}}
+                        {{--<input type="text" class="form-control" name="password" placeholder="Password">--}}
+                    {{--</div>--}}
+                    {{--<button type="submit" class="btn btn-default">Sign In</button>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+    {{--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 schedule-toolbar-outer">--}}
+        {{--<div class="pull-left">--}}
+            {{--<button class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></button>--}}
+        {{--</div>--}}
+        {{--<div class="form-inline pull-right">--}}
+
+        {{--</div>--}}
+    {{--</div>--}}
+
+
+    {{--<div class="row">
 
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rm-pad">
             <div class="panel panel-default">
@@ -43,6 +71,5 @@
     </div>
     <div class="row" id="parentDom">
         <div id="calendar"></div>
-    </div>
-    {{--</div>--}}
+    </div>--}}
 @endsection

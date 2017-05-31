@@ -2,6 +2,7 @@ export interface Schedule {
     id: number;
     student_id: number;
     selected: number;
+    added: number;
     name: string;
     scheduledCourses: ScheduledCourse[];
 }

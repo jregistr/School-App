@@ -10,7 +10,7 @@ export class ViewCoursesComponent implements Component {
     private table: JQuery;
     private categories: string[];
     private courses: Course[];
-    private searchMenu: SearchDropdownComponent;
+    private searchMenu: SearchDropdownComponent<{ name: string }>;
     private onRowClicked: (course: Course) => void;
 
     constructor(parent: JQuery, onRowClicked: (course: Course) => void,
@@ -23,8 +23,7 @@ export class ViewCoursesComponent implements Component {
         const tb = ViewCoursesComponent.createToolbar(toolbarId);
         this.parent.append(tb);
         this.initTable(toolbarId);
-        this.searchMenu = new SearchDropdownComponent(tb, this.onSubjectSelect.bind(this),
-            [], 'All subjects');
+        this.searchMenu = new SearchDropdownComponent<{ name: string }>(tb, this.onSubjectSelect.bind(this));
 
         const btToolbar = parent.find('div[class="columns columns-right btn-group pull-right"]');
         const addNewBtn = $(`<button class="btn btn-default">Add New</button>`);
@@ -60,16 +59,18 @@ export class ViewCoursesComponent implements Component {
             self.table.bootstrapTable('hideLoading');
             self.categories = data.subjects.sort((a: string, b: string) => a.localeCompare(b));
             self.courses = data.courses;
-            self.searchMenu.data = self.categories;
+            self.searchMenu.setData(self.categories.map((cat) => {
+                return {name: cat}
+            }), {name: 'All Subjects'});
         }).fail((xhr, status) => {
             alert('Fail to load course data');
         });
     }
 
-    private onSubjectSelect(subj: string): void {
+    private onSubjectSelect(subj: { name: string }): void {
         if (this.courses != null && this.courses.length > 0) {
-            const filtered = subj === 'All subjects' ? this.courses :
-                this.courses.filter(course => course.name.toLowerCase().indexOf(subj.toLowerCase()) != -1);
+            const filtered = subj.name === 'All Subjects' ? this.courses :
+                this.courses.filter(course => course.name.toLowerCase().indexOf(subj.name.toLowerCase()) != -1);
             this.table.bootstrapTable('load', filtered);
         }
     }
