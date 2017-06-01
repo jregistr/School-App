@@ -84,10 +84,15 @@ export class ScheduleToolbar implements Component {
     private makeDefaultView(): JQuery {
         const outer = $(`<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 schedule-toolbar-outer"></div>`);
         const trash = $(`<a href="#"><span class="glyphicon glyphicon-trash"></span></a>`);
+
+        const confirmDeleteModal = $('#confirmModal');
+        const confirmBtn = confirmDeleteModal.find('button[class="btn btn-danger"]');
+        confirmBtn.on('click', this.onDeleteSchedule.bind(this));
         trash.on('click', e => {
             e.preventDefault();
-            self.onTrashClicked();
+            confirmDeleteModal.modal('show');
         });
+
         outer.append($(`<div class="pull-left schedule-toolbar-trash-outer"></div>`).append($(`<ul></ul> `)
             .append($(`<li></li>`).append(trash))));
 
@@ -131,16 +136,17 @@ export class ScheduleToolbar implements Component {
         this.onEnterEdit();
     }
 
-    private onSaveClicked(): void {
+    private onSaveInEditClicked(): void {
 
     }
 
-    private onCancelClicked(): void {
+    private onCancelInEditClicked(): void {
 
     }
 
-    private onTrashClicked(): void {
-
+    private onDeleteSchedule(): void {
+        console.log('DELETE schedule:' + this.selected!!.name);
     }
+
 
 }
