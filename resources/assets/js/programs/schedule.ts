@@ -38,7 +38,6 @@ export class ScheduleProgram {
 
                 let selected: Schedule | null = null;
                 if (primary != null) {
-                    primary.name = `${primary.name} <span style="color: gold;" class="glyphicon glyphicon-star"></span>`;
                     selected = primary;
                     schedules.push(primary);
                 } else {

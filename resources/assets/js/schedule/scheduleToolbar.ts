@@ -98,7 +98,7 @@ export class ScheduleToolbar implements Component {
 
         const rightOuter = $(`<div class="pull-right schedule-toolbar-right"></div>`);
 
-        const selectOuter = $(`<div style="width: 195px;" class="pull-right"></div>`);
+        const selectOuter = $(`<div style="width: 200px;" class="pull-right"></div>`);
         const othersOuter = $(`<div style="margin-top: 3px" class="pull-left btn-group btn-group-sm"></div>`);
 
         const self = this;
@@ -106,12 +106,14 @@ export class ScheduleToolbar implements Component {
                 self.selected = selected;
                 self.primStarState();
                 self.onSelectionChange(selected);
-            },
-            {
-                leftAlign: false,
-                width: '185'
             }
-        );
+            , {
+                renderMenuItem(schedule: Schedule): string {
+                    return schedule.is_primary ?
+                        `<span style="color: gold;" class="glyphicon glyphicon-star"></span>${schedule.name}` :
+                        schedule.name
+                }
+            });
         this.dropDown.render();
 
         rightOuter.append(selectOuter);

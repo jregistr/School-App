@@ -10,19 +10,18 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     private ul: JQuery;
     private currentSpan: JQuery;
     private inputBox: JQuery;
-    private options: { leftAlign: boolean, width?: string } | null = null;
+    private options: any | null;
 
-    constructor(parent: JQuery, onSelect: (selected: T) => void, options: {
-        leftAlign: boolean,
-        width?: string
-    } | null = null) {
-
+    constructor(parent: JQuery, onSelect: (selected: T) => void,
+                options?: {
+                    renderMenuItem: (item: T) => string
+                }) {
         this.parent = parent;
         this.onSelect = onSelect;
         this.options = options;
         // this.defaultSelected = defaultSelected;
 
-        const create = SearchDropdownComponent.init(options);
+        const create = SearchDropdownComponent.init();
         this.outer = create.outer;
         this.ul = create.ul;
         this.currentSpan = create.currentSpan;
@@ -63,12 +62,12 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     private setSelected(value: T | null): void {
         if (value != null) {
             this.currentSpan.empty();
-            const i = value.name.indexOf('<');
-            const text = i == -1 ? value.name : value.name.substring(0, i);
-            this.currentSpan.text(text);
+            // const i = value.name.lastIndexOf('>');
+            // const text = i == -1 ? value.name : value.name.substring(i + 1, value.name.length);
+            this.currentSpan.append(value.name);
             this.onSelect(value);
         } else {
-            this.currentSpan.text('');
+            this.currentSpan.empty();
         }
     }
 
@@ -78,7 +77,12 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         ul.empty();
 
         function render(item: T) {
-            const a = $(`<a>${item.name}</a>`);
+            const a = $(`<a>
+                ${self.options != null && self.options.renderMenuItem != null ?
+                self.options.renderMenuItem(item)
+                : item.name
+                }
+                </a>`);
             a.on('click', () => {
                 self.onItemClicked(item);
             });
@@ -104,19 +108,15 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         }
     }
 
-    private static init(options: { leftAlign: boolean, width?: string } | null = null): {
-        outer: JQuery, currentSpan: JQuery,
-        ul: JQuery, inputBox: JQuery
-    } {
+    private static init(): { outer: JQuery, currentSpan: JQuery, ul: JQuery, inputBox: JQuery } {
         const outer = $(`
-            <div class="btn-group searchdrop">
+            <div class="dropdown">
             
             </div>
         `);
 
         const dropBtn = $(`
-            <button type="button" style="width: ${options != null && options.width != null ? `${options.width}px`
-            : `100%`}"
+            <button type="button" style="width: 100%!important;"
             class="btn btn-default dropdown-toggle searchdrop-picker" data-toggle="dropdown">
             </button>
         `);
@@ -125,7 +125,7 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
 
         dropBtn
             .append(currentSpan)
-            .append($(`<div class="pull-right"><span class="caret"></span></div>`));
+            .append($(`<span class="pull-right"><span class="caret"></span></span>`));
 
         outer.append(dropBtn);
 
@@ -138,7 +138,7 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         menuOuter.append($(`<div class="searchdrop-box"></div>`).append(inputBox));
 
         const ul = $(`
-            <ul class="dropdown-menu inner searchdrop-picker" role="menu">
+            <ul style="width: 100%!important;" class="dropdown-menu inner" role="menu">
             </ul>
         `);
 

@@ -74,6 +74,30 @@
 
     </div>
 
+
+
+    {{--<div class="pull-right">--}}
+        {{--<div class="dropdown" style="width: 400px">--}}
+            {{--<button style="width: 100%!important;" class="text-left btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">--}}
+                {{--<span class="pull-left" style="max-width: 90%; overflow: hidden; text-overflow:ellipsis;">--}}
+                    {{--Tutorials nfjnjkfnakjwndkjnwajkf nawjn kjwafkjawnfkjnawkjf nawkjfnakjwnfkjawnf kjawnkjf nawkjf--}}
+                    {{--kjnfkjawnkjfnawkjfn kjawnfkj anwkj nawkjnfkjanwfkjawn fkjw ajk fa--}}
+                {{--</span>--}}
+                {{--<span class="pull-right"><span class="caret"></span></span></button>--}}
+            {{--<ul style="width: 100%!important;" class="dropdown-menu dropdown-menu-left" role="menu" aria-labelledby="menu1">--}}
+                {{--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>--}}
+                {{--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>--}}
+                {{--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">JavaScript</a></li>--}}
+                {{--<li role="presentation" class="divider"></li>--}}
+                {{--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>--}}
+            {{--</ul>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+
+
+
+
     {{--<div class="navbar navbar-default schedule-toolbar-navbar">--}}
         {{--<div class="container-fluid">--}}
             {{--<div class="pull-left">--}}
