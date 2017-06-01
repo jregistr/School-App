@@ -78,7 +78,20 @@ class ScheduleService
         $queryRemain = Schedule::where($filter)->orderBy('name', 'desc')->get();
         $result['primary'] = $querySel;
         $result['schedules'] = $queryRemain;
-        return $result;
+        $outer = ["schedules" => $result];
+        return $outer;
+    }
+
+    public function addNewSchedule($studentId, $name)
+    {
+        $first = Schedule::where(C::STUDENT_ID, $studentId)->first() == null;
+        $schedule = Schedule::create([
+            C::NAME => $name,
+            C::STUDENT_ID => $studentId,
+            C::ADDED => 1,
+            C::IS_PRIMARY => $first ? 1 : 0
+        ]);
+        return ["schedule" => $schedule];
     }
 
     /**

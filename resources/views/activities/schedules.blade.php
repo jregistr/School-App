@@ -22,7 +22,7 @@
                     <h4 class="modal-title">Confirm this action</h4>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this schedule?
+                    <strong class="lead">Are you sure you want to delete this schedule?</strong>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Confirm</button>

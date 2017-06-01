@@ -46,11 +46,11 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     }
 
     render(): void {
-        this.outer.show();
+        this.parent.show();
     }
 
     hide(): void {
-        this.outer.hide();
+        this.parent.hide();
     }
 
     private onItemClicked(value: T): void {

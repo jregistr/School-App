@@ -1,6 +1,7 @@
 import {Component} from "../data/component";
 import {Schedule} from "../data/interfaces";
 import {SearchDropdownComponent} from "../common/searchdropdown";
+import {headers} from "../common/functions";
 
 export class ScheduleToolbar implements Component {
 
@@ -14,9 +15,11 @@ export class ScheduleToolbar implements Component {
     private editView: JQuery;
 
     private dropDown: SearchDropdownComponent<Schedule>;
+    private btnGroup: JQuery;
+    private trashBtn: JQuery;
+    private addNewCourseBtn: JQuery;
     private schedules: Schedule[] = [];
     private selected: Schedule | null = null;
-    private primStar: JQuery = $(`<span class="glyphicon glyphicon-star"></span>`);
 
     constructor(parent: JQuery, onEnterEdit: () => void, onExitEdit: (save: boolean) => void,
                 onSelectionChange: (schedule: Schedule) => void) {
@@ -27,15 +30,14 @@ export class ScheduleToolbar implements Component {
 
         this.defaultView = this.makeDefaultView();
         this.editView = this.makeEditModeView();
-        this.primStar.hide();
         this.parent.append(this.defaultView);
         this.parent.append(this.editView);
         this.render();
+        this.querySchedules();
     }
 
     public render(): void {
         this.renderView();
-        this.primStarState();
     }
 
     private renderView() {
@@ -43,18 +45,19 @@ export class ScheduleToolbar implements Component {
             this.editView.show();
             this.defaultView.hide();
         } else {
+            if (this.schedules.length == 0) {
+                this.dropDown.hide();
+                this.btnGroup.hide();
+                this.trashBtn.hide();
+                this.addNewCourseBtn.show();
+            } else {
+                this.dropDown.render();
+                this.btnGroup.show();
+                this.trashBtn.show();
+                this.addNewCourseBtn.hide();
+            }
             this.editView.hide();
             this.defaultView.show();
-        }
-    }
-
-    private primStarState() {
-        if (!this.isEditMode) {
-            if (this.selected != null && this.selected.is_primary) {
-                this.primStar.show();
-            } else {
-                this.primStar.hide();
-            }
         }
     }
 
@@ -81,30 +84,72 @@ export class ScheduleToolbar implements Component {
         this.render();
     }
 
+    private querySchedules(selected: Schedule | null = null): void {
+        const self = this;
+        $.ajax({
+            url: '/api/schedule',
+            method: 'GET',
+            headers,
+            success(response: JQueryAjaxSettings) {
+                const data = response.data;
+                self.processGetResult(data, selected);
+            },
+            error() {
+                alert('There was an error retrieving schedules');
+            }
+        });
+    }
+
+    private processGetResult(data: any, selected: Schedule | null = null): void {
+        console.log(selected);
+        const raw = data.schedules;
+        const primary: Schedule = raw.primary;
+        const schedules: Schedule[] = raw.schedules;
+
+        if (primary != null && selected == null) {
+            selected = primary;
+        } else {
+            if (selected == null && schedules.length > 0) {
+                selected = schedules[0];
+                schedules.splice(0, 1);
+            }
+        }
+        this.setSchedules(schedules, selected);
+    }
+
     private makeDefaultView(): JQuery {
+        const self = this;
         const outer = $(`<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 schedule-toolbar-outer"></div>`);
         const trash = $(`<a href="#"><span class="glyphicon glyphicon-trash"></span></a>`);
+        this.trashBtn = trash;
 
         const confirmDeleteModal = $('#confirmModal');
         const confirmBtn = confirmDeleteModal.find('button[class="btn btn-danger"]');
         confirmBtn.on('click', this.onDeleteSchedule.bind(this));
         trash.on('click', e => {
             e.preventDefault();
-            confirmDeleteModal.modal('show');
+            if (self.selected != null) {
+                confirmDeleteModal.modal('show');
+            }
         });
 
-        outer.append($(`<div class="pull-left schedule-toolbar-trash-outer"></div>`).append($(`<ul></ul> `)
+        outer.append($(`<div class="pull-left schedule-toolbar-trash-outer"></div>`).append($(`<ul></ul>`)
             .append($(`<li></li>`).append(trash))));
+
+        const addNew = $(`<button class="btn btn-primary">Add new Schedule</button>`);
+        addNew.on('click', self.onAddScheduleClicked.bind(self));
+
+        outer.append($(`<div style="margin: 3px" class="pull-right"></div>`).append(addNew));
+        this.addNewCourseBtn = addNew;
 
         const rightOuter = $(`<div class="pull-right schedule-toolbar-right"></div>`);
 
-        const selectOuter = $(`<div style="width: 200px;" class="pull-right"></div>`);
+        const selectOuter = $(`<div style="width: 180px;" class="pull-right"></div>`);
         const othersOuter = $(`<div style="margin-top: 3px" class="pull-left btn-group btn-group-sm"></div>`);
+        this.btnGroup = othersOuter;
 
-        const self = this;
         this.dropDown = new SearchDropdownComponent(selectOuter, (selected: Schedule) => {
                 self.selected = selected;
-                self.primStarState();
                 self.onSelectionChange(selected);
             }
             , {
@@ -117,13 +162,14 @@ export class ScheduleToolbar implements Component {
         this.dropDown.render();
 
         rightOuter.append(selectOuter);
-        rightOuter.append($(`<div style="margin-top: 7px; margin-right: 10px" class="pull-left"></div>`)
-            .append(this.primStar));
         rightOuter.append(othersOuter);
         outer.append(rightOuter);
 
         const editBtn = $(`<button class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>`);
+        const addBtn = $(`<button class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>`);
+        addBtn.on('click', self.onAddScheduleClicked.bind(self));
         editBtn.on('click', self.onEditClicked.bind(self));
+        othersOuter.append(addBtn);
         othersOuter.append(editBtn);
         return outer;
     }
@@ -133,9 +179,11 @@ export class ScheduleToolbar implements Component {
     }
 
     private onEditClicked(): void {
-        this.isEditMode = true;
-        this.render();
-        this.onEnterEdit();
+        if (this.selected != null && this.schedules.length > 0) {
+            this.isEditMode = true;
+            this.render();
+            this.onEnterEdit();
+        }
     }
 
     private onSaveInEditClicked(): void {
@@ -146,8 +194,46 @@ export class ScheduleToolbar implements Component {
 
     }
 
+    private onAddScheduleClicked(): void {
+        const self = this;
+        $.ajax({
+            url: '/api/schedule',
+            method: 'PUT',
+            headers,
+            data: {
+                name: 'New Schedule'
+            },
+            success(response: JQueryAjaxSettings) {
+                const data = response.data;
+                const schedule: Schedule = data.schedule;
+                self.isEditMode = true;
+                self.querySchedules(schedule);
+            },
+            error(xhr, status) {
+                console.log(xhr);
+                console.log(status);
+            }
+        });
+    }
+
     private onDeleteSchedule(): void {
-        console.log('DELETE schedule:' + this.selected!!.name);
+        const schedule: Schedule = this.selected!!;
+        const self = this;
+        $.ajax({
+            url: '/api/schedule',
+            method: 'DELETE',
+            headers,
+            data: {
+                schedule_id: schedule.id
+            },
+            success(response: JQueryAjaxSettings) {
+                self.processGetResult(response.data);
+            },
+            error(xhr, status) {
+                console.log(xhr);
+                console.log(status);
+            }
+        })
     }
 
 

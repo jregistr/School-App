@@ -19,7 +19,7 @@
         {{--Launch demo modal--}}
     {{--</button>--}}
     <!-- Modal -->
-    <div style="margin-left: -10px" class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
+    <div style="margin-left: " class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

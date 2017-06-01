@@ -28,13 +28,20 @@ class ScheduleController extends Controller
         $this->res = $precondResultsService;
     }
 
-    public function getUserSchedules(Request $request)
+    public function getUserSchedules()
     {
         $userId = Auth::id();
-        if ($userId != null) {
-            return $this->res->result(["schedules" => $this->service->getUserSchedules($userId)]);
+        return $this->res->result($this->service->getUserSchedules($userId));
+    }
+
+    public function createSchedule(Request $request)
+    {
+        $studentId = Auth::id();
+        $name = $request->input(C::NAME);
+        if ($name != null) {
+            return $this->res->result($this->service->addNewSchedule($studentId, $name));
         } else {
-            return $this->res->missingParameter(C::STUDENT_ID);
+            return $this->res->missingParameter(C::NAME);
         }
     }
 
@@ -54,22 +61,22 @@ class ScheduleController extends Controller
 
     public function deleteSchedule(Request $request)
     {
-        $studentId = $request->input(C::STUDENT_ID);
+        $studentId = Auth::id();
         $scheduleId = $request->input(C::SCHEDULE_ID);
 
-        if ($studentId != null && $scheduleId != null) {
+        if ($scheduleId != null) {
             return $this->res->result($this->service->deleteSchedule($studentId, $scheduleId));
         } else {
-            return $this->res->missingParameter(implode(', ', [C::STUDENT_ID, C::SCHEDULE_ID]));
+            return $this->res->missingParameter(C::SCHEDULE_ID);
         }
     }
 
     public function getScheduledCourses(Request $request)
     {
-        $checks = $this->res->exist($request, [C::STUDENT_ID, C::SCHEDULE_ID]);
+        $checks = $this->res->exist($request, [C::SCHEDULE_ID]);
         if ($checks[C::SUCCESS]) {
             $data = $this->service->getScheduledCourses(
-                $request->input(C::STUDENT_ID),
+                Auth::id(),
                 $request->input(C::SCHEDULE_ID)
             );
             return $this->res->result(['courses' => $data != null ? $data : []]);

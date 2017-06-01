@@ -25,32 +25,7 @@ export class ScheduleProgram {
     }
 
     private setSchedules() {
-        const self = this;
-        $.ajax({
-            url: '/api/schedule',
-            method: 'GET',
-            headers,
-            success(response: JQueryAjaxSettings) {
-                const data = response.data;
-                const raw = data.schedules;
-                const primary: Schedule = raw.primary;
-                const schedules: Schedule[] = raw.schedules;
 
-                let selected: Schedule | null = null;
-                if (primary != null) {
-                    selected = primary;
-                    schedules.push(primary);
-                } else {
-                    if (schedules.length > 0) {
-                        selected = schedules[0];
-                    }
-                }
-                self.toolBar.setSchedules(schedules, selected);
-            },
-            error() {
-                alert('There was an error retrieving schedules');
-            }
-        })
     }
 
 }
