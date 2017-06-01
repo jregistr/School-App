@@ -10,11 +10,16 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     private ul: JQuery;
     private currentSpan: JQuery;
     private inputBox: JQuery;
+    private options: { leftAlign: boolean, width?: string } | null = null;
 
-    constructor(parent: JQuery, onSelect: (selected: T) => void, options: { leftAlign: boolean }) {
+    constructor(parent: JQuery, onSelect: (selected: T) => void, options: {
+        leftAlign: boolean,
+        width?: string
+    } | null = null) {
 
         this.parent = parent;
         this.onSelect = onSelect;
+        this.options = options;
         // this.defaultSelected = defaultSelected;
 
         const create = SearchDropdownComponent.init(options);
@@ -57,7 +62,10 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
 
     private setSelected(value: T | null): void {
         if (value != null) {
-            this.currentSpan.text(value.name);
+            this.currentSpan.empty();
+            const i = value.name.indexOf('<');
+            const text = i == -1 ? value.name : value.name.substring(0, i);
+            this.currentSpan.text(text);
             this.onSelect(value);
         } else {
             this.currentSpan.text('');
@@ -85,6 +93,7 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     }
 
     private onInputBoxChange(inputBox: JQuery): void {
+        console.log('HELLO');
         const input = inputBox.val();
         if (input != null && input.length > 0) {
             const filtered = this._data
@@ -95,7 +104,7 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         }
     }
 
-    private static init(options: { leftAlign: boolean }): {
+    private static init(options: { leftAlign: boolean, width?: string } | null = null): {
         outer: JQuery, currentSpan: JQuery,
         ul: JQuery, inputBox: JQuery
     } {
@@ -106,8 +115,9 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         `);
 
         const dropBtn = $(`
-            <button type="button" class="btn btn-default dropdown-toggle searchdrop-picker" data-toggle="dropdown">
-                
+            <button type="button" style="width: ${options != null && options.width != null ? `${options.width}px`
+            : `100%`}"
+            class="btn btn-default dropdown-toggle searchdrop-picker" data-toggle="dropdown">
             </button>
         `);
 
@@ -120,7 +130,8 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         outer.append(dropBtn);
 
         const menuOuter = $(`
-            <div class="dropdown-menu ${options.leftAlign ? 'pull-left' : 'pull-right'} open searchdrop-menu"></div>
+            <div class="dropdown-menu 
+            open searchdrop-menu"></div>
         `);
 
         const inputBox = $(`<input type="text" class="form-control" />`);
