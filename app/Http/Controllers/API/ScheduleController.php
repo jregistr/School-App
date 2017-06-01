@@ -8,6 +8,7 @@ use App\Services\PrecondResultsService;
 use App\Services\ScheduleService;
 use App\Util\C;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -29,9 +30,9 @@ class ScheduleController extends Controller
 
     public function getUserSchedules(Request $request)
     {
-        $userId = $request->input(C::STUDENT_ID);
+        $userId = Auth::id();
         if ($userId != null) {
-            return $this->res->result($this->service->getUserSchedules($userId));
+            return $this->res->result(["schedules" => $this->service->getUserSchedules($userId)]);
         } else {
             return $this->res->missingParameter(C::STUDENT_ID);
         }
@@ -39,15 +40,15 @@ class ScheduleController extends Controller
 
     public function updateSchedule(Request $request)
     {
-        $studentId = $request->input(C::STUDENT_ID);
+        $studentId = Auth::id();
         $scheduleId = $request->input(C::SCHEDULE_ID);
         $name = $request->input(C::NAME);
-        $selected = $request->input(C::SELECTED);
+        $selected = $request->input(C::IS_PRIMARY);
 
-        if ($studentId != null && $scheduleId != null) {
+        if ($scheduleId != null) {
             return $this->res->result($this->service->updateScheduleInfo($studentId, $scheduleId, $name, $selected));
         } else {
-            return $this->res->missingParameter(implode(', ', [C::STUDENT_ID, C::SCHEDULE_ID]));
+            return $this->res->missingParameter(C::SCHEDULE_ID);
         }
     }
 

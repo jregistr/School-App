@@ -127,7 +127,6 @@ export class ViewSectionsComponent implements Component {
             pagination: true,
             pageSize: 20,
             showRefresh: true,
-            showColumns: true,
             search: true,
             cardView: true,
             toolbar: `#${toolbarId}`,

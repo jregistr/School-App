@@ -20,7 +20,7 @@ class Schedule extends BaseModel
 
     protected $fillable = [
         C::STUDENT_ID,
-        C::SELECTED,
+        C::IS_PRIMARY,
         C::NAME
     ];
 

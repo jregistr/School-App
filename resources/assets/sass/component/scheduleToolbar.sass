@@ -1,8 +1,33 @@
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables"
+
 .schedule-toolbar-outer
-  border: 1px solid rgb(200, 200, 200)!important
+  border: 1px solid rgb(200, 200, 200) !important
   border-radius: 5px
   margin-top: 2px
   background: whitesmoke
-  padding-left: 2px
-  padding-top: 5px
-  padding-bottom: 5px
+  padding: 0
+  width: 100%
+
+.schedule-toolbar-trash-outer
+  ul
+    list-style-type: none
+    margin: 0
+    padding: 0
+    li
+      display: inline
+      float: left
+      a
+        display: block
+        //padding: 8px
+        background: $btn-danger-bg
+        color: white
+        //line-height: 1.9
+        min-width: 40px
+        text-align: center
+        text-decoration: none
+        padding: 10px 12px
+
+.schedule-toolbar-right
+  margin-top: 3px
+  >div
+    margin-right: 5px

@@ -1,7 +1,7 @@
 export interface Schedule {
     id: number;
     student_id: number;
-    selected: number;
+    is_primary: number;
     added: number;
     name: string;
     scheduledCourses: ScheduledCourse[];

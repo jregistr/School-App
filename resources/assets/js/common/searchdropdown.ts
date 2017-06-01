@@ -11,13 +11,13 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     private currentSpan: JQuery;
     private inputBox: JQuery;
 
-    constructor(parent: JQuery, onSelect: (selected: T) => void) {
+    constructor(parent: JQuery, onSelect: (selected: T) => void, options: { leftAlign: boolean }) {
 
         this.parent = parent;
         this.onSelect = onSelect;
         // this.defaultSelected = defaultSelected;
 
-        const create = SearchDropdownComponent.init();
+        const create = SearchDropdownComponent.init(options);
         this.outer = create.outer;
         this.ul = create.ul;
         this.currentSpan = create.currentSpan;
@@ -95,7 +95,10 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         }
     }
 
-    private static init(): { outer: JQuery, currentSpan: JQuery, ul: JQuery, inputBox: JQuery } {
+    private static init(options: { leftAlign: boolean }): {
+        outer: JQuery, currentSpan: JQuery,
+        ul: JQuery, inputBox: JQuery
+    } {
         const outer = $(`
             <div class="btn-group searchdrop">
             
@@ -117,7 +120,7 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
         outer.append(dropBtn);
 
         const menuOuter = $(`
-            <div class="dropdown-menu open searchdrop-menu"></div>
+            <div class="dropdown-menu ${options.leftAlign ? 'pull-left' : 'pull-right'} open searchdrop-menu"></div>
         `);
 
         const inputBox = $(`<input type="text" class="form-control" />`);

@@ -23,10 +23,11 @@ export class ViewCoursesComponent implements Component {
         const tb = ViewCoursesComponent.createToolbar(toolbarId);
         this.parent.append(tb);
         this.initTable(toolbarId);
-        this.searchMenu = new SearchDropdownComponent<{ name: string }>(tb, this.onSubjectSelect.bind(this));
+        this.searchMenu = new SearchDropdownComponent<{ name: string }>(tb, this.onSubjectSelect.bind(this),
+            {leftAlign:true});
 
         const btToolbar = parent.find('div[class="columns columns-right btn-group pull-right"]');
-        const addNewBtn = $(`<button class="btn btn-default">Add New</button>`);
+        const addNewBtn = $(`<button class="btn btn-default">Create</button>`);
         btToolbar.prepend(addNewBtn);
 
         addNewBtn.on('click', (e) => {

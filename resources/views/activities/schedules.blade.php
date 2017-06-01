@@ -13,6 +13,10 @@
 @endsection
 
 @section('content')
+    <div id="scheduleToolbarParent" class="container-fluid schedule-page">
+
+    </div>
+
     {{--<div class="navbar navbar-default schedule-toolbar-navbar">--}}
         {{--<div class="container-fluid">--}}
             {{--<div class="pull-left">--}}

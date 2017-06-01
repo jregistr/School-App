@@ -43,7 +43,7 @@ class GradeService
      */
     public function summary($studentId)
     {
-        $selectedSchedule = Schedule::where([[C::STUDENT_ID, '=', $studentId], [C::SELECTED, '=', true]])->get();
+        $selectedSchedule = Schedule::where([[C::STUDENT_ID, '=', $studentId], [C::IS_PRIMARY, '=', true]])->get();
         if ($selectedSchedule != null && $selectedSchedule->count() > 0) {
             $selectedSchedule = $selectedSchedule[0];
         } else {

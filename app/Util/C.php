@@ -28,7 +28,7 @@ class C
 
     const AVERAGE = 'average';
     const SEMESTER_GPA = 'semester_gpa';
-    const SELECTED = 'selected';
+    const IS_PRIMARY = 'is_primary';
     const OVERALL = 'overall';
     const SECTION_AVERAGES = 'section_averages';
 
@@ -60,5 +60,6 @@ class C
     const ID = 'id';
     const DAYS = 'days';
     const REQUIRED = 'required';
+    const ADDED = 'added';
 
 }

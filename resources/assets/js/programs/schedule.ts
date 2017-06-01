@@ -3,7 +3,12 @@ import {ScheduleToolbar} from "../schedule/scheduleToolbar";
 
 export class ScheduleProgram {
 
-    private toolBar:ScheduleToolbar;
+    private toolBar: ScheduleToolbar;
+
+    constructor() {
+        this.toolBar = new ScheduleToolbar($('#scheduleToolbarParent'), this.onEnterEdit.bind(this),
+            this.onExitEdit.bind(this), this.onScheduleSelectionChange.bind(this));
+    }
 
     private onEnterEdit(): void {
 

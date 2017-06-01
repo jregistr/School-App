@@ -36,7 +36,7 @@ class ScheduleService
                 if ($primary != null) {
                     $already = Schedule::where([
                         [C::STUDENT_ID, '=', $studentId],
-                        [C::SELECTED, '=', 1]
+                        [C::IS_PRIMARY, '=', 1]
                     ])->first();
 
                     if ($already != null) {
@@ -59,12 +59,26 @@ class ScheduleService
 
     /**
      * @param $studentId - The id of the student.
-     * @return Schedule[] - An array of the schedules for this user.
+     * @return array - Array containing the organized schedules.
      */
     public function getUserSchedules($studentId)
     {
-        $schedules = Schedule::where(C::STUDENT_ID, $studentId)->get();
-        return $schedules;
+        $filter = [
+            [C::STUDENT_ID, '=', $studentId],
+            [C::ADDED, '=', 1],
+            [C::IS_PRIMARY, 1]
+        ];
+
+        $result = [];
+        $querySel = Schedule::where($filter)->first();
+
+        array_pop($filter);
+        array_push($filter, [C::IS_PRIMARY, 0]);
+
+        $queryRemain = Schedule::where($filter)->orderBy('name', 'desc')->get();
+        $result['primary'] = $querySel;
+        $result['schedules'] = $queryRemain;
+        return $result;
     }
 
     /**
