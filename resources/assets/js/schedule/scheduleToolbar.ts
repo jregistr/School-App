@@ -18,6 +18,9 @@ export class ScheduleToolbar implements Component {
     private btnGroup: JQuery;
     private trashBtn: JQuery;
     private addNewCourseBtn: JQuery;
+    private nameInput: JQuery;
+    private starInput: JQuery;
+
     private schedules: Schedule[] = [];
     private selected: Schedule | null = null;
 
@@ -42,6 +45,20 @@ export class ScheduleToolbar implements Component {
 
     private renderView() {
         if (this.isEditMode) {
+            const selected = this.selected!!;
+            const sp = this.starInput.find('span');
+
+            if (selected.is_primary) {
+                sp.removeClass('glyphicon-star-empty');
+                sp.addClass('glyphicon-star');
+                sp.addClass('gold');
+            } else {
+                sp.removeClass('glyphicon-star');
+                sp.addClass('glyphicon-star-empty');
+                sp.removeClass('gold');
+            }
+
+            this.nameInput.val(selected.name);
             this.editView.show();
             this.defaultView.hide();
         } else {
@@ -101,17 +118,32 @@ export class ScheduleToolbar implements Component {
     }
 
     private processGetResult(data: any, selected: Schedule | null = null): void {
-        console.log(selected);
         const raw = data.schedules;
         const primary: Schedule = raw.primary;
         const schedules: Schedule[] = raw.schedules;
 
-        if (primary != null && selected == null) {
-            selected = primary;
+        if (selected == null) {
+            if (primary !== null) {
+                selected = primary;
+            } else {
+                if (schedules.length > 0) {
+                    selected = schedules[0];
+                    schedules.splice(0, 1);
+                }
+            }
         } else {
-            if (selected == null && schedules.length > 0) {
-                selected = schedules[0];
-                schedules.splice(0, 1);
+            if (primary !== null && primary.id != selected.id) {
+                schedules.unshift(primary);
+            }
+
+            const ind = schedules.findIndex(i => i.id == selected!!.id);
+            if(ind !== -1) {
+                schedules.splice(ind, 1);
+            }
+            const check = (primary != null && primary.id == selected.id) ? primary
+                : schedules.find(i => i.id == selected!!.id);
+            if (check) {
+                selected = check;
             }
         }
         this.setSchedules(schedules, selected);
@@ -175,7 +207,49 @@ export class ScheduleToolbar implements Component {
     }
 
     private makeEditModeView(): JQuery {
-        return $(`<h3>Not yet implemented</h3>`);
+        const outer = $(`<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 schedule-toolbar-outer 
+            schedule-toolbar-edit"></div>`);
+        const actionsOuter = $(`<div class="pull-right btn-group btn-group-sm"></div>`);
+
+
+        const saveBtn = $(`<button class="btn btn-success"><span class="glyphicon glyphicon-floppy-save"></span></button>`);
+        const cancelBtn = $(`<button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>`);
+        saveBtn.on('click', this.onSaveInEditClicked.bind(this));
+        cancelBtn.on('click', this.onCancelInEditClicked.bind(this));
+
+        actionsOuter
+            .append(saveBtn)
+            .append(cancelBtn);
+
+        const formOut = $(`<div class="pull-right"></div>`);
+        const nameInput = this.nameInput = $(`<input type="text" class="input-sm schedule-toolbar-input" />`);
+        const star = this.starInput = $(`
+            <button style="margin-right: 5px" class="btn btn-sm btn-default">
+                
+            </button>`);
+        const sp = $(`<span class="glyphicon glyphicon-star-empty"></span>`);
+        star.append(sp);
+
+        star.on('click', () => {
+            if (sp.hasClass('gold')) {
+                sp.removeClass('gold');
+                sp.removeClass('glyphicon-star');
+                sp.addClass('glyphicon-star-empty');
+            } else {
+                sp.addClass('gold');
+                sp.removeClass('glyphicon-star-empty');
+                sp.addClass('glyphicon-star');
+            }
+        });
+
+        formOut.append(star);
+
+        formOut.append(nameInput);
+
+        outer.append(actionsOuter);
+        outer.append(formOut);
+
+        return outer;
     }
 
     private onEditClicked(): void {
@@ -187,11 +261,49 @@ export class ScheduleToolbar implements Component {
     }
 
     private onSaveInEditClicked(): void {
+        this.onExitEdit(true);
+        this.isEditMode = false;
+        const self = this;
+        const selected = this.selected!!;
+        const nameInput = this.nameInput;
+        const starInput = this.starInput;
+        const sp = starInput.find('span');
 
+        const starCheck = (sp.hasClass('glyphicon-star') && selected.is_primary == 0) ||
+            (sp.hasClass('glyphicon-star-empty') && selected.is_primary == 1);
+        const inCheck = nameInput.val() !== selected.name;
+        const data = {schedule_id: selected.id};
+
+        if (starCheck || inCheck) {
+            if (starCheck) {
+                data['is_primary'] = sp.hasClass('glyphicon-star') ? 1 : 0
+            }
+
+            if (inCheck) {
+                data['name'] = nameInput.val();
+            }
+
+            $.ajax({
+                url: '/api/schedule',
+                method: 'POST',
+                headers,
+                data,
+                success() {
+                    self.querySchedules(selected);
+                },
+                error(xhr, status) {
+                    alert('There was an error during update');
+                    console.log(xhr);
+                    console.log(status);
+                }
+            });
+        }
     }
 
     private onCancelInEditClicked(): void {
-
+        this.isEditMode = false;
+        this.querySchedules(this.selected!!);
+        this.onExitEdit(false);
     }
 
     private onAddScheduleClicked(): void {

@@ -28,5 +28,24 @@
 .schedule-toolbar-right
   display: inline
   margin-top: 3px
-  >div
+  > div
     margin-right: 5px
+
+.schedule-toolbar-edit
+  > div
+    margin: 3px
+
+.schedule-toolbar-input
+  //display: block
+  //height: $input-height-base
+  border: 1px solid $input-border
+  border-radius: $input-border-radius
+  float: right
+
+@media screen and (max-width: $screen-xs)
+  .schedule-toolbar-form
+    padding-left: 0
+    padding-right: 0
+
+.gold
+  color: gold

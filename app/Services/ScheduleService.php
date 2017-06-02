@@ -39,12 +39,12 @@ class ScheduleService
                         [C::IS_PRIMARY, '=', 1]
                     ])->first();
 
-                    if ($already != null) {
-                        $already->selected = false;
+                    if ($already != null && $primary == 1) {
+                        $already->is_primary = false;
                         $already->save();
                     }
 
-                    $forId->selected = true;
+                    $forId->is_primary = $primary;
                 }
 
                 if ($name != null) {

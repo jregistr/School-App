@@ -97,7 +97,6 @@ export class SearchDropdownComponent<T extends { name: string }> implements Comp
     }
 
     private onInputBoxChange(inputBox: JQuery): void {
-        console.log('HELLO');
         const input = inputBox.val();
         if (input != null && input.length > 0) {
             const filtered = this._data
