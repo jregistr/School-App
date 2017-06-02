@@ -38,6 +38,10 @@
 
     </div>
 
+    <div id="scheduleComponentParent" class="container-fluid schedule-page">
+
+    </div>
+
     {{--<div class="pull-right">--}}
         {{--<div class="dropdown" style="width: 400px">--}}
             {{--<button style="width: 100%!important;" class="text-left btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">--}}

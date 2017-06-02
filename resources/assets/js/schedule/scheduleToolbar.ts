@@ -87,7 +87,7 @@ export class ScheduleToolbar implements Component {
             if (selected != null) {
                 this.schedules = schedules;
                 this.selected = selected;
-                this.onSelectionChange(this.selected);
+                // this.onSelectionChange(this.selected);
             } else {
                 this.schedules = [];
                 this.selected = null;
@@ -136,14 +136,19 @@ export class ScheduleToolbar implements Component {
                 schedules.unshift(primary);
             }
 
-            const ind = schedules.findIndex(i => i.id == selected!!.id);
-            if(ind !== -1) {
-                schedules.splice(ind, 1);
-            }
             const check = (primary != null && primary.id == selected.id) ? primary
                 : schedules.find(i => i.id == selected!!.id);
+
+            const ind = schedules.findIndex(i => i.id == selected!!.id);
+            if (ind !== -1) {
+                console.log('DD');
+                schedules.splice(ind, 1);
+            }
+
             if (check) {
                 selected = check;
+            } else {
+                console.log('not found');
             }
         }
         this.setSchedules(schedules, selected);
@@ -181,6 +186,7 @@ export class ScheduleToolbar implements Component {
         this.btnGroup = othersOuter;
 
         this.dropDown = new SearchDropdownComponent(selectOuter, (selected: Schedule) => {
+                console.log('HH');
                 self.selected = selected;
                 self.onSelectionChange(selected);
             }

@@ -21,7 +21,7 @@ export class ScheduleProgram {
     }
 
     private onScheduleSelectionChange(schedule: Schedule): void {
-
+        console.log('FIRED');
     }
 
     private setSchedules() {
