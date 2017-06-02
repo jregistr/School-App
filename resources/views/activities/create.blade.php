@@ -3,7 +3,6 @@
 @section('stylesheets')
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" >
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="dist/css/create.css"/>
 @endsection
 
@@ -13,13 +12,7 @@
 
 
 @section('content')
-
-    <!-- Button trigger modal -->
-    {{--<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">--}}
-        {{--Launch demo modal--}}
-    {{--</button>--}}
-    <!-- Modal -->
-    <div style="margin-left: " class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
+    <div class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -35,6 +28,27 @@
             </div>
         </div>
     </div>
+
+    <div id="confirmModal" class="modal fade" tabindex="-1" role="dialog" style="display: none;"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Confirm this action</h4>
+                </div>
+                <div class="modal-body">
+                    <strong class="lead">Are you sure you want clear this list?</strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Confirm</button>
+                    <button  type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <div class="row pad hidden-sm hidden-xs"></div>
 

@@ -12,16 +12,22 @@ export class GeneratorListComponent implements Component {
     private addNewBtn: JQuery;
     private clearBtn: JQuery;
     private courseInfoModal: JQuery;
+    private confirmModal: JQuery;
 
     constructor(parent: JQuery, genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery,
-                genBtn: JQuery, courseInfoModal: JQuery, onGenerateClicked: () => void) {
+                genBtn: JQuery, courseInfoModal: JQuery, confirmModal: JQuery, onGenerateClicked: () => void) {
         this.parent = parent;
         this.genListTable = genListTable;
         this.addNewBtn = addNewBtn;
         this.clearBtn = clearBtn;
         this.courseInfoModal = courseInfoModal;
+        this.confirmModal = confirmModal;
 
-        this.clearBtn.on('click', this.clearBtnClicked.bind(this));
+        confirmModal.find('button[class="btn btn-danger"]').on('click', this.clearBtnClicked.bind(this));
+
+        this.clearBtn.on('click', () => {
+            confirmModal.modal('show');
+        });
         this.addNewBtn.on('click', this.showAddCourseToGeneratorForm.bind(this));
         genBtn.on('click', onGenerateClicked);
 

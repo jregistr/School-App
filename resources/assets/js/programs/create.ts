@@ -15,6 +15,7 @@ class CreateProgram {
     private viewCourses: ViewCoursesComponent;
     private viewSections: ViewSectionsComponent;
 
+
     private constructor() {
     }
 
@@ -28,7 +29,7 @@ class CreateProgram {
     init(): void {
         const modal = $('#courseInfoModal');
         this.generatorList = new GeneratorListComponent($('.generate-list-box'), $('#generate-candidates'),
-            $('#addNew'), $('#clearAll'), $('#genSch'), modal, this.onGenerateClicked.bind(this));
+            $('#addNew'), $('#clearAll'), $('#genSch'), modal, $('#confirmModal'), this.onGenerateClicked.bind(this));
 
         this.viewCourses = new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),
             this.onViewCourseRowClicked.bind(this), modal,
