@@ -1,6 +1,20 @@
 import {Component} from "../data/component";
-import {Schedule, ScheduledCourse} from "../data/interfaces";
+import {Meeting, Schedule, ScheduledCourse, ScheduledSection} from "../data/interfaces";
 import {headers} from "../common/functions";
+import {default as moment, Moment} from "moment";
+
+interface Event {
+    title: string,
+    start: string,
+    end: string,
+    allDay: boolean,
+    courseId: number,
+    sectionId: number,
+    meetingId: number,
+    location?: string,
+    professors?: string
+}
+
 export class ScheduleRendererComponent implements Component {
 
     parent: JQuery;
@@ -22,7 +36,25 @@ export class ScheduleRendererComponent implements Component {
             const config = ScheduleRendererComponent.basicConfig();
             outer.fullCalendar(config);
         } else {
+            const config: any = ScheduleRendererComponent.basicConfig();
+            config.events = this.makeEvents();
 
+            const min = ScheduleRendererComponent.findExtreme(
+                moment.min, 0, -30,
+                this.courses.map(c => moment(c.section.meeting.start, ['HH:mm']))
+            );
+
+            const max = ScheduleRendererComponent.findExtreme(
+                moment.max, 1, 0,
+                this.courses.map(c => moment(c.section.meeting.end, ['HH:mm']))
+            );
+
+            if (min && max) {
+                config.minTime = min;
+                config.maxTime = max;
+            }
+
+            outer.fullCalendar(config);
         }
     }
 
@@ -35,7 +67,6 @@ export class ScheduleRendererComponent implements Component {
     }
 
     set schedule(schedule: Schedule | null) {
-        console.log('SET SCHEDULE:' + (schedule != null ? schedule.name : ''));
         const self = this;
         this._schedule = schedule;
         if (schedule == null) {
@@ -76,6 +107,71 @@ export class ScheduleRendererComponent implements Component {
         onComplete();
     }
 
+    private makeEvents(): Event[] {
+        const courses = this.courses;
+        const events: Event[] = [];
+        courses.forEach(course => {
+            const begin = moment().startOf('week').isoWeekday(7);
+            const section: ScheduledSection = course.section;
+            const meeting: Meeting = section.meeting;
+            const week = meeting.week;
+            [
+                week.sunday,
+                week.monday,
+                week.tuesday,
+                week.wednesday,
+                week.thursday,
+                week.friday,
+                week.saturday
+            ].forEach(value => {
+                if (value == 1) {
+                    events.push(ScheduleRendererComponent.makeEvent(course, moment(begin)));
+                }
+                begin.add(1, 'd');
+            });
+        });
+        return events;
+    }
+
+    private static makeEvent(course: ScheduledCourse, refDay: Moment): Event {
+        const section: ScheduledSection = course.section;
+        const meeting: Meeting = section.meeting;
+
+        const start = moment(refDay);
+        const end = moment(refDay);
+        const meetingStart = moment(meeting.start, ['HH:mm']);
+        const meetingEnd = moment(meeting.end, ['HH:mm']);
+
+        start.hour(meetingStart.hour());
+        start.minute(meetingStart.minute());
+        end.hour(meetingEnd.hour());
+        end.minute(meetingEnd.minute());
+
+        return {
+            title: course.name,
+            start: start.format(),
+            end: end.format(),
+            allDay: false,
+            courseId: course.id,
+            sectionId: section.id,
+            meetingId: meeting.id,
+            professors: section.instructors,
+            location: meeting.location
+        };
+    }
+
+    private static findExtreme(compare: (moments: Moment[]) => Moment,
+                               addHour: number, addMinute: number, times: Moment[]): string | null {
+        let result: string | null = null;
+        if (times.length > 0) {
+            const extreme = compare(times);
+            extreme.add(addHour, 'h');
+            extreme.add(addMinute, 'm');
+            result = extreme.format('HH:mm');
+        }
+        return result;
+    }
+
     private static makeOuter(): JQuery {
         return $(`<div class="schedule-render-outer"></div>`);
     }
@@ -87,7 +183,7 @@ export class ScheduleRendererComponent implements Component {
                 center: '',
                 right: '',
             },
-            firstDay: 1,
+            firstDay: 0,
             editable: false,
             // theme:true,
             defaultView: 'agendaWeek',

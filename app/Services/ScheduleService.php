@@ -115,7 +115,7 @@ class ScheduleService
     {
         $schedule = Schedule::find($scheduleId);
         if ($schedule->student_id == $studentId) {
-            return $schedule->courses(array($this->formatterService, 'formatSection'));
+            return $schedule->courses(array($this->formatterService, 'formatScheduledSection'));
         } else {
             return null;
         }

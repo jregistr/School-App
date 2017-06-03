@@ -40,7 +40,7 @@ class Schedule extends BaseModel
             $meeting = MeetingTime::find($scheduleSection->meeting_time_id);
             $course = $section->course();
 
-            $formattedSection = $formatSectionFunc($section, [$meeting]);
+            $formattedSection = $formatSectionFunc($section, $meeting);
 
             $course->section = $formattedSection;
             array_push($outer, $course);
