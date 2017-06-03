@@ -9,15 +9,15 @@ use App\Util\C;
 class ScheduleService
 {
 
-    private $courseSectionService;
+    private $formatterService;
 
     /**
      * ScheduleService constructor.
-     * @param $courseSectionService
+     * @param FormatService $formatService
      */
-    public function __construct(CourseSectionService $courseSectionService)
+    public function __construct(FormatService $formatService)
     {
-        $this->courseSectionService = $courseSectionService;
+        $this->formatterService = $formatService;
     }
 
     /**
@@ -115,7 +115,7 @@ class ScheduleService
     {
         $schedule = Schedule::find($scheduleId);
         if ($schedule->student_id == $studentId) {
-            return $schedule->courses(array($this->courseSectionService, 'formatSection'));
+            return $schedule->courses(array($this->formatterService, 'formatSection'));
         } else {
             return null;
         }

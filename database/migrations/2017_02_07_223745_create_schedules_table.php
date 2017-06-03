@@ -18,7 +18,7 @@ class CreateSchedulesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('student_id');
             $table->string('name', 155);
-            $table->boolean('selected');
+            $table->boolean('is_primary');
         });
 
 

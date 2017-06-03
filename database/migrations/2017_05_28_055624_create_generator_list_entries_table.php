@@ -14,13 +14,13 @@ class CreateGeneratorListEntriesTable extends Migration
     public function up()
     {
         Schema::create('generator_list_entries', function (Blueprint $table) {
-            $table->unsignedInteger('generator_list_id');
+            $table->unsignedInteger('g_id');
             $table->unsignedInteger('section_id');
             $table->unsignedInteger('meeting_id');
         });
 
         Schema::table('generator_list_entries', function (Blueprint $table) {
-            $table->foreign('generator_list_id')
+            $table->foreign('g_id')
                 ->references('id')
                 ->on('generator_lists')
                 ->onDelete('cascade');
@@ -34,6 +34,8 @@ class CreateGeneratorListEntriesTable extends Migration
                 ->references('id')
                 ->on('meeting_times')
                 ->onDelete('cascade');
+
+            $table->primary(['g_id', 'section_id', 'meeting_id']);
         });
     }
 

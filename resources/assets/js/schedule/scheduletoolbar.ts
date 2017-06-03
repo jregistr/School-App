@@ -357,10 +357,9 @@ export class ScheduleToolbarComponent implements Component {
     private querySaveUpdate(schedule: Schedule, starCheck: boolean, inputCheck: boolean,
                             nameIn: JQuery, starIn: JQuery): void {
         const self = this;
-        const data:any = {schedule_id: schedule.id};
+        const data: any = {schedule_id: schedule.id};
 
         if (starCheck) {
-            console.log(' i am here');
             data.is_primary = starIn.hasClass('glyphicon-star') ? 1 : 0;
             console.log(data);
         }
@@ -377,7 +376,7 @@ export class ScheduleToolbarComponent implements Component {
             success(response: JQueryAjaxSettings) {
                 const data = response.data;
                 const outer = data.schedules;
-                const updated = self.processListFromServer(outer);
+                const updated = self.processListFromServer(outer, schedule.id);
                 self.updateCurrentSelected(updated);
                 self.isEditMode = false;
                 self.render();
@@ -443,8 +442,6 @@ export class ScheduleToolbarComponent implements Component {
             const starCheck = (sp.hasClass('glyphicon-star') && selected.is_primary == 0) ||
                 (sp.hasClass('glyphicon-star-empty') && selected.is_primary == 1);
             const inCheck = nameInput.val() !== selected.name;
-
-            console.log('STAR CHECK:' + starCheck);
 
             if (starCheck || inCheck) {
                 self.querySaveUpdate(selected, starCheck, inCheck, nameInput, sp);

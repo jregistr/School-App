@@ -12,7 +12,7 @@ class C
     const GRADE_ID = 'grade_id';
     const SCHOOL_ID = 'school_id';
     const COURSE_ID = 'course_id';
-    const GENERATOR_LIST_ID = 'generator_list_id';
+    const GENERATOR_LIST_ID = 'g_id';
     const MEETING_ID = 'meeting_id';
 
     const CATEGORY = 'category';

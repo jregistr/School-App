@@ -29,13 +29,6 @@ class CreateScheduleSectionTable extends Migration
                 ->references('id')
                 ->on('sections')
                 ->onDelete('cascade');
-
-            $table->foreign('meeting_time_id')
-                ->references('id')
-                ->on('meeting_times')
-                ->onDelete('cascade');
-
-            $table->primary(['schedule_id', 'section_id']);
         });
     }
 
