@@ -1,4 +1,5 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables"
+@import "./searchdropdown"
 
 .schedule-toolbar-outer
   border: 1px solid rgb(200, 200, 200) !important
@@ -36,16 +37,33 @@
     margin: 3px
 
 .schedule-toolbar-input
-  //display: block
-  //height: $input-height-base
+  margin-top: 1px
+  height: $input-height-base
   border: 1px solid $input-border
   border-radius: $input-border-radius
   float: right
+  padding-left: 5px
+  min-width: 325px
+
+.schedule-toolbar-select-outer
+  width: 325px
+
+@media screen and (max-width: $screen-sm)
+  .schedule-toolbar-input
+    min-width: 250px
+  .schedule-toolbar-select-outer
+    width: 275px
 
 @media screen and (max-width: $screen-xs)
   .schedule-toolbar-form
     padding-left: 0
     padding-right: 0
+
+  .schedule-toolbar-input
+    min-width: 170px
+
+  .schedule-toolbar-select-outer
+    width: 180px
 
 .gold
   color: gold
