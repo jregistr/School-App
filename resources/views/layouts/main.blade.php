@@ -27,7 +27,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-default hidden-lg hidden-md hidden-sm" role="navigation" style="margin-bottom: 0">
+<nav class="nav-mobile-only navbar navbar-default hidden-lg hidden-md hidden-sm" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
         <button id="small-nav-toggle" type="button" class="navbar-toggle active" data-toggle="collapse" data-target="#navbar-collapse-1">
             <span class="sr-only">Toggle navigation</span>
