@@ -1,8 +1,24 @@
-import {Course, Meeting, Section} from "../data/interfaces";
+import {Course, Meeting, Section, Week} from "../data/interfaces";
 import * as moment from 'moment';
 import {MeetingDaysComponent} from "./meetdays";
 import {AddedSectionComponent} from "./addedSection";
 import {clearInputs, headers} from "../common/functions";
+
+interface PreFiled {
+    name: string,
+    credits: number,
+    crn: number,
+    instructor: string,
+    location: string,
+    start: string,
+    end: string,
+    week: Week
+}
+
+interface Options {
+    commit?: boolean,
+    preFiled?: PreFiled
+}
 
 /**
  * Re-usable add course form component.
@@ -18,6 +34,7 @@ export class AddCourseComponent {
     private days: MeetingDaysComponent;
     private sectionLimit: number | null = null;
     private increment: number = 0;
+    private options: Options | null;
 
     private sections: AddedSectionComponent[] = [];
 
@@ -26,9 +43,11 @@ export class AddCourseComponent {
      * @param parent - The parent object to house the elements this class generates.
      * @param postSubmit - Callback after a course has been successfully created.
      * @param sectionLimit - The max allowed number of sections.
+     * @param options - Optional additional options.
      */
     constructor(parent: JQuery | string, postSubmit: (course: Course, sections: Section[]) => void,
-                sectionLimit?: number) {
+                sectionLimit?: number, options: Options | null = null) {
+        this.options = options;
         this.postSubmit = postSubmit;
         if (sectionLimit != null) {
             this.sectionLimit = sectionLimit;
@@ -47,7 +66,8 @@ export class AddCourseComponent {
 
         const daysParent = $('<div class="form-group row"></div>');
         this.addSectionForm.append(daysParent);
-        this.days = new MeetingDaysComponent(true, daysParent);
+        this.days = this.options && this.options.preFiled ? new MeetingDaysComponent(true, daysParent,
+            this.options.preFiled.week) : new MeetingDaysComponent(true, daysParent);
 
         this.addSectionBtnForm = AddCourseComponent.createAddSectionBtnForm(this.addSectionBtnClicked.bind(this));
         parentEl.append(this.addSectionBtnForm);
@@ -149,22 +169,34 @@ export class AddCourseComponent {
     private onSubmitCourse(): void {
         const queryData = this.collectCourseData();
         if (queryData != null) {
-            $.ajax({
-                headers,
-                url: '/api/course',
-                method: 'POST',
-                data: {
-                    student_id: window['student_id'],
+            if (this.options == null || (this.options && this.options.commit)) {
+                $.ajax({
+                    headers,
+                    url: '/api/course',
+                    method: 'POST',
+                    data: {
+                        student_id: window['student_id'],
+                        name: queryData.name,
+                        credits: queryData.credits,
+                        crn: queryData.crn
+                    }
+                }).done(response => {
+                    const sections = queryData.sections;
+                    this.sendSections(sections, <Course>response.data['course']);
+                }).fail((jqXhr, status) => {
+                    alert(status);
+                })
+            } else {
+                const course: Course = {
+                    id: 0,
                     name: queryData.name,
                     credits: queryData.credits,
-                    crn: queryData.crn
-                }
-            }).done(response => {
-                const sections = queryData.sections;
-                this.sendSections(sections, <Course>response.data['course']);
-            }).fail((jqXhr, status) => {
-                alert(status);
-            })
+                    crn: queryData.crn,
+                    sections: queryData.sections,
+                    school_id: 0
+                };
+                this.postSubmit(course, course.sections);
+            }
         }
     }
 
@@ -279,17 +311,20 @@ export class AddCourseComponent {
         return course;
     }
 
-    private static createCourseForm(): JQuery {
+    private static createCourseForm(options: Options | null = null): JQuery {
+        const prefiled: PreFiled | null = options && options.preFiled ? options.preFiled : null;
         return $(`
             <form class="form-horizontal" role="form">
                 <div class="form-group row">
                     <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Subject</label>
-                        <input class="form-control" type="text" name="subj" placeholder="CSC">
+                        <input value="${prefiled ? prefiled.name.split(" ")[0] : ''}" 
+                        class="form-control" type="text" name="subj" placeholder="CSC">
                     </div>
                     <div class="col-lg-7 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Number</label>
-                        <input class="form-control" type="number" min="0" max="99999" step="1" name="number" 
+                        <input value="${prefiled ? prefiled.name.split(" ")[1] : ''}"
+                        class="form-control" type="number" min="0" max="99999" step="1" name="number" 
                             placeholder="495">
                     </div>
                 </div>
@@ -298,12 +333,14 @@ export class AddCourseComponent {
                 <div class="form-group row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">crn</label>
-                        <input class="form-control col-lg-12" type="number" min="0" max="99999" step="1" name="crn"
+                        <input value="${prefiled ? prefiled.crn : ''}"
+                        class="form-control col-lg-12" type="number" min="0" max="99999" step="1" name="crn"
                                placeholder="11111">
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Credits</label>
-                        <input class="form-control col-lg-12" type="number" name="credits" min="0" max="99" value="3"
+                        <input class="form-control col-lg-12" type="number" name="credits" min="0" max="99" 
+                        value="${prefiled ? prefiled.credits : '3'}"
                                placeholder="3">
                     </div>
                 </div>
@@ -311,17 +348,20 @@ export class AddCourseComponent {
           `);
     }
 
-    private static createAddSectionForm(): JQuery {
+    private static createAddSectionForm(options: Options | null = null): JQuery {
+        const prefiled: PreFiled | null = options && options.preFiled ? options.preFiled : null;
         const outer = $(`
             <form class="form-horizontal" role="form">
                 <div class="form-group row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Instructor</label>
-                        <input class="form-control col-lg-12" type="text" name="inst" placeholder="optional">
+                        <input value="${prefiled ? prefiled.instructor : ''}"
+                        class="form-control col-lg-12" type="text" name="inst" placeholder="optional">
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <label class="col-lg-12">Location</label>
-                        <input class="form-control col-lg-12" type="text" name="loc" placeholder="optional">
+                        <input value="${prefiled ? prefiled.location : ''}"
+                        class="form-control col-lg-12" type="text" name="loc" placeholder="optional">
                     </div>
                 </div>
             </form>
@@ -345,8 +385,10 @@ export class AddCourseComponent {
             </div>
         `);
 
-        const startTime = $(`<input type='text' name="start" class="form-control" />`);
-        const endTime = $(`<input type='text' name="end" class="form-control" />`);
+        const startTime = $(`<input value="${prefiled ? prefiled.start : ''}" 
+                type='text' name="start" class="form-control" />`);
+        const endTime = $(`<input value="${prefiled ? prefiled.end : ''}"
+                type='text' name="end" class="form-control" />`);
 
         startTime.datetimepicker({
             format: 'LT'
@@ -354,10 +396,6 @@ export class AddCourseComponent {
         endTime.datetimepicker({
             format: 'LT',
             useCurrent: false
-        });
-
-        startTime.on('dp.change', (e) => {
-            endTime.data("DateTimePicker").minDate(e.date);
         });
 
         endTime.on("dp.change", function (e) {

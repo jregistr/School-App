@@ -34,6 +34,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+
     <div id="scheduleToolbarParent" class="container-fluid schedule-page">
 
     </div>

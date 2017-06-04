@@ -15,23 +15,43 @@ interface Event {
     professors?: string
 }
 
+interface Changes {
+    newCourses: ScheduledCourse[],
+    changedCourses: ScheduledCourse[]
+}
+
 export class ScheduleRendererComponent implements Component {
 
     parent: JQuery;
     private _schedule: Schedule | null;
     private courses: ScheduledCourse[] = [];
-    private editMode: boolean = false;
+    private editMode: boolean = true;
+    private changes: Changes = {newCourses: [], changedCourses: []};
+
+    private editBar: JQuery;
 
     constructor(parent: JQuery) {
         this.parent = parent;
+        this.editBar = ScheduleRendererComponent.makeEditBar(() => {
+            console.log(this);
+        });
         this.render();
     }
 
     public render(): void {
         this.parent.show();
         this.parent.empty();
+        this.parent.append(this.editBar);
+
         const outer = ScheduleRendererComponent.makeOuter();
         this.parent.append(outer);
+
+        if (this.editMode) {
+            this.editBar.show();
+        } else {
+            this.editBar.hide();
+        }
+
         if (this._schedule == null) {
             const config = ScheduleRendererComponent.basicConfig();
             outer.fullCalendar(config);
@@ -174,6 +194,32 @@ export class ScheduleRendererComponent implements Component {
 
     private static makeOuter(): JQuery {
         return $(`<div class="schedule-render-outer"></div>`);
+    }
+
+    private static makeEditBar(onButtonClick: () => void): JQuery {
+        const outer = $(`<div style="display: none;" class="container-fluid schedule-render-outer schedule-render-edit-group"></div>`);
+        outer.append($(`<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"></div>`));
+        const alertOuter1 = $(`<div style="padding-right: 5px!important;" class="col-lg-6 col-md-6 col-sm-6 hidden-xs"></div>`);
+        const btnOuter = $(`<div class="col-lg-2 col-md-2 col-sm-2 col-xs-8"></div>`);
+        const alertOuter2 = $(`<div class="hidden-lg hidden-md hidden-sm col-xs-12"></div>`);
+
+        outer.append(alertOuter1);
+        outer.append(btnOuter);
+        outer.append(alertOuter2);
+
+        const alert = $(`
+            <div class="alert alert-info alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Info!</strong> Click on a course to edit it.
+            </div>
+        `);
+
+        const btn = $(`<button class="btn btn-default form-control">Add a <strong>Course</strong></button>`);
+        btn.on('click', onButtonClick);
+        alertOuter1.append(alert);
+        alertOuter2.append(alert.clone());
+        btnOuter.append(btn);
+        return outer;
     }
 
     private static basicConfig(): any {

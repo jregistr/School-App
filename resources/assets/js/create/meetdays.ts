@@ -13,7 +13,7 @@ export class MeetingDaysComponent {
         this.editable = editable;
         this.parent = typeof (parent) == "string" ? $('#' + parent) : parent;
         if (week != null) {
-            this.week = week;
+            this.week = Object.assign({}, week);
         } else {
             this.week = {
                 sunday: 0,
