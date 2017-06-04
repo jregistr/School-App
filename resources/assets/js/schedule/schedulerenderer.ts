@@ -17,7 +17,8 @@ interface Event {
 
 interface Changes {
     newCourses: ScheduledCourse[],
-    changedCourses: ScheduledCourse[]
+    changedCourses: ScheduledCourse[],
+    renderList: ScheduledCourse[]
 }
 
 export class ScheduleRendererComponent implements Component {
@@ -26,13 +27,13 @@ export class ScheduleRendererComponent implements Component {
     private _schedule: Schedule | null;
     private courses: ScheduledCourse[] = [];
     private editMode: boolean = true;
-    private changes: Changes = {newCourses: [], changedCourses: []};
+    private changes: Changes = {newCourses: [], changedCourses: [], renderList: []};
 
     private editBar: JQuery;
 
     constructor(parent: JQuery) {
         this.parent = parent;
-        this.editBar = ScheduleRendererComponent.makeEditBar(() => {
+        this.editBar = ScheduleRendererComponent.makeEditBar((createNew: boolean) => {
             console.log(this);
         });
         this.render();
@@ -196,7 +197,7 @@ export class ScheduleRendererComponent implements Component {
         return $(`<div class="schedule-render-outer"></div>`);
     }
 
-    private static makeEditBar(onButtonClick: () => void): JQuery {
+    private static makeEditBar(onButtonClick: (createNew: boolean) => void): JQuery {
         const outer = $(`<div style="display: none;" class="container-fluid schedule-render-outer schedule-render-edit-group"></div>`);
         outer.append($(`<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"></div>`));
         const alertOuter1 = $(`<div style="padding-right: 5px!important;" class="col-lg-6 col-md-6 col-sm-6 hidden-xs"></div>`);
@@ -214,11 +215,20 @@ export class ScheduleRendererComponent implements Component {
             </div>
         `);
 
-        const btn = $(`<button class="btn btn-default form-control">Add a <strong>Course</strong></button>`);
-        btn.on('click', onButtonClick);
+        const dropOuter = $(`<div class="dropdown"></div>`);
+        const dropBtn = $(`<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+            <span>Schedule Actions</span>
+            <span class="pull-right"><span class="caret"></span></span>
+        </button>`);
+
+        const createNew = $(`<a href="#"><b>New</b> course</a>`);
+        const fromList = $(`<a href="#">Add from <i>course list</i></a>`);
+
+        // const btn = $(`<button class="btn btn-default form-control">Add a <strong>Course</strong></button>`);
+        // btn.on('click', onButtonClick);
         alertOuter1.append(alert);
         alertOuter2.append(alert.clone());
-        btnOuter.append(btn);
+        // btnOuter.append(btn);
         return outer;
     }
 
