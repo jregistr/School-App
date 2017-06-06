@@ -416,8 +416,8 @@ export class AddCourseComponent {
             useCurrent: false
         });
 
-        endTime.on("dp.change", function (e) {
-            startTime.data("DateTimePicker").maxDate(e.date);
+        startTime.on('dp.change', (e) => {
+            endTime.data("DateTimePicker").minDate(e.date);
         });
 
         startOuter.append(startTime);

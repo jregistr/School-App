@@ -1,9 +1,12 @@
 import {Component} from "../data/component";
-import {Course, Meeting, Schedule, ScheduledCourse, ScheduledSection, Section} from "../data/interfaces";
+import {Course, Meeting, Schedule, ScheduledCourse, ScheduledSection, Section, Week} from "../data/interfaces";
 import {headers} from "../common/functions";
 import {default as moment, Moment} from "moment";
 import {sendScheduleUpdates} from "./updater";
 import {AddCourseComponent} from "../create/addcourse";
+import {transcribe} from "../common/transcribe";
+import {ViewCoursesComponent} from "../create/viewcourses";
+import {ViewSectionsComponent} from "../create/viewSections";
 
 interface Event {
     title: string,
@@ -45,7 +48,7 @@ export class ScheduleRendererComponent implements Component {
 
     private alert: JQuery;
 
-    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery, listModal:JQuery) {
+    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery, listModal: JQuery) {
         this.parent = parent;
         this.confirmModal = confirmModal;
         this.addEditModal = addEditModal;
@@ -67,6 +70,7 @@ export class ScheduleRendererComponent implements Component {
                 const mBody = this.addEditModal.find('div[class="modal-body"]');
                 mBody.empty();
                 new AddCourseComponent(mBody, (course, sections) => {
+                    this.addEditModal.modal('hide');
                     this.addCourseToSchedule(course, sections);
                 }, 1, {
                     commit: false
@@ -235,6 +239,7 @@ export class ScheduleRendererComponent implements Component {
                         week: Object.assign({}, meeting.week)
                     };
                     new AddCourseComponent(mBody, (course, sections) => {
+                        this.addEditModal.modal('hide');
                         self.submitEditCourse(course, sections, event.courseId, event.sectionId, event.meetingId);
                     }, 1, {
                         commit: false,
@@ -256,7 +261,7 @@ export class ScheduleRendererComponent implements Component {
     }
 
     private addCourseToSchedule(course: Course, sections: Section[]): void {
-        const trans = ScheduleRendererComponent.transcribe(course, sections);
+        const trans = transcribe(course, sections);
         this.onAddCourse(trans);
         // if (addNewCourse) {
         //     this.onAddCourse(trans);
@@ -266,7 +271,7 @@ export class ScheduleRendererComponent implements Component {
     }
 
     private submitEditCourse(course: Course, sections: Section[], cId: number, sId: number, mId: number): void {
-        const trans = ScheduleRendererComponent.transcribe(course, sections);
+        const trans = transcribe(course, sections);
         trans.id = cId;
         trans.section.id = sId;
         trans.section.meeting.id = mId;
@@ -289,31 +294,44 @@ export class ScheduleRendererComponent implements Component {
 
     private onAddCourse(course: ScheduledCourse): void {
         const c = this.changes;
-        c.renderList.push(course);
-        c.newCourses.push(course);
-        this.render();
+        const conflict = ScheduleRendererComponent.findConflict(course, c.renderList);
+        console.log(conflict);
+        if (conflict == null) {
+            c.renderList.push(course);
+            c.newCourses.push(course);
+            this.render();
+        } else {
+            console.log(conflict.section.meeting);
+            alert('There is a time conflict');
+        }
     }
 
     private onEditCourse(course: ScheduledCourse): void {
-        const predicate: (c: ScheduledCourse) => boolean = (c => c.id == course.id
-        && c.section.id == course.section.id &&
-        c.section.meeting.id == course.section.id);
+        const conflict = ScheduleRendererComponent.findConflict(course, this.changes.renderList);
+        if (conflict == null) {
+            const predicate: (c: ScheduledCourse) => boolean = (c => c.id == course.id
+            && c.section.id == course.section.id &&
+            c.section.meeting.id == course.section.meeting.id);
 
-        const indexInRender = this.changes.renderList.findIndex(predicate);
-        this.changes.renderList[indexInRender] = course;
 
-        const indexInNew = this.changes.newCourses.findIndex(predicate);
-        if (indexInNew != -1) {
-            this.changes.newCourses[indexInNew] = course;
-        } else {
-            const indexInEdit = this.changes.changedCourses.findIndex(predicate);
-            if (indexInEdit != -1) {
-                this.changes.changedCourses[indexInEdit] = course;
+            const indexInRender = this.changes.renderList.findIndex(predicate);
+            this.changes.renderList[indexInRender] = course;
+
+            const indexInNew = this.changes.newCourses.findIndex(predicate);
+            if (indexInNew != -1) {
+                this.changes.newCourses[indexInNew] = course;
             } else {
-                this.changes.changedCourses.push(course);
+                const indexInEdit = this.changes.changedCourses.findIndex(predicate);
+                if (indexInEdit != -1) {
+                    this.changes.changedCourses[indexInEdit] = course;
+                } else {
+                    this.changes.changedCourses.push(course);
+                }
             }
+            this.render();
+        } else {
+            alert('There is a time conflict');
         }
-        this.render();
     }
 
     private onDeleteCourse(cId: number, sId: number, mId: number): void {
@@ -365,8 +383,30 @@ export class ScheduleRendererComponent implements Component {
         return events;
     }
 
-    private initAddFromList(addFromListModal: JQuery): void {
+    private initAddFromList(listModal: JQuery): void {
+        const sectionsTab = $('#sections');
+        const self = this;
 
+        const sectionsTabActiv = listModal.find('a[href="#sections"]');
+
+        function onCourseRowClick(course: Course): void {
+            sectionsTabActiv.tab('show');
+            viewSections.course = course;
+        }
+
+        function onAddSectionClick(scheduledCourse: ScheduledCourse): void {
+            listModal.modal('hide');
+            self.onAddCourse(scheduledCourse);
+        }
+
+        new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),
+            onCourseRowClick.bind(this), $('#courseInfoModal'), 'viewCoursesToolbar', {
+                addNew: false,
+                perPage: 5
+            });
+
+        const viewSections = new ViewSectionsComponent(sectionsTab, 'viewSectionsToolbar',
+            onAddSectionClick.bind(this));
     }
 
     private static makeEvent(course: ScheduledCourse, refDay: Moment): Event {
@@ -457,23 +497,43 @@ export class ScheduleRendererComponent implements Component {
         };
     }
 
-    private static transcribe(course: Course, sections: Section[]): ScheduledCourse {
-        const s = sections[0];
-        const meeting = s.meetings[0];
-        const section: ScheduledSection = {
-            id: s.id,
-            course_id: s.course_id,
-            instructors: s.instructors,
-            meeting: meeting
-        };
-        return {
-            id: course.id,
-            name: course.name,
-            school_id: course.school_id,
-            credits: course.credits,
-            crn: course.crn,
-            section: section
+    private static findConflict(course: ScheduledCourse, list: ScheduledCourse[]): ScheduledCourse | null {
+        const form = 'HH:mm';
+        let result: ScheduledCourse | null = null;
+        const bMeeting = course.section.meeting;
+        const bStart: Moment = moment(bMeeting.start, form);
+        const bEnd: Moment = moment(bMeeting.end, form);
+
+        for (let i = 0; i < list.length; i++) {
+            const compareCourse = list[i];
+            const cMeeting = compareCourse.section.meeting;
+            if (compareCourse.id !== course.id && compareCourse.section.id !== course.section.id &&
+                bMeeting.id !== cMeeting.id) {
+                const cStart = moment(cMeeting.start, form);
+                const cEnd = moment(cMeeting.end, form);
+
+                if (bStart.isBetween(cStart, cEnd) || bEnd.isBetween(cStart, cEnd)) {
+                    if (ScheduleRendererComponent.dayMatch(cMeeting.week, bMeeting.week)) {
+                        result = compareCourse;
+                        break;
+                    }
+                }
+            } else {
+                result = compareCourse;
+            }
         }
+        return result;
+    }
+
+    private static dayMatch(a: Week, b: Week): boolean {
+        const a1 = a.sunday == 1 && b.sunday == 1,
+            a2 = a.monday == 1 && b.monday == 1,
+            a3 = a.tuesday == 1 && b.tuesday == 1,
+            a4 = a.wednesday == 1 && b.wednesday == 1,
+            a5 = a.thursday == 1 && b.thursday == 1,
+            a6 = a.friday == 1 && b.friday == 1,
+            a7 = a.saturday == 1 && b.saturday == 1;
+        return a1 || a2 || a3 || a4 || a5 || a6 || a7;
     }
 
 }

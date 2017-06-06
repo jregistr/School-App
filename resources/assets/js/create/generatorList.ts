@@ -37,8 +37,9 @@ export class GeneratorListComponent implements Component {
         });
     }
 
-    public addToGenList(sectionId: number, meetingId: number) {
-        this.updateQuery('PUT', {section_id: sectionId, meeting_id: meetingId});
+    public addToGenList(scheduledCourse:ScheduledCourse) {
+        this.updateQuery('PUT', {section_id: scheduledCourse.section.id,
+            meeting_id: scheduledCourse.section.meeting.id});
     }
 
     render(): void {

@@ -1,23 +1,34 @@
 import {Component} from "../data/component";
-import {Course, Section} from "../data/interfaces";
+import {Course, ScheduledCourse, Section} from "../data/interfaces";
 import {headers} from "../common/functions";
 import {renderMeetDaysDisplay} from "./renderMeetDisplay";
 import * as moment from "moment";
+import {transcribe} from "../common/transcribe";
 
 export class ViewSectionsComponent implements Component {
 
     parent: JQuery;
     private _course: Course;
     private table: JQuery;
-    private toolbar:JQuery;
+    private toolbar: JQuery;
 
-    constructor(parent: JQuery, toolbarId: string, addToGenerator: (sectionId: number, meetingId: number) => void) {
+    constructor(parent: JQuery, toolbarId: string,
+                addToGenerator: (scheduledCourse: ScheduledCourse) => void) {
         this.parent = parent;
 
         this.table = ViewSectionsComponent.createTableElem();
         this.parent.append(this.table);
+        const self = this;
         window['addSectionToGenListWindowFunction'] = (function (sectionId: number, meetingId: number) {
-            addToGenerator(sectionId, meetingId);
+            const sections: Section[] = (self.table.bootstrapTable('getData'));
+            const section = (sections.find(s => s.course_id == self._course.id && s.id == sectionId))!!;
+            const meeting = (section.meetings.find(m => m.id == meetingId))!!;
+
+            const temp: Section = Object.assign({}, section);
+            temp.meetings = [meeting];
+
+            const trans = transcribe(self._course, [temp]);
+            addToGenerator(trans);
         });
         const toolbar = $(`
             <div id="${toolbarId}" class="text">

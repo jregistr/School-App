@@ -4,6 +4,11 @@ import {Component} from "../data/component";
 import {SearchDropdownComponent} from "../common/searchdropdown";
 import {AddCourseComponent} from "./addcourse";
 
+interface Options {
+    addNew: boolean,
+    perPage: number
+}
+
 export class ViewCoursesComponent implements Component {
 
     parent: JQuery;
@@ -12,12 +17,14 @@ export class ViewCoursesComponent implements Component {
     private courses: Course[];
     private searchMenu: SearchDropdownComponent<{ name: string }>;
     private onRowClicked: (course: Course) => void;
+    private options: Options | null = null;
 
     constructor(parent: JQuery, onRowClicked: (course: Course) => void,
-                modal: JQuery, toolbarId: string = 'tableToolbar') {
+                modal: JQuery, toolbarId: string = 'tableToolbar', options: Options | null = null) {
         this.parent = parent;
         this.table = ViewCoursesComponent.createTableElem();
         this.onRowClicked = onRowClicked;
+        this.options = options;
 
         this.parent.append($(`<div></div>`).append(this.table));
         const tb = ViewCoursesComponent.createToolbar(toolbarId);
@@ -26,13 +33,15 @@ export class ViewCoursesComponent implements Component {
         this.searchMenu = new SearchDropdownComponent<{ name: string }>(tb, this.onSubjectSelect.bind(this));
 
         const btToolbar = parent.find('div[class="columns columns-right btn-group pull-right"]');
-        const addNewBtn = $(`<button class="btn btn-default">Create</button>`);
-        btToolbar.prepend(addNewBtn);
+        if (!options || (options && options.addNew)) {
+            const addNewBtn = $(`<button class="btn btn-default">Create</button>`);
+            btToolbar.prepend(addNewBtn);
 
-        addNewBtn.on('click', (e) => {
-            e.preventDefault();
-            this.showAddCourseModal(modal);
-        });
+            addNewBtn.on('click', (e) => {
+                e.preventDefault();
+                this.showAddCourseModal(modal);
+            });
+        }
         this.loadData();
     }
 
@@ -80,7 +89,7 @@ export class ViewCoursesComponent implements Component {
         this.table.bootstrapTable({
             striped: true,
             pagination: true,
-            pageSize: 20,
+            pageSize: self.options ? self.options.perPage : 20,
             toolbar: '#' + toolbarId,
             showRefresh: true,
             showToggle: true,

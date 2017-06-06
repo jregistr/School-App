@@ -1,22 +1,19 @@
 import {ViewCoursesComponent} from "../create/viewcourses";
-import {Course} from "../data/interfaces";
+import {Course, ScheduledCourse} from "../data/interfaces";
 import {GeneratorListComponent} from "../create/generatorList";
 import {ViewSectionsComponent} from "../create/viewSections";
 
 class CreateProgram {
 
     private static _instance: CreateProgram;
-
-    // private coursesTab = $('a[href="#courses"]');
     private sectionsTab = $('a[href="#sections"]');
-    // private generateTab = $('a[href="#added"]');
 
     private generatorList: GeneratorListComponent;
     private viewCourses: ViewCoursesComponent;
     private viewSections: ViewSectionsComponent;
 
-
     private constructor() {
+
     }
 
     static get instance(): CreateProgram {
@@ -48,8 +45,8 @@ class CreateProgram {
         this.viewSections.course = course;
     }
 
-    private addToGenerate(sectionId: number, meetingId: number): void {
-        this.generatorList.addToGenList(sectionId, meetingId);
+    private addToGenerate(scheduledCourse:ScheduledCourse): void {
+        this.generatorList.addToGenList(scheduledCourse);
     }
 
 }
