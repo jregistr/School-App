@@ -43,10 +43,9 @@ export class ScheduleRendererComponent implements Component {
     private editMode: boolean = false;
     private clickMode: ClickMode = ClickMode.NONE;
 
-    private al1: JQuery;
-    private al2: JQuery;
+    private alert: JQuery;
 
-    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery) {
+    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery, listModal:JQuery) {
         this.parent = parent;
         this.confirmModal = confirmModal;
         this.addEditModal = addEditModal;
@@ -59,18 +58,24 @@ export class ScheduleRendererComponent implements Component {
             );
         });
 
+        this.initAddFromList(listModal);
+
         const editBar = ScheduleRendererComponent.makeEditBar((action: number) => {
             if (action == 0) {//add new
+                this.hideAlert();
+                this.clickMode = ClickMode.NONE;
                 const mBody = this.addEditModal.find('div[class="modal-body"]');
                 mBody.empty();
                 new AddCourseComponent(mBody, (course, sections) => {
-                    this.onCourseFormSubmit(course, sections, true);
+                    this.addCourseToSchedule(course, sections);
                 }, 1, {
                     commit: false
                 });
                 addEditModal.modal('show');
             } else if (action == 1) {//from list
-
+                this.hideAlert();
+                this.clickMode = ClickMode.NONE;
+                listModal.modal('show');
             } else if (action == 2) {//edit
                 this.clickMode = ClickMode.EDIT;
                 this.showAlert('Click on a course to edit it.');
@@ -84,27 +89,16 @@ export class ScheduleRendererComponent implements Component {
         this.editBarParent = editBarParent;
         this.editBarParent.hide();
 
-        const alert = $(`
+        const alrt = this.alert = $(`
             <div class="alert alert-info alert-dismissable">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <text><strong>Info!</strong> Click on a course to edit it.</text>
             </div>
         `);
+        alrt.hide();
 
-        const alerts = [alert, alert.clone()];
-        this.al1 = alerts[0];
-        this.al2 = alerts[1];
-        this.al1.hide();
-        this.al2.hide();
-
-        const alertOuters = this.editBarParent.find('div[data-tag="1"]');
-        alertOuters.each((i, a) => {
-            $(a).append(alerts[i])
-        });
-
-        alert.on('click', e => {
-            console.log('BALLLOCKS')
-        });
+        const alertOuter = this.editBarParent.find('div[data-tag="1"]');
+        alertOuter.append(alrt);
 
         this.render();
     }
@@ -220,7 +214,6 @@ export class ScheduleRendererComponent implements Component {
     private onEventClick(event: Event): void {//event: Event, jsEvent: any, view: any
         if (this.editMode) {
             if (this.clickMode == ClickMode.EDIT) {
-                console.log('i am here');
                 const self = this;
                 const mBody = this.addEditModal.find('div[class="modal-body"]');
                 mBody.empty();
@@ -228,7 +221,6 @@ export class ScheduleRendererComponent implements Component {
                         c => c.id == event.courseId
                         && c.section.id == event.sectionId && c.section.meeting.id == event.meetingId
                     ) || null;
-
                 if (toEdit != null) {
                     const section = toEdit.section;
                     const meeting = section.meeting;
@@ -243,7 +235,7 @@ export class ScheduleRendererComponent implements Component {
                         week: Object.assign({}, meeting.week)
                     };
                     new AddCourseComponent(mBody, (course, sections) => {
-                        self.onCourseFormSubmit(course, sections, false);
+                        self.submitEditCourse(course, sections, event.courseId, event.sectionId, event.meetingId);
                     }, 1, {
                         commit: false,
                         preFiled: prefiled
@@ -263,44 +255,87 @@ export class ScheduleRendererComponent implements Component {
         }
     }
 
-    private onCourseFormSubmit(course: Course, sections: Section[], addNewCourse: boolean): void {
+    private addCourseToSchedule(course: Course, sections: Section[]): void {
         const trans = ScheduleRendererComponent.transcribe(course, sections);
-        if (addNewCourse) {
-            this.onAddCourse(trans);
-        } else {
-            this.onEditCourse(trans);
-        }
+        this.onAddCourse(trans);
+        // if (addNewCourse) {
+        //     this.onAddCourse(trans);
+        // } else {
+        //     this.onEditCourse(trans);
+        // }
+    }
+
+    private submitEditCourse(course: Course, sections: Section[], cId: number, sId: number, mId: number): void {
+        const trans = ScheduleRendererComponent.transcribe(course, sections);
+        trans.id = cId;
+        trans.section.id = sId;
+        trans.section.meeting.id = mId;
+        this.onEditCourse(trans);
     }
 
     private showAlert(message: string): void {
-        this.al1.show();
-        this.al2.show();
-        [this.al1.find('text'), this.al2.find('text')].forEach(t => {
-            t.empty();
-            t.append(`<strong>Info!</strong> ${message}`);
-        });
+        this.parent.addClass('clickMode');
+        // this.alert.show();
+        // const text = this.alert.find('text');
+        // text.empty();
+        // text.append(`<strong>Info!</strong> ${message}`);
     }
 
     private hideAlert(): void {
-        this.al1.hide();
-        this.al2.hide();
+        this.parent.removeClass('clickMode');
+        // this.alert.hide();
+        // this.alert.hide();
     }
 
     private onAddCourse(course: ScheduledCourse): void {
-        console.log(course);
+        const c = this.changes;
+        c.renderList.push(course);
+        c.newCourses.push(course);
+        this.render();
     }
 
     private onEditCourse(course: ScheduledCourse): void {
-        console.log(course);
+        const predicate: (c: ScheduledCourse) => boolean = (c => c.id == course.id
+        && c.section.id == course.section.id &&
+        c.section.meeting.id == course.section.id);
+
+        const indexInRender = this.changes.renderList.findIndex(predicate);
+        this.changes.renderList[indexInRender] = course;
+
+        const indexInNew = this.changes.newCourses.findIndex(predicate);
+        if (indexInNew != -1) {
+            this.changes.newCourses[indexInNew] = course;
+        } else {
+            const indexInEdit = this.changes.changedCourses.findIndex(predicate);
+            if (indexInEdit != -1) {
+                this.changes.changedCourses[indexInEdit] = course;
+            } else {
+                this.changes.changedCourses.push(course);
+            }
+        }
+        this.render();
     }
 
     private onDeleteCourse(cId: number, sId: number, mId: number): void {
-        const courseIndex = this.changes.renderList.findIndex(c => c.id == cId && c.section.id == sId &&
+        const predicate: (c: ScheduledCourse) => boolean = (c => c.id == cId && c.section.id == sId &&
         c.section.meeting.id == mId);
+
+        const courseIndex = this.changes.renderList.findIndex(predicate);
+        const indexInEdits = this.changes.changedCourses.findIndex(predicate);
+        const indexInNew = this.changes.newCourses.findIndex(predicate);
+
+        if (indexInEdits != -1) {
+            this.changes.changedCourses.splice(indexInEdits, 1);
+        }
+
+        if (indexInNew != -1) {
+            this.changes.newCourses.splice(indexInNew, 1);
+        }
 
         const course = this.changes.renderList[courseIndex];
         this.changes.renderList.splice(courseIndex, 1);
         this.changes.deletedCourses.push(course);
+
         this.render();
     }
 
@@ -328,6 +363,10 @@ export class ScheduleRendererComponent implements Component {
             });
         });
         return events;
+    }
+
+    private initAddFromList(addFromListModal: JQuery): void {
+
     }
 
     private static makeEvent(course: ScheduledCourse, refDay: Moment): Event {
@@ -375,40 +414,29 @@ export class ScheduleRendererComponent implements Component {
     }
 
     private static makeEditBar(onDropdownClick: (action: number) => void): JQuery {
-        const outer = $(`<div style="" 
-            class="schedule-render-edit-group"></div>`);
-        outer.append($(`<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"></div>`));
-        const alertOuter1 = $(`<div data-tag="1" style="padding-right: 5px!important;" 
-            class="col-lg-6 col-md-6 col-sm-6 hidden-xs"></div>`);
-        const btnOuter = $(`<div class="col-lg-2 col-md-2 col-sm-2 col-xs-8 schedule-render-col"></div>`);
-        const alertOuter2 = $(`<div data-tag="1" class="hidden-lg hidden-md hidden-sm col-xs-12"></div>`);
+        const outer = $(`<div class="schedule-render-edit-group"></div>`);
+        outer.append($(`<div class="hidden-lg hidden-md col-sm-7 hidden-xs"></div>`));
 
-        outer.append(alertOuter1);
-        outer.append(btnOuter);
-        outer.append(alertOuter2);
+        const alertOuter = $(`<div data-tag="1" class="col-lg-5 col-md-5 col-sm-5 col-xs-12"></div>`);
+        const btnGroupOuter = $(`<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12"></div>`);
+        outer.append(alertOuter);
+        outer.append(btnGroupOuter);
 
-        const dropOuter = $(`<div class="dropdown"></div>`);
-        const dropBtn = $(`<button style="width: 100%!important;" class="btn btn-default dropdown-toggle" type="button" 
-            data-toggle="dropdown">
-            <span>Edit Actions</span>
-            <span class="pull-right"><span class="caret"></span></span>
-        </button>`);
+        const btnGroup = $(`<div class="btn-group pull-right"></div>`);
+        btnGroupOuter.append(btnGroup);
 
-        const createNew = $(`<a style="cursor:pointer;" >Add <b>New</b> course</a>`);
-        const fromList = $(`<a style="cursor:pointer;">Add from <b>course list</b></a>`);
-        const editSchedule = $(`<a style="cursor:pointer;">Edit a course</a>`);
-        const deleteSchedule = $(`<a style="cursor:pointer;">Delete a course</a>`);
+        const createNew = $(`<button class="btn btn-default">Add new</button>`);
+        const fromList = $(`<button class="btn btn-default">Add from <b>List</b></button>`);
+        const edit = $(`<button class="btn btn-default">Edit</button>`);
+        const deleteCourse = $(`<button class="btn btn-default">Delete</button>`);
 
-        dropOuter.append(dropBtn);
-        const ul = $(`<ul style="width: 100%!important;" class="dropdown-menu" role="menu"></ul>`);
-        [createNew, fromList, editSchedule, deleteSchedule].forEach((c, i) => {
-            ul.append($(`<li></li>`).append(c));
+        [createNew, fromList, edit, deleteCourse].forEach((c, i) => {
+            btnGroup.append(c);
             c.on('click', () => {
                 onDropdownClick(i);
             })
         });
-        dropOuter.append(ul);
-        btnOuter.append(dropOuter);
+
         return outer;
     }
 
@@ -430,7 +458,22 @@ export class ScheduleRendererComponent implements Component {
     }
 
     private static transcribe(course: Course, sections: Section[]): ScheduledCourse {
-        throw new Error('not implemented');
+        const s = sections[0];
+        const meeting = s.meetings[0];
+        const section: ScheduledSection = {
+            id: s.id,
+            course_id: s.course_id,
+            instructors: s.instructors,
+            meeting: meeting
+        };
+        return {
+            id: course.id,
+            name: course.name,
+            school_id: course.school_id,
+            credits: course.credits,
+            crn: course.crn,
+            section: section
+        }
     }
 
 }

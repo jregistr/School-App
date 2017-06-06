@@ -20,6 +20,24 @@ interface Options {
     preFiled?: PreFiled
 }
 
+class Counter {
+    private static _cID: number = 0;
+    private static _sID: number = 0;
+    private static _mID: number = 0;
+
+    static get cId(): number {
+        return ++Counter._cID;
+    }
+
+    static get sId(): number {
+        return ++Counter._sID;
+    }
+
+    static get mId(): number {
+        return ++Counter._mID;
+    }
+}
+
 /**
  * Re-usable add course form component.
  */
@@ -54,14 +72,14 @@ export class AddCourseComponent {
         }
 
         const parentEl = typeof (parent) == "string" ? $('#' + parent) : parent;
-        this.courseForm = AddCourseComponent.createCourseForm();
+        this.courseForm = AddCourseComponent.createCourseForm(options);
 
         parentEl.append(this.courseForm);
         this.sectionsLabel = $(`<h3>Sections</h3>`);
         parentEl.append(this.sectionsLabel);
         this.sectionsParentEl = $('<div class="panel-group"></div>');
         parentEl.append(this.sectionsParentEl);
-        this.addSectionForm = AddCourseComponent.createAddSectionForm();
+        this.addSectionForm = AddCourseComponent.createAddSectionForm(options);
         parentEl.append(this.addSectionForm);
 
         const daysParent = $('<div class="form-group row"></div>');
@@ -139,12 +157,12 @@ export class AddCourseComponent {
             const startTime = moment(start, ["h:mm A"]).format("HH:mm");
             const endTime = moment(end, ['h:mm A']).format('HH:mm');
             const section: Section = {
-                id: 0,
+                id: Counter.sId,
                 course_id: 0,
                 instructors: ins,
                 meetings: [
                     {
-                        id: 0,
+                        id: Counter.mId,
                         location: loc,
                         start: startTime,
                         end: endTime,
@@ -293,7 +311,7 @@ export class AddCourseComponent {
         if (subj != null && courseNum != null && crn != null && credits != null) {
             if (sections != null) {
                 course = {
-                    id: 0,
+                    id: Counter.cId,
                     school_id: 0,
                     name: `${subj} ${courseNum}`,
                     crn,
