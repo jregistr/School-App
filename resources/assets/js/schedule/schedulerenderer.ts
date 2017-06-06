@@ -280,29 +280,22 @@ export class ScheduleRendererComponent implements Component {
 
     private showAlert(message: string): void {
         this.parent.addClass('clickMode');
-        // this.alert.show();
-        // const text = this.alert.find('text');
-        // text.empty();
-        // text.append(`<strong>Info!</strong> ${message}`);
     }
 
     private hideAlert(): void {
         this.parent.removeClass('clickMode');
-        // this.alert.hide();
-        // this.alert.hide();
     }
 
     private onAddCourse(course: ScheduledCourse): void {
         const c = this.changes;
         const conflict = ScheduleRendererComponent.findConflict(course, c.renderList);
-        console.log(conflict);
         if (conflict == null) {
             c.renderList.push(course);
             c.newCourses.push(course);
             this.render();
         } else {
             console.log(conflict.section.meeting);
-            alert('There is a time conflict');
+            ScheduleRendererComponent.showTimeConflict(course.name);
         }
     }
 
@@ -330,7 +323,7 @@ export class ScheduleRendererComponent implements Component {
             }
             this.render();
         } else {
-            alert('There is a time conflict');
+            ScheduleRendererComponent.showTimeConflict(course.name);
         }
     }
 
@@ -534,6 +527,14 @@ export class ScheduleRendererComponent implements Component {
             a6 = a.friday == 1 && b.friday == 1,
             a7 = a.saturday == 1 && b.saturday == 1;
         return a1 || a2 || a3 || a4 || a5 || a6 || a7;
+    }
+
+    private static showTimeConflict(name: string): void {
+        const modal = $('#timeConflict');
+        const body = modal.find('div[class="modal-body"]');
+        body.empty();
+        body.append($(`<strong class="text-danger lead">There is a time conflict with ${name}</strong>`));
+        modal.modal('show');
     }
 
 }
