@@ -1,3 +1,5 @@
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables"
+
 .schedule-render-outer
   width: 100%
 
@@ -21,28 +23,15 @@
     padding-top: 8px
     padding-bottom: 5px
 
-//fc-toolbar fc-header-toolbar
+#scheduleComponentParent
+  margin-top: 0 !important
 
-//.toggle-col {
-//  margin:0;
-//  padding:0;
-//}
-//
-//.toggle-heading {
-//  padding-top: 5px;
-//  padding-bottom: 5px;
-//}
-//
-//#calendar .fc-header-toolbar {
-//  display: none;
-//}
-//
-//.fc-today {
-//  background: none !important;
-////border: none !important;
-////border-top: 1px solid #ddd !important;
-////font-weight: bold;
-//}
-//
-//input.schedule-title {
-//  margin-top: 3px;
+.schedule-group
+  margin-top: 5px
+
+#scheduleComponentParent.clickMode .fc-scroller .fc-time-grid-container
+  cursor: pointer
+
+@media screen and (max-width: $screen-xs)
+  .schedule-render-col
+    margin-top: 5px

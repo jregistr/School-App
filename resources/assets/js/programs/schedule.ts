@@ -13,7 +13,8 @@ export class ScheduleProgram {
     constructor() {
         this.toolbar = new ScheduleToolbarComponent($('#scheduleToolbarParent'), $('#confirmModal'),
             this.onScheduleSelectionChange.bind(this), this.onEnterEdit.bind(this), this.onExitEdit.bind(this));
-        this.scheduleRenderer = new ScheduleRendererComponent($('#scheduleComponentParent'));
+        this.scheduleRenderer = new ScheduleRendererComponent($('#scheduleComponentParent'), $('#editBarParent'),
+            $('#confirmModal2'), $('#addEditModal'));
     }
 
     private onEnterEdit(onComplete: () => void): void {
@@ -29,7 +30,7 @@ export class ScheduleProgram {
     }
 
     private onScheduleSelectionChange(schedule: Schedule | null): void {
-        this.scheduleRenderer.schedule = schedule;
+        this.scheduleRenderer.setCurrentSchedule(schedule);
     }
 
 }

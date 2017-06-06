@@ -7,8 +7,6 @@
 @endsection
 
 @section('javascripts')
-    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>--}}
-    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>--}}
     <script src="dist/js/schedule.js"></script>
 @endsection
 
@@ -30,16 +28,60 @@
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Confirm</button>
                     <button  type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal2" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Confirm this action</h4>
+                </div>
+                <div class="modal-body">
+                    <strong class="lead">Are you sure you want <b>remove</b> this course?</strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Confirm</button>
+                    <button  type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addEditModal" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Modify schedule</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button  type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div id="scheduleToolbarParent" class="container-fluid schedule-page">
 
     </div>
 
-    <div id="scheduleComponentParent" class="container-fluid schedule-page">
+    <div class="schedule-group">
+        <div id="editBarParent" class="container-fluid schedule-page">
 
+        </div>
+        <div id="scheduleComponentParent" class="container-fluid schedule-page">
+
+        </div>
     </div>
 @endsection
