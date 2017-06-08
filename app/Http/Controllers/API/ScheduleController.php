@@ -103,10 +103,21 @@ class ScheduleController extends Controller
 
     public function editScheduledCourse(Request $request)
     {
-        $c = Course::find(1);
-        $s = Section::find(1);
-        $m = MeetingTime::find(1);
-        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
+        $checks = $this->res->exist($request, [C::SCHEDULE_ID, C::COURSE]);
+        if ($checks[C::SUCCESS]) {
+            return $this->res->result($this->service->editScheduledCourse(
+                Auth::id(),
+                $request->input(C::SCHEDULE_ID),
+                $request->input(C::COURSE)
+            ));
+        } else {
+            return $this->res->missingParameter($checks[C::NAME]);
+        }
+
+//        $c = Course::find(1);
+//        $s = Section::find(1);
+//        $m = MeetingTime::find(1);
+//        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
     }
 
     public function deleteScheduledCourse(Request $request)

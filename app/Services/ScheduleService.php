@@ -3,8 +3,13 @@
 namespace App\Services;
 
 
+use App\Models\Course;
+use App\Models\MeetingTime;
 use App\Models\Schedule;
+use App\Models\Section;
 use App\Util\C;
+use Illuminate\Support\Facades\DB;
+
 
 class ScheduleService
 {
@@ -119,6 +124,157 @@ class ScheduleService
         } else {
             return null;
         }
+    }
+
+    public function editScheduledCourse($studentId, $scheduleId, $queryJson)
+    {
+        $schedule = Schedule::find($scheduleId);
+        $queryJsonParsed = json_decode($queryJson, true);
+        $oldQueryCid = intval($queryJsonParsed[C::ID]);
+        $oldQuerySection = $queryJsonParsed['section'];
+        $oldQuerySid = intval($oldQuerySection[C::ID]);
+        $oldQueryMeeting = $oldQuerySection['meeting'];
+        $oldQueryWeek = $oldQueryMeeting['week'];
+        $oldQueryMid = intval($oldQueryMeeting[C::ID]);
+
+        $oldCourse = Course::find($oldQueryCid);
+        $oldSection = Section::find($oldQuerySid);
+        $oldMeeting = MeetingTime::find($oldQueryMid);
+
+        error_log($oldQueryMid);
+
+        if ($schedule != null) {
+            $sIdToRemove = null;
+            $mIdToRemove = null;
+
+            $newCourse = null;
+            $newSection = null;
+            $newMeeting = null;
+
+            if ($this->shouldUpdateCourse($queryJsonParsed, $oldCourse)) {
+                if ($this->belongToStudent($oldCourse, $studentId)) {
+                    $oldCourse->name = $queryJsonParsed[C::NAME];
+                    $oldCourse->credits = $queryJsonParsed[C::CREDITS];
+                    $oldCourse->crn = $queryJsonParsed[C::CRN];
+                    $oldCourse->save();
+                } else {
+                    $sIdToRemove = $oldQuerySid;
+                    $newCourse = Course::create([
+                        C::NAME => $queryJsonParsed[C::NAME],
+                        C::CREDITS => $queryJsonParsed[C::CREDITS],
+                        C::CRN => $queryJsonParsed[C::CRN],
+                        C::STUDENT_ID => $studentId
+                    ]);
+                }
+            }
+
+            $cIdTemp = $newCourse != null ? $newCourse->id : $oldQueryCid;
+            if ($this->belongToStudent($oldSection, $studentId)) {//simply update the courseId
+                $oldSection->course_id = $cIdTemp;
+                $oldSection->instructors = $oldQuerySection[C::INSTRUCTORS];
+                $oldSection->save();
+            } else {//create a new one
+                $sIdToRemove = $oldQuerySid;
+                $newSection = Section::create([
+                    C::STUDENT_ID => $studentId,
+                    C::COURSE_ID => $cIdTemp,
+                    C::INSTRUCTORS => $oldQuerySection[C::INSTRUCTORS]
+                ]);
+            }
+
+            $sIdTemp = $newSection != null ? $newSection->id : $oldSection->id;
+            if ($this->belongToStudent($oldMeeting, $studentId)) {
+                DB::table('sections_meeting_times')
+                    ->where(C::MEETING_TIME_ID, $oldMeeting->id)
+                    ->update([C::SECTION_ID => $sIdTemp]);
+                $meet = $oldMeeting;
+                $meet->start = $oldQueryMeeting[C::START];
+                $meet->end = $oldQueryMeeting[C::END];
+                $meet->location = $oldQueryMeeting[C::LOCATION];
+                $meet->sunday = $oldQueryWeek[C::SUNDAY];
+                $meet->monday = $oldQueryWeek[C::MONDAY];
+                $meet->tuesday = $oldQueryWeek[C::TUESDAY];
+                $meet->wednesday = $oldQueryWeek[C::WEDNESDAY];
+                $meet->thursday = $oldQueryWeek[C::THURSDAY];
+                $meet->friday = $oldQueryWeek[C::FRIDAY];
+                $meet->saturday = $oldQueryWeek[C::SATURDAY];
+                $meet->save();
+            } else {
+                $mIdToRemove = $oldQueryMid;
+                $newMeeting = MeetingTime::create([
+                    C::START => $oldQueryMeeting[C::START],
+                    C::END => $oldQueryMeeting[C::END],
+                    C::LOCATION => $oldQueryMeeting[C::LOCATION],
+                    C::STUDENT_ID => $studentId,
+                    C::SUNDAY => $oldQueryWeek[C::SUNDAY],
+                    C::MONDAY => $oldQueryWeek[C::MONDAY],
+                    C::TUESDAY => $oldQueryWeek[C::TUESDAY],
+                    C::WEDNESDAY => $oldQueryWeek[C::WEDNESDAY],
+                    C::THURSDAY => $oldQueryWeek[C::THURSDAY],
+                    C::FRIDAY => $oldQueryWeek[C::FRIDAY],
+                    C::SATURDAY => $oldQueryWeek[C::SATURDAY]
+                ]);
+                DB::table('sections_meeting_times')
+                    ->insert([
+                        C::SECTION_ID => $sIdTemp,
+                        C::MEETING_TIME_ID => $newMeeting->id,
+                        C::STUDENT_ID => $studentId
+                    ]);
+            }
+
+            $c = null;
+            $s = null;
+            $m = null;
+
+            $c = $newCourse != null ? $newCourse : $oldCourse;
+            $s = $newSection != null ? $newSection : $oldSection;
+            $m = $newMeeting != null ? $newMeeting : $oldMeeting;
+
+            $updates = [
+
+            ];
+
+            if ($sIdToRemove != null) {
+                $updates[C::SECTION_ID] = $newSection->id;
+            }
+
+            if ($mIdToRemove != null) {
+                $updates[C::MEETING_TIME_ID] = $newMeeting->id;
+            }
+
+            if(count($updates) > 0) {
+                DB::table('schedule_section')
+                    ->where([
+                        [C::SCHEDULE_ID, '=', $scheduleId],
+                        [C::SECTION_ID, '=', $oldQuerySid],
+                        [C::MEETING_TIME_ID, '=', $oldQueryMid]
+                    ])
+                    ->update($updates);
+            }
+            return $this->formatterService->formatScheduledCourseMeeting($c, $s, $m);
+        } else {
+            return ['course' => null];
+        }
+    }
+
+    private function belongToStudent($item, $studentId)
+    {
+        return $item->student_id == $studentId;
+    }
+
+    private function shouldUpdateCourse($queryCourse, $course)
+    {
+        $result = false;
+        if ($queryCourse[C::NAME] != $course[C::NAME]) {
+            $result = true;
+        }
+        if ((!$result) && $queryCourse[C::CREDITS] != $course[C::CREDITS]) {
+            $result = true;
+        }
+        if ((!$result) && $queryCourse[C::CRN] != $course[C::CRN]) {
+            $result = true;
+        }
+        return $result;
     }
 
 }

@@ -210,8 +210,8 @@ export class ScheduleRendererComponent implements Component {
             sendScheduleUpdates(this.schedule!!.id, changes.newCourses,
                 changes.deletedCourses,
                 changes.changedCourses, () => {
+                    this.editMode = false;
                     this.setCurrentSchedule(this.schedule, () => {
-                        this.render();
                         onComplete();
                     });
                 });
@@ -266,11 +266,6 @@ export class ScheduleRendererComponent implements Component {
     private addCourseToSchedule(course: Course, sections: Section[]): void {
         const trans = transcribe(course, sections);
         this.onAddCourse(trans);
-        // if (addNewCourse) {
-        //     this.onAddCourse(trans);
-        // } else {
-        //     this.onEditCourse(trans);
-        // }
     }
 
     private submitEditCourse(course: Course, sections: Section[], cId: number, sId: number, mId: number): void {
@@ -302,7 +297,6 @@ export class ScheduleRendererComponent implements Component {
                 c.newCourses.push(course);
                 this.render();
             } else {
-                console.log(conflict.section.meeting);
                 ScheduleRendererComponent.showTimeConflict(conflict.name);
             }
         }

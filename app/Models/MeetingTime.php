@@ -29,6 +29,7 @@ class MeetingTime extends Model
         C::START,
         C::END,
         C::LOCATION,
+        C::STUDENT_ID,
         C::SUNDAY,
         C::MONDAY,
         C::TUESDAY,

@@ -14,6 +14,7 @@ class C
     const COURSE_ID = 'course_id';
     const GENERATOR_LIST_ID = 'g_id';
     const MEETING_ID = 'meeting_id';
+    const MEETING_TIME_ID = 'meeting_time_id';
 
     const CATEGORY = 'category';
     const POINTS = 'points';
@@ -61,5 +62,6 @@ class C
     const DAYS = 'days';
     const REQUIRED = 'required';
     const ADDED = 'added';
+    const COURSE = 'course';
 
 }
