@@ -198,8 +198,8 @@ export class ScheduleRendererComponent implements Component {
         this.changes.changedCourses = [];
         this.changes.newCourses = [];
         this.changes.deletedCourses = [];
-        onComplete();
         this.render();
+        onComplete();
     }
 
     onSave(onComplete: () => void): void {
@@ -207,10 +207,13 @@ export class ScheduleRendererComponent implements Component {
         if (changes.changedCourses.length == 0 && changes.newCourses.length == 0) {
             this.onCancel(onComplete);
         } else {
-            sendScheduleUpdates(changes.newCourses,
+            sendScheduleUpdates(this.schedule!!.id, changes.newCourses,
                 changes.deletedCourses,
                 changes.changedCourses, () => {
-                    this.setCurrentSchedule(this.schedule, onComplete);
+                    this.setCurrentSchedule(this.schedule, () => {
+                        this.render();
+                        onComplete();
+                    });
                 });
         }
     }
@@ -288,14 +291,20 @@ export class ScheduleRendererComponent implements Component {
 
     private onAddCourse(course: ScheduledCourse): void {
         const c = this.changes;
-        const conflict = ScheduleRendererComponent.findConflict(course, c.renderList);
-        if (conflict == null) {
-            c.renderList.push(course);
-            c.newCourses.push(course);
-            this.render();
-        } else {
-            console.log(conflict.section.meeting);
-            ScheduleRendererComponent.showTimeConflict(course.name);
+
+        const found: ScheduledCourse | null =
+            c.renderList.find(f => f.id == course.id && f.section.id == course.section.id &&
+            f.section.meeting.id == course.section.meeting.id) || null;
+        if (!found) {
+            const conflict = ScheduleRendererComponent.findConflict(course, c.renderList);
+            if (conflict == null) {
+                c.renderList.push(course);
+                c.newCourses.push(course);
+                this.render();
+            } else {
+                console.log(conflict.section.meeting);
+                ScheduleRendererComponent.showTimeConflict(conflict.name);
+            }
         }
     }
 
@@ -500,19 +509,16 @@ export class ScheduleRendererComponent implements Component {
         for (let i = 0; i < list.length; i++) {
             const compareCourse = list[i];
             const cMeeting = compareCourse.section.meeting;
-            if (compareCourse.id !== course.id && compareCourse.section.id !== course.section.id &&
-                bMeeting.id !== cMeeting.id) {
+            if (bMeeting.id !== cMeeting.id) {
                 const cStart = moment(cMeeting.start, form);
                 const cEnd = moment(cMeeting.end, form);
 
-                if (bStart.isBetween(cStart, cEnd) || bEnd.isBetween(cStart, cEnd)) {
+                if (bStart.isBetween(cStart, cEnd) || bEnd.isBetween(cStart, cEnd) || bEnd.isSame(cEnd)) {
                     if (ScheduleRendererComponent.dayMatch(cMeeting.week, bMeeting.week)) {
                         result = compareCourse;
                         break;
                     }
                 }
-            } else {
-                result = compareCourse;
             }
         }
         return result;

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\MeetingTime;
+use App\Models\Section;
+use App\Services\FormatService;
 use App\Services\PrecondResultsService;
 use App\Services\ScheduleService;
 use App\Util\C;
@@ -15,17 +19,21 @@ class ScheduleController extends Controller
 
     private $service;
     private $res;
+    private $formatService;
 
     /**
      * ScheduleController constructor.
      * @param ScheduleService $scheduleService
      * @param PrecondResultsService $precondResultsService
+     * @param FormatService $formatService
      */
-    public function __construct(ScheduleService $scheduleService, PrecondResultsService $precondResultsService)
+    public function __construct(ScheduleService $scheduleService, PrecondResultsService $precondResultsService,
+                                FormatService $formatService)
     {
         $this->middleware('auth');
         $this->service = $scheduleService;
         $this->res = $precondResultsService;
+        $this->formatService = $formatService;
     }
 
     public function getUserSchedules()
@@ -83,6 +91,27 @@ class ScheduleController extends Controller
         } else {
             return $this->res->missingParameter($checks[C::NAME]);
         }
+    }
+
+    public function addScheduledCourse(Request $request)
+    {
+        $c = Course::find(1);
+        $s = Section::find(1);
+        $m = MeetingTime::find(1);
+        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
+    }
+
+    public function editScheduledCourse(Request $request)
+    {
+        $c = Course::find(1);
+        $s = Section::find(1);
+        $m = MeetingTime::find(1);
+        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
+    }
+
+    public function deleteScheduledCourse(Request $request)
+    {
+        return $this->res->result(['deleted' => true]);
     }
 
 }

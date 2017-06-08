@@ -449,7 +449,6 @@ export class ScheduleToolbarComponent implements Component {
                 this.isEditMode = false;
                 this.render();
             }
-
         });
     }
 
