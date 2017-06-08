@@ -14,7 +14,8 @@ export class ScheduleProgram {
         this.toolbar = new ScheduleToolbarComponent($('#scheduleToolbarParent'), $('#confirmModal'),
             this.onScheduleSelectionChange.bind(this), this.onEnterEdit.bind(this), this.onExitEdit.bind(this));
         this.scheduleRenderer = new ScheduleRendererComponent($('#scheduleComponentParent'), $('#editBarParent'),
-            $('#confirmModal2'), $('#addEditModal'), $('#addFromListModal'));
+            $('#confirmModal2'), $('#addEditModal'), $('#addFromListModal'), $('#timeConflict'), $('#courseInfoModal'),
+            true);
     }
 
     private onEnterEdit(onComplete: () => void): void {

@@ -7,6 +7,7 @@ import {AddCourseComponent} from "../create/addcourse";
 import {transcribe} from "../common/transcribe";
 import {ViewCoursesComponent} from "../create/viewcourses";
 import {ViewSectionsComponent} from "../create/viewSections";
+import {renderMeetDaysDisplay} from "../create/renderMeetDisplay";
 
 interface Event {
     title: string,
@@ -45,13 +46,19 @@ export class ScheduleRendererComponent implements Component {
     private changes: Changes = {newCourses: [], deletedCourses: [], changedCourses: [], renderList: []};
     private editMode: boolean = false;
     private clickMode: ClickMode = ClickMode.NONE;
+    private conflictModal: JQuery;
+    private courseInfoModal: JQuery;
 
     private alert: JQuery;
 
-    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery, listModal: JQuery) {
+    constructor(parent: JQuery, editBarParent: JQuery, confirmModal: JQuery, addEditModal: JQuery, listModal: JQuery,
+                conflictModal: JQuery, cInfoModal: JQuery, editable: boolean = true) {
         this.parent = parent;
         this.confirmModal = confirmModal;
         this.addEditModal = addEditModal;
+        this.conflictModal = conflictModal;
+        this.courseInfoModal = cInfoModal;
+
         const confBtn = this.confirmModal.find('button[class="btn btn-danger"]');
         confBtn.on('click', () => {
             this.onDeleteCourse(
@@ -61,35 +68,38 @@ export class ScheduleRendererComponent implements Component {
             );
         });
 
-        this.initAddFromList(listModal);
+        if (editable) {
+            this.initAddFromList(listModal);
 
-        const editBar = ScheduleRendererComponent.makeEditBar((action: number) => {
-            if (action == 0) {//add new
-                this.hideAlert();
-                this.clickMode = ClickMode.NONE;
-                const mBody = this.addEditModal.find('div[class="modal-body"]');
-                mBody.empty();
-                new AddCourseComponent(mBody, (course, sections) => {
-                    this.addEditModal.modal('hide');
-                    this.addCourseToSchedule(course, sections);
-                }, 1, {
-                    commit: false
-                });
-                addEditModal.modal('show');
-            } else if (action == 1) {//from list
-                this.hideAlert();
-                this.clickMode = ClickMode.NONE;
-                listModal.modal('show');
-            } else if (action == 2) {//edit
-                this.clickMode = ClickMode.EDIT;
-                this.showAlert('Click on a course to edit it.');
-            } else {//delete
-                this.clickMode = ClickMode.DELETE;
-                this.showAlert('Click on a course to delete it');
-            }
-        });
+            const editBar = ScheduleRendererComponent.makeEditBar((action: number) => {
+                if (action == 0) {//add new
+                    this.hideAlert();
+                    this.clickMode = ClickMode.NONE;
+                    const mBody = this.addEditModal.find('div[class="modal-body"]');
+                    mBody.empty();
+                    new AddCourseComponent(mBody, (course, sections) => {
+                        this.addEditModal.modal('hide');
+                        this.addCourseToSchedule(course, sections);
+                    }, 1, {
+                        commit: false
+                    });
+                    addEditModal.modal('show');
+                } else if (action == 1) {//from list
+                    this.hideAlert();
+                    this.clickMode = ClickMode.NONE;
+                    listModal.modal('show');
+                } else if (action == 2) {//edit
+                    this.clickMode = ClickMode.EDIT;
+                    this.showAlert('Click on a course to edit it.');
+                } else {//delete
+                    this.clickMode = ClickMode.DELETE;
+                    this.showAlert('Click on a course to delete it');
+                }
+            });
 
-        editBarParent.append(editBar);
+            editBarParent.append(editBar);
+        }
+
         this.editBarParent = editBarParent;
         this.editBarParent.hide();
 
@@ -260,7 +270,65 @@ export class ScheduleRendererComponent implements Component {
             }
             this.hideAlert();
             this.clickMode = ClickMode.NONE;
+        } else {
+            this.showCourseInfoModal(this.courses.find(
+                c => c.id == event.courseId
+                && c.section.id == event.sectionId && c.section.meeting.id == event.meetingId
+            )!!);
         }
+    }
+
+    private showCourseInfoModal(course: ScheduledCourse) {
+        const sec = course.section;
+        const meeting = sec.meeting;
+        const modal = this.courseInfoModal;
+        const mBody = modal.find('div[class="modal-body"]');
+        mBody.empty();
+        const table = $(`
+                <table class="table table-condensed">
+                    <thead style="display: none;">
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                </table>
+            `);
+        const tbody = $('<tbody></tbody>');
+        table.append(tbody);
+        mBody.append(table);
+
+        tbody.append($(`
+                <tr>
+                    <td>Instructors</td>
+                    <td>${sec.instructors != null ? sec.instructors : 'Not specified'}</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>${meeting.location != null ? meeting.location : 'Not specified'}</td>
+                </tr>
+                <tr>
+                    <td>Start</td>
+                    <td>${moment(meeting.start, ["HH:mm"]).format("h:mm A")}</td>
+                </tr>
+                <tr>
+                    <td>End</td>
+                    <td>${moment(meeting.end, ["HH:mm"]).format("h:mm A")}</td>
+                </tr>
+            `));
+        const tr = $('<tr></tr>');
+        const td = $(`<td colspan="2"></td>`);
+        tr.append(td);
+
+        const week = meeting.week;
+        td.append(renderMeetDaysDisplay(week));
+
+        tbody.append(td);
+
+        const title = modal.find('h4[class="modal-title"]');
+        title.empty();
+        title.append($(`<strong>Course: ${course.name}, credits: ${course.credits}</strong>`));
+        modal.modal('show');
     }
 
     private addCourseToSchedule(course: Course, sections: Section[]): void {
@@ -297,7 +365,7 @@ export class ScheduleRendererComponent implements Component {
                 c.newCourses.push(course);
                 this.render();
             } else {
-                ScheduleRendererComponent.showTimeConflict(conflict.name);
+                ScheduleRendererComponent.showTimeConflict(conflict.name, this.conflictModal);
             }
         }
     }
@@ -326,7 +394,7 @@ export class ScheduleRendererComponent implements Component {
             }
             this.render();
         } else {
-            ScheduleRendererComponent.showTimeConflict(course.name);
+            ScheduleRendererComponent.showTimeConflict(course.name, this.conflictModal);
         }
     }
 
@@ -380,10 +448,11 @@ export class ScheduleRendererComponent implements Component {
     }
 
     private initAddFromList(listModal: JQuery): void {
-        const sectionsTab = $('#sections');
+        const tabContent = listModal.find('div[class="tab-content"]');
+        const sectionsTabBody = tabContent.children().eq(1);
         const self = this;
 
-        const sectionsTabActiv = listModal.find('a[href="#sections"]');
+        const sectionsTabActiv = listModal.find('a[href="#sectionsScheduleView"]');
 
         function onCourseRowClick(course: Course): void {
             sectionsTabActiv.tab('show');
@@ -395,13 +464,13 @@ export class ScheduleRendererComponent implements Component {
             self.onAddCourse(scheduledCourse);
         }
 
-        new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),
-            onCourseRowClick.bind(this), $('#courseInfoModal'), 'viewCoursesToolbar', {
+        new ViewCoursesComponent(listModal.find('div[class="view-course-table"]'),
+            onCourseRowClick.bind(this), this.courseInfoModal, 'viewCoursesToolbar', {
                 addNew: false,
                 perPage: 5
             });
 
-        const viewSections = new ViewSectionsComponent(sectionsTab, 'viewSectionsToolbar',
+        const viewSections = new ViewSectionsComponent(sectionsTabBody, 'viewSectionsToolbar',
             onAddSectionClick.bind(this));
     }
 
@@ -529,8 +598,7 @@ export class ScheduleRendererComponent implements Component {
         return a1 || a2 || a3 || a4 || a5 || a6 || a7;
     }
 
-    private static showTimeConflict(name: string): void {
-        const modal = $('#timeConflict');
+    private static showTimeConflict(name: string, modal: JQuery): void {
         const body = modal.find('div[class="modal-body"]');
         body.empty();
         body.append($(`<strong class="text-danger lead">There is a time conflict with ${name}</strong>`));

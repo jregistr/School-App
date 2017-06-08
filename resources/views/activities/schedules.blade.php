@@ -14,6 +14,23 @@
 @endsection
 
 @section('content')
+    <div class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="confirmModal" class="modal fade" tabindex="-1" role="dialog" style="display: none;"
          data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" role="document">
@@ -86,16 +103,16 @@
                 <div class="modal-body">
                     <div>
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#courses"><strong>Courses</strong></a></li>
-                            <li><a data-toggle="tab" href="#sections"><strong>Sections</strong></a></li>
+                            <li class="active"><a data-toggle="tab" href="#coursesScheduleView"><strong>Courses</strong></a></li>
+                            <li><a data-toggle="tab" href="#sectionsScheduleView"><strong>Sections</strong></a></li>
                         </ul>
                         <div class="tab-content">
-                            <div id="courses" class="tab-pane fade in active">
+                            <div id="coursesScheduleView" class="tab-pane fade in active">
                                 <div class="view-course-table">
 
                                 </div>
                             </div>
-                            <div id="sections" class="tab-pane fade">
+                            <div id="sectionsScheduleView" class="tab-pane fade">
 
                             </div>
                         </div>
