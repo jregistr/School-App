@@ -113,11 +113,6 @@ class ScheduleController extends Controller
         } else {
             return $this->res->missingParameter($checks[C::NAME]);
         }
-
-//        $c = Course::find(1);
-//        $s = Section::find(1);
-//        $m = MeetingTime::find(1);
-//        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
     }
 
     public function deleteScheduledCourse(Request $request)
