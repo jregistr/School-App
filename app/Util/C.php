@@ -63,5 +63,7 @@ class C
     const REQUIRED = 'required';
     const ADDED = 'added';
     const COURSE = 'course';
+    const SECTION = 'section';
+    const MEETING = 'meeting';
 
 }

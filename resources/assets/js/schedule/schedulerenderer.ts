@@ -204,7 +204,7 @@ export class ScheduleRendererComponent implements Component {
 
     onSave(onComplete: () => void): void {
         const changes = this.changes;
-        if (changes.changedCourses.length == 0 && changes.newCourses.length == 0) {
+        if (changes.changedCourses.length == 0 && changes.newCourses.length == 0 && changes.deletedCourses.length == 0) {
             this.onCancel(onComplete);
         } else {
             sendScheduleUpdates(this.schedule!!.id, changes.newCourses,

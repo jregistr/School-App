@@ -15,14 +15,17 @@ class ScheduleService
 {
 
     private $formatterService;
+    private $courseService;
 
     /**
      * ScheduleService constructor.
      * @param FormatService $formatService
+     * @param CourseService $courseService
      */
-    public function __construct(FormatService $formatService)
+    public function __construct(FormatService $formatService, CourseService $courseService)
     {
         $this->formatterService = $formatService;
+        $this->courseService = $courseService;
     }
 
     /**
@@ -126,6 +129,62 @@ class ScheduleService
         }
     }
 
+    public function addScheduledCourse($studentId, $scheduleId, $queryJson)
+    {
+        $queryCourse = json_decode($queryJson, true);
+        $querySection = $queryCourse[C::SECTION];
+        $queryMeeting = $querySection[C::MEETING];
+        $queryWeek = $queryMeeting['week'];
+
+        $course = Course::find($queryCourse[C::ID]);
+        $section = Section::find($querySection[C::ID]);
+        $meeting = MeetingTime::find($queryMeeting[C::ID]);
+
+        if (!($course != null && $section != null && $meeting != null)) {
+            $course = $this->courseService->createCourse(
+                $studentId,
+                $queryCourse[C::NAME],
+                $queryCourse[C::CRN],
+                $queryCourse[C::CREDITS]
+            );
+
+            $section = Section::create([
+                C::COURSE_ID => $course->id,
+                C::INSTRUCTORS => $querySection[C::INSTRUCTORS],
+                C::STUDENT_ID => $studentId
+            ]);
+
+            $meeting = MeetingTime::create([
+                C::STUDENT_ID => $studentId,
+                C::START => $queryMeeting[C::START],
+                C::END => $queryMeeting[C::END],
+                C::LOCATION => $queryMeeting[C::LOCATION],
+                C::SUNDAY => $queryWeek[C::SUNDAY],
+                C::MONDAY => $queryWeek[C::MONDAY],
+                C::TUESDAY => $queryWeek[C::TUESDAY],
+                C::WEDNESDAY => $queryWeek[C::WEDNESDAY],
+                C::THURSDAY => $queryWeek[C::THURSDAY],
+                C::FRIDAY => $queryWeek[C::FRIDAY],
+                C::SATURDAY => $queryWeek[C::SATURDAY]
+            ]);
+
+            DB::table('sections_meeting_times')
+                ->insert([
+                    C::SECTION_ID => $section->id,
+                    C::MEETING_TIME_ID => $meeting->id,
+                    C::STUDENT_ID => $studentId
+                ]);
+        }
+
+        DB::table('schedule_section')
+            ->insert([
+                C::SCHEDULE_ID => $scheduleId,
+                C::SECTION_ID => $section->id,
+                C::MEETING_TIME_ID => $meeting->id
+            ]);
+        return $this->formatterService->formatScheduledCourseMeeting($course, $section, $meeting);
+    }
+
     public function editScheduledCourse($studentId, $scheduleId, $queryJson)
     {
         $schedule = Schedule::find($scheduleId);
@@ -140,8 +199,6 @@ class ScheduleService
         $oldCourse = Course::find($oldQueryCid);
         $oldSection = Section::find($oldQuerySid);
         $oldMeeting = MeetingTime::find($oldQueryMid);
-
-        error_log($oldQueryMid);
 
         if ($schedule != null) {
             $sIdToRemove = null;
@@ -242,7 +299,7 @@ class ScheduleService
                 $updates[C::MEETING_TIME_ID] = $newMeeting->id;
             }
 
-            if(count($updates) > 0) {
+            if (count($updates) > 0) {
                 DB::table('schedule_section')
                     ->where([
                         [C::SCHEDULE_ID, '=', $scheduleId],
@@ -253,8 +310,20 @@ class ScheduleService
             }
             return $this->formatterService->formatScheduledCourseMeeting($c, $s, $m);
         } else {
-            return ['course' => null];
+            return null;
         }
+    }
+
+    public function deleteScheduledCourse($scheduleId, $sectionId, $meetingId)
+    {
+        $affected = DB::table('schedule_section')
+            ->where([
+                [C::SCHEDULE_ID, '=', $scheduleId],
+                [C::SECTION_ID, '=', $sectionId],
+                [C::MEETING_TIME_ID, '=', $meetingId]
+            ])
+            ->delete();
+        return ($affected > 0);
     }
 
     private function belongToStudent($item, $studentId)

@@ -19,7 +19,6 @@ export function sendScheduleUpdates(scheduleId: number, newCourses: ScheduledCou
             onComplete();
         }
     }
-
     sendCourses<boolean>(deletedCourses, 'DELETE', (c: ScheduledCourse) => {
         return {
             schedule_id: scheduleId,

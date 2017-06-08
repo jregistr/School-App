@@ -95,21 +95,29 @@ class ScheduleController extends Controller
 
     public function addScheduledCourse(Request $request)
     {
-        $c = Course::find(1);
-        $s = Section::find(1);
-        $m = MeetingTime::find(1);
-        return $this->res->result($this->formatService->formatScheduledCourseMeeting($c, $s, $m));
+        $checks = $this->res->exist($request, [C::SCHEDULE_ID, C::COURSE]);
+        if ($checks[C::SUCCESS]) {
+            $course = $this->service->addScheduledCourse(
+                Auth::id(),
+                $request->input(C::SCHEDULE_ID),
+                $request->input(C::COURSE)
+            );
+            return $this->res->result([C::COURSE => $course]);
+        } else {
+            return $this->res->missingParameter($checks[C::NAME]);
+        }
     }
 
     public function editScheduledCourse(Request $request)
     {
         $checks = $this->res->exist($request, [C::SCHEDULE_ID, C::COURSE]);
         if ($checks[C::SUCCESS]) {
-            return $this->res->result($this->service->editScheduledCourse(
+            $course = $this->service->editScheduledCourse(
                 Auth::id(),
                 $request->input(C::SCHEDULE_ID),
                 $request->input(C::COURSE)
-            ));
+            );
+            return $this->res->result([C::COURSE => $course]);
         } else {
             return $this->res->missingParameter($checks[C::NAME]);
         }
@@ -117,7 +125,17 @@ class ScheduleController extends Controller
 
     public function deleteScheduledCourse(Request $request)
     {
-        return $this->res->result(['deleted' => true]);
+        $checks = $this->res->exist($request, [C::SCHEDULE_ID, C::SECTION_ID, C::MEETING_ID]);
+        if ($checks[C::SUCCESS]) {
+            $val = $this->service->deleteScheduledCourse(
+                $request->input(C::SCHEDULE_ID),
+                $request->input(C::SECTION_ID),
+                $request->input(C::MEETING_ID)
+            );
+            return $this->res->result(['deleted' => $val]);
+        } else {
+            return $this->res->missingParameter($checks[C::NAME]);
+        }
     }
 
 }
