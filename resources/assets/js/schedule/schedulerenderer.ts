@@ -201,13 +201,7 @@ export class ScheduleRendererComponent implements Component {
     }
 
     onCancel(onComplete: () => void): void {
-        this.editMode = false;
-        this.clickMode = ClickMode.NONE;
-        this.editBarParent.hide();
-        this.changes.renderList = [];
-        this.changes.changedCourses = [];
-        this.changes.newCourses = [];
-        this.changes.deletedCourses = [];
+        this.resetEditModeSettings();
         this.render();
         onComplete();
     }
@@ -220,13 +214,22 @@ export class ScheduleRendererComponent implements Component {
             sendScheduleUpdates(this.schedule!!.id, changes.newCourses,
                 changes.deletedCourses,
                 changes.changedCourses, () => {
-                    this.editMode = false;
-                    this.editBarParent.hide();
+                    this.resetEditModeSettings();
                     this.setCurrentSchedule(this.schedule, () => {
                         onComplete();
                     });
                 });
         }
+    }
+
+    private resetEditModeSettings(): void {
+        this.editMode = false;
+        this.clickMode = ClickMode.NONE;
+        this.editBarParent.hide();
+        this.changes.renderList = [];
+        this.changes.changedCourses = [];
+        this.changes.newCourses = [];
+        this.changes.deletedCourses = [];
     }
 
     private onEventClick(event: Event): void {//event: Event, jsEvent: any, view: any

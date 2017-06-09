@@ -1,7 +1,7 @@
 {
   "/dist/extract/common-vendors.js": "/dist/extract/common-vendors.js",
-  "/dist/js/schedule.js": "/dist/js/schedule.js",
   "/dist/js/create.js": "/dist/js/create.js",
+  "/dist/js/schedule.js": "/dist/js/schedule.js",
   "/dist/js/common.js": "/dist/js/common.js",
   "/dist/css/bootstrap.css": "/dist/css/bootstrap.css",
   "/dist/css/create.css": "/dist/css/create.css",

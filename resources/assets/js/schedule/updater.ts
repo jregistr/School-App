@@ -5,7 +5,6 @@ const url = '/api/schedule/course';
 
 export function sendScheduleUpdates(scheduleId: number, newCourses: ScheduledCourse[], deletedCourses: ScheduledCourse[],
                                     changes: ScheduledCourse[], onComplete: () => void) {
-
     function courseToData(course: ScheduledCourse): {} {
         return {
             schedule_id: scheduleId,
@@ -19,6 +18,7 @@ export function sendScheduleUpdates(scheduleId: number, newCourses: ScheduledCou
             onComplete();
         }
     }
+
     sendCourses<boolean>(deletedCourses, 'DELETE', (c: ScheduledCourse) => {
         return {
             schedule_id: scheduleId,
