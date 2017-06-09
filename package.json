@@ -11,7 +11,6 @@
   },
   "devDependencies": {
     "@types/bootstrap": "^3.3.33",
-    "@types/bootstrap-table": "^1.11.2",
     "@types/eonasdan-bootstrap-datetimepicker": "^4.17.22",
     "@types/fullcalendar": "^2.7.42",
     "@types/jquery": "^2.0.43",

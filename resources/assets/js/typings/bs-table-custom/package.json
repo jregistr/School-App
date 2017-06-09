@@ -1,0 +1,9 @@
+{
+  "name": "@types/bs-table-custom",
+  "version": "1.0.0",
+  "description": "Custom typings for bootstrap table.",
+  "main": "",
+  "scripts": {},
+  "author": "Jeff Registre",
+  "license": "MIT"
+}

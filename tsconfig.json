@@ -15,7 +15,8 @@
     "removeComments": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "public/dist/js"
+    "outDir": "public/dist/js",
+    "typeRoots": ["node_modules/@types", "resources/assets/js/typings"]
   },
   "include": [
     "./resources/assets/js/programs/*.ts"

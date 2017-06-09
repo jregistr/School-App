@@ -20,7 +20,8 @@ export class ViewSectionsComponent implements Component {
         this.parent.append(this.table);
         const self = this;
         window['addSectionToGenListWindowFunction'] = (function (sectionId: number, meetingId: number) {
-            const sections: Section[] = (self.table.bootstrapTable('getData'));
+            const data: any = (self.table.bootstrapTable('getData'));
+            const sections: Section[] = data as Section[];
             const section = (sections.find(s => s.course_id == self._course.id && s.id == sectionId))!!;
             const meeting = (section.meetings.find(m => m.id == meetingId))!!;
 
