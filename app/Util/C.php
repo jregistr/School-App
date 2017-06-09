@@ -65,5 +65,6 @@ class C
     const COURSE = 'course';
     const SECTION = 'section';
     const MEETING = 'meeting';
+    const GENERATED = 'generated';
 
 }

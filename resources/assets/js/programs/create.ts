@@ -1,16 +1,19 @@
 import {ViewCoursesComponent} from "../create/viewcourses";
-import {Course, ScheduledCourse} from "../data/interfaces";
+import {Course, Schedule, ScheduledCourse} from "../data/interfaces";
 import {GeneratorListComponent} from "../create/generatorList";
 import {ViewSectionsComponent} from "../create/viewSections";
+import {GeneratedSchedulesComponent} from "../create/generatedSchedules";
 
 class CreateProgram {
 
     private static _instance: CreateProgram;
     private sectionsTab = $('a[href="#sections"]');
+    private generatedTab = $('a[href="#added"]');
 
     private generatorList: GeneratorListComponent;
     private viewCourses: ViewCoursesComponent;
     private viewSections: ViewSectionsComponent;
+    private generatedRenderer: GeneratedSchedulesComponent;
 
     private constructor() {
 
@@ -34,10 +37,32 @@ class CreateProgram {
 
         this.viewSections = new ViewSectionsComponent($('#sections'), 'viewSectionsToolbar',
             this.addToGenerate.bind(this));
+
+        const generatedTabBody = $('#added');
+        this.generatedTab.on('shown.bs.tab', () => {
+            const outers = generatedTabBody.find('div[class*="schedule-render-outer"]');
+            outers.each((i, val) => {
+                $(val).fullCalendar('render');
+            })
+        });
+
+        this.generatedRenderer = new GeneratedSchedulesComponent(generatedTabBody, $('#sch-confirmClearGens'),
+        $('#sch-confirmAddRem'));
+        this.generatedRenderer.updateSchedules();
     }
 
     private onGenerateClicked(): void {
-        alert('Not yet implemented');
+        this.generatedRenderer.clearGeneratedSchedules((continu: boolean) => {
+            if (continu) {
+                this.generateNewSchedules().then(value => {
+                    this.generatedRenderer.updateSchedules(value);
+                    this.generatedTab.tab('show');
+                }, reason => {
+                    console.log(reason);
+                    alert('An error occurred!!');
+                });
+            }
+        });
     }
 
     private onViewCourseRowClicked(course: Course): void {
@@ -45,8 +70,16 @@ class CreateProgram {
         this.viewSections.course = course;
     }
 
-    private addToGenerate(scheduledCourse:ScheduledCourse): void {
+    private addToGenerate(scheduledCourse: ScheduledCourse): void {
         this.generatorList.addToGenList(scheduledCourse);
+    }
+
+    private generateNewSchedules(): Promise<Schedule[]> {
+        return new Promise<Schedule[]>((resolve, reject) => {
+            setTimeout(() => {
+                resolve([]);
+            }, 400);
+        });
     }
 
 }

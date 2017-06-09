@@ -36,10 +36,14 @@ class ScheduleController extends Controller
         $this->formatService = $formatService;
     }
 
-    public function getUserSchedules()
+    public function getUserSchedules(Request $request)
     {
         $userId = Auth::id();
-        return $this->res->result($this->service->getUserSchedules($userId));
+        $generated = $request->input(C::GENERATED);
+        if ($generated)
+            return $this->res->result($this->service->getUserGeneratedSchedules($userId));
+        else
+            return $this->res->result($this->service->getUserSchedules($userId));
     }
 
     public function createSchedule(Request $request)
@@ -47,7 +51,10 @@ class ScheduleController extends Controller
         $studentId = Auth::id();
         $name = $request->input(C::NAME);
         if ($name != null) {
-            return $this->res->result($this->service->addNewSchedule($studentId, $name));
+            $gen = $request->input(C::GENERATED);
+            $result = $gen == null ? $this->service->addNewSchedule($studentId, $name)
+                : $this->service->addNewSchedule($studentId, $name, $gen);
+            return $this->res->result($result);
         } else {
             return $this->res->missingParameter(C::NAME);
         }
@@ -61,7 +68,11 @@ class ScheduleController extends Controller
         $selected = $request->input(C::IS_PRIMARY);
 
         if ($scheduleId != null) {
-            return $this->res->result($this->service->updateScheduleInfo($studentId, $scheduleId, $name, $selected));
+            $generated = $request->input(C::GENERATED);
+            if ($generated == null)
+                return $this->res->result($this->service->updateScheduleInfo($studentId, $scheduleId, $name, $selected));
+            else
+                return $this->res->result($this->service->setAddedSchedule($studentId, $scheduleId, $generated));
         } else {
             return $this->res->missingParameter(C::SCHEDULE_ID);
         }

@@ -125,7 +125,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="courseInfoModal" tabindex="-1" role="dialog" aria-labelledby="Course Info Modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

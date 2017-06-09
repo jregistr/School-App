@@ -221,6 +221,7 @@ export class ScheduleRendererComponent implements Component {
                 changes.deletedCourses,
                 changes.changedCourses, () => {
                     this.editMode = false;
+                    this.editBarParent.hide();
                     this.setCurrentSchedule(this.schedule, () => {
                         onComplete();
                     });

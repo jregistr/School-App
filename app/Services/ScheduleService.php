@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\MeetingTime;
 use App\Models\Schedule;
 use App\Models\Section;
+use App\Models\Weight;
 use App\Util\C;
 use Illuminate\Support\Facades\DB;
 
@@ -65,6 +66,22 @@ class ScheduleService
         return $this->getUserSchedules($studentId);
     }
 
+    public function setAddedSchedule($studentId, $scheduleId, $added)
+    {
+        $schedule = Schedule::where([
+            [C::STUDENT_ID, '=', $studentId],
+            [C::ID, '=', $scheduleId]
+        ])->first();
+
+        if ($schedule != null) {
+            $schedule->added = $added;
+            $schedule->save();
+            return $schedule;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @param $studentId - The id of the student.
      * @return array - Array containing the organized schedules.
@@ -90,13 +107,22 @@ class ScheduleService
         return $outer;
     }
 
-    public function addNewSchedule($studentId, $name)
+    public function getUserGeneratedSchedules($studentId)
+    {
+        $result = Schedule::where([
+            [C::STUDENT_ID, '=', $studentId],
+            [C::ADDED, '=', 0]
+        ])->orderBy('name', 'desc')->get();
+        return ['schedules' => $result];
+    }
+
+    public function addNewSchedule($studentId, $name, $added = 1)
     {
         $first = Schedule::where(C::STUDENT_ID, $studentId)->first() == null;
         $schedule = Schedule::create([
             C::NAME => $name,
             C::STUDENT_ID => $studentId,
-            C::ADDED => 1,
+            C::ADDED => $added,
             C::IS_PRIMARY => $first ? 1 : 0
         ]);
         return ["schedule" => $schedule];
@@ -237,6 +263,11 @@ class ScheduleService
                     C::COURSE_ID => $cIdTemp,
                     C::INSTRUCTORS => $oldQuerySection[C::INSTRUCTORS]
                 ]);
+
+                Weight::where([
+                    [C::STUDENT_ID, '=', $studentId],
+                    [C::SECTION_ID, '=', $oldSection->id]
+                ])->update([C::SECTION_ID => $newSection->id]);
             }
 
             $sIdTemp = $newSection != null ? $newSection->id : $oldSection->id;
