@@ -114,6 +114,18 @@ export class ScheduleRendererComponent implements Component {
         const alertOuter = this.editBarParent.find('div[data-tag="1"]');
         alertOuter.append(alrt);
 
+        window.addEventListener('beforeunload', event => {
+            if (this.changes.newCourses.length > 0 || this.changes.changedCourses.length > 0 ||
+                this.changes.deletedCourses.length > 0) {
+                const message: string = `You have unsaved changes made to your schedule.\n
+                    Are you sure you want to leave.`;
+                event.returnValue = message;
+                return message;
+            } else {
+                return undefined;
+            }
+        });
+
         this.render();
     }
 
