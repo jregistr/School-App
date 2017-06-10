@@ -1,3 +1,5 @@
 interface JQuery {
-    bootstrapTable(...options: any[]): any;
+    bootstrapTable(options: object): JQuery;
+
+    bootstrapTable(method: string, ...parameters: any[]): JQuery | any;
 }

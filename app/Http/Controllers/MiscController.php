@@ -37,12 +37,16 @@ class MiscController extends Controller
         $have = $request->input('school');
 
         if ($have == null || $have == -2) {
-
-            $rules['name'] = 'required|alpha|max:100';
-            $rules['school_country'] = 'required|alpha|max:100';
-            $rules['school_state'] = 'required|alpha|max:100';
-            $rules['school_city'] = 'required|alpha|max:100';
+            $rules['name'] = 'required';
+            $rules['school_country'] = 'required';
+            $rules['school_state'] = 'required';
+            $rules['school_city'] = 'required';
         }
+
+        error_log($request->input('school_country'));
+        error_log($request->input('school_state'));
+        error_log($request->input('school_city'));
+        error_log($request->input('school_name'));
 
         $v = Validator::make($request->all(), $rules);
 
