@@ -52,14 +52,9 @@ class MiscGetService
             $user->major = $major;
         }
 
-        if ($schoolId != null && $schoolId >= 1) {
-            $user->school_id = $schoolId;
-        }
-
-        error_log($schoolId);
+        $user->school_id = $schoolId;
 
         $user->save();
-
         return $user;
     }
 

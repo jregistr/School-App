@@ -35,6 +35,7 @@ class MiscController extends Controller
         ];
 
         $have = $request->input('school');
+        $have = intval($have);
 
         if ($have == null || $have == -2) {
             $rules['name'] = 'required';
@@ -43,26 +44,13 @@ class MiscController extends Controller
             $rules['school_city'] = 'required';
         }
 
-        error_log($request->input('school_country'));
-        error_log($request->input('school_state'));
-        error_log($request->input('school_city'));
-        error_log($request->input('school_name'));
-
         $v = Validator::make($request->all(), $rules);
+
 
         if ($v->fails()) {
             return redirect()->back()->withErrors($v->errors());
         } else {
-            if ($have != null && $have == 1) {
-                $this->service->updateProfile(
-                    $request->input(C::STUDENT_ID),
-                    $request->input('first'),
-                    $request->input('last'),
-                    $request->input('year'),
-                    $request->input('major'),
-                    intval($request->input('school'))
-                );
-            } else {
+            if ($have == -2 || $have == null) {
                 $this->service->updateProfileCreateSchool(
                     $request->input(C::STUDENT_ID),
                     $request->input('first'),
@@ -73,6 +61,16 @@ class MiscController extends Controller
                     $request->input('school_country'),
                     $request->input('school_state'),
                     $request->input('school_city')
+                );
+            } else {
+                $sch = $have == -1 ? null : $have;
+                $this->service->updateProfile(
+                    $request->input(C::STUDENT_ID),
+                    $request->input('first'),
+                    $request->input('last'),
+                    $request->input('year'),
+                    $request->input('major'),
+                    $sch
                 );
             }
             return redirect()->back();
