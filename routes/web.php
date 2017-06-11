@@ -23,7 +23,7 @@ Route::get('/profile', 'HomeController@editProfile');
 
 Route::get('/schedules', 'HomeController@schedules');
 
-Route::get('/overview', 'HomeController@overview');
+//Route::get('/overview', 'HomeController@overview');
 
 Route::get('/create', 'HomeController@create');
 

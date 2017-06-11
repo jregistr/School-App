@@ -5,24 +5,20 @@ namespace App\Models;
 use App\Util\C;
 
 /**
- * Class GeneratorList
+ * Class TargetScheduleGrade
  * @package App\Models
- * @property int id
  * @property int student_id
- * @property int credit_limit
+ * @property int schedule_id
+ * @property  float grade
  */
-class GeneratorList extends BaseModel
+class TargetScheduleGrade
 {
-
     public $timestamps = false;
+
     protected $fillable = [
         C::STUDENT_ID,
-        C::CREDIT_LIMIT
+        C::SCHEDULE_ID,
+        C::GRADE
     ];
-
-    public function entries()
-    {
-
-    }
 
 }

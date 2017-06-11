@@ -13,8 +13,9 @@ export class GeneratorListComponent implements Component {
     private clearBtn: JQuery;
     private courseInfoModal: JQuery;
     private confirmModal: JQuery;
+    private creditLimitDisplay: JQuery;
 
-    constructor(parent: JQuery, genListTable: JQuery, addNewBtn: JQuery, clearBtn: JQuery,
+    constructor(parent: JQuery, genListTable: JQuery, creditLimParent: JQuery, addNewBtn: JQuery, clearBtn: JQuery,
                 genBtn: JQuery, courseInfoModal: JQuery, confirmModal: JQuery, onGenerateClicked: () => void) {
         this.parent = parent;
         this.genListTable = genListTable;
@@ -31,15 +32,18 @@ export class GeneratorListComponent implements Component {
         this.addNewBtn.on('click', this.showAddCourseToGeneratorForm.bind(this));
         genBtn.on('click', onGenerateClicked);
 
+        this.makeCreditLimitSection(creditLimParent);
         const self = this;
         GeneratorListComponent.getGeneratorList((list: GeneratorList) => {
             self.renderGenerator(list);
         });
     }
 
-    public addToGenList(scheduledCourse:ScheduledCourse) {
-        this.updateQuery('PUT', {section_id: scheduledCourse.section.id,
-            meeting_id: scheduledCourse.section.meeting.id});
+    public addToGenList(scheduledCourse: ScheduledCourse) {
+        this.updateQuery('PUT', {
+            section_id: scheduledCourse.section.id,
+            meeting_id: scheduledCourse.section.meeting.id
+        });
     }
 
     render(): void {
@@ -48,6 +52,105 @@ export class GeneratorListComponent implements Component {
 
     hide(): void {
         this.parent.hide();
+    }
+
+    private makeCreditLimitSection(parent: JQuery): void {
+        const self = this;
+        parent.append($(`<span class="input-group-addon"><span>Credit Limit</span></span>`));
+        const creditLimitInput = $(`<input type="number" min="0" class="form-control disabled" name="" 
+            placeholder="i.e: 17">`);
+        creditLimitInput.hide();
+        const creditLimitText = this.creditLimitDisplay = $(`<span class="form-control"></span>`);
+        parent.append(this.creditLimitDisplay);
+        parent.append(creditLimitText);
+        parent.append(creditLimitInput);
+        const hide = $(`<div class="hidden"></div>`);
+        parent.append(hide);
+
+        const inputGroup = $(`<div class="input-group-btn"></div>`);
+        const edit = $(`
+            <button class="btn btn-default" type="submit">
+                 <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+        `);
+        const save = $(`
+            <button class="btn btn-default" type="submit">
+                 <span class="glyphicon glyphicon-floppy-save"></span>
+            </button>
+        `);
+        const cancel = $(`
+            <button class="btn btn-default" type="submit">
+                 <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        `);
+
+        inputGroup.append(edit);
+        hide.append(save);
+        hide.append(cancel);
+        parent.append(inputGroup);
+
+        function switchOut() {
+            hide.append(save)
+                .append(cancel);
+            inputGroup.append(edit);
+            creditLimitText.show();
+            creditLimitInput.val('');
+            creditLimitInput.hide();
+        }
+
+        edit.on('click', () => {
+            hide.append(edit);
+            inputGroup.append(save)
+                .append(cancel);
+            creditLimitText.hide();
+            creditLimitInput.show();
+        });
+
+        cancel.on('click', () => {
+            switchOut();
+        });
+
+        save.on('click', () => {
+            const t = creditLimitInput.val();
+            creditLimitText.text('');
+            if (t.length > 0 && !isNaN(t)) {
+                self.updateGeneratorCreditLimit(parseInt(t)).then(value => {
+                    self.setCreditDisplay(value);
+                }, reason => {
+                    self.setCreditDisplay(17);
+                });
+            } else {
+                creditLimitText.text(t);
+            }
+            switchOut();
+        });
+
+    }
+
+    private updateGeneratorCreditLimit(creditLimit: number): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            $.ajax({
+                url: '/api/schedule/generator',
+                method: 'POST',
+                headers,
+                data: {
+                    credit_limit: creditLimit
+                },
+                success(resp: JQueryAjaxSettings) {
+                    const data = resp.data;
+                    const credit = data.credit_limit;
+                    resolve(credit);
+                },
+                error(xhr, status) {
+                    reject(status);
+                }
+            })
+        });
+    }
+
+    private setCreditDisplay(credits: number): void {
+        this.creditLimitDisplay.empty();
+        this.creditLimitDisplay.append($(`<span>${credits}</span>`));
     }
 
     private showAddCourseToGeneratorForm(): void {
@@ -143,7 +246,7 @@ export class GeneratorListComponent implements Component {
 
     private renderGenerator(generatorListObj: GeneratorList): void {
         const entries: GeneratorEntry[] = generatorListObj.entries;
-
+        this.setCreditDisplay(generatorListObj.credit_limit);
         const tbody = this.genListTable.find('tbody');
         tbody.empty();
 
@@ -273,6 +376,7 @@ export class GeneratorListComponent implements Component {
             return {
                 id: respGen.id,
                 student_id: respGen.student_id,
+                credit_limit: respGen.credit_limit,
                 entries: respGen['entries']
             }
         } else {

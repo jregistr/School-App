@@ -29,6 +29,7 @@ class CreateProgram {
     init(): void {
         const modal = $('#courseInfoModal');
         this.generatorList = new GeneratorListComponent($('.generate-list-box'), $('#generate-candidates'),
+            $('#creditLimitOuter'),
             $('#addNew'), $('#clearAll'), $('#genSch'), modal, $('#confirmModal'), this.onGenerateClicked.bind(this));
 
         this.viewCourses = new ViewCoursesComponent($('#courses').find('div[class="view-course-table"]'),

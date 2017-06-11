@@ -74,11 +74,11 @@
                     </div>
                 </div>
             </li>
-            <li>
-                <a href="/overview" class="{{$index == 1 ? "active" : ""}}">Overview
-                    <span class="side-icon glyphicon glyphicon-eye-open"></span>
-                </a>
-            </li>
+            {{--<li>--}}
+                {{--<a href="/overview" class="{{$index == 1 ? "active" : ""}}">Overview--}}
+                    {{--<span class="side-icon glyphicon glyphicon-eye-open"></span>--}}
+                {{--</a>--}}
+            {{--</li>--}}
             <li>
                 <a href="schedules" class="{{$index == 2 ? "active" : ""}}">
                     Schedules

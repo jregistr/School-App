@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Util\C;
+
 /**
  * @property integer id
  * @property integer section_id
@@ -14,7 +16,10 @@ class Weight extends BaseModel
     public $timestamps = false;
 
     protected $fillable = [
-        'category', 'points'
+        C::CATEGORY,
+        C::POINTS,
+        C::STUDENT_ID,
+        C::SECTION_ID
     ];
 
     public function grades()

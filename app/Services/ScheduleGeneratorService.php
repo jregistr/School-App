@@ -101,6 +101,21 @@ class ScheduleGeneratorService
         }
     }
 
+    public function updateCreditLimit($studentId, $creditLimit)
+    {
+        $gen = $generator = GeneratorList::where(C::STUDENT_ID, $studentId)->first();
+        if ($gen != null) {
+            $gen->credit_limit = $creditLimit;
+            if ($gen->save()) {
+                return intval($gen->credit_limit);
+            } else {
+                return 17;
+            }
+        } else {
+            return 17;
+        }
+    }
+
     /**
      * @param $studentId - The id of the student.
      * @param $sectionId - The section id to identify the row.

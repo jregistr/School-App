@@ -41,14 +41,9 @@ class GradeService
      * @param int $studentId - The id of the student.
      * @return array|null - A key value pair array containing the summarized data or null if no calculations could be made.
      */
-    public function summary($studentId)
+    public function summary($studentId, $sheduleId)
     {
-        $selectedSchedule = Schedule::where([[C::STUDENT_ID, '=', $studentId], [C::IS_PRIMARY, '=', true]])->get();
-        if ($selectedSchedule != null && $selectedSchedule->count() > 0) {
-            $selectedSchedule = $selectedSchedule[0];
-        } else {
-            $selectedSchedule = null;
-        }
+        $selectedSchedule = Schedule::find($sheduleId);
 
         if ($selectedSchedule != null) {
             $sectionIds = DB::table(C::TABLE_SCHEDULE_SECTION)

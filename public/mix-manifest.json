@@ -6,6 +6,8 @@
   "/dist/css/bootstrap.css": "/dist/css/bootstrap.css",
   "/dist/css/create.css": "/dist/css/create.css",
   "/dist/css/mainTemplate.css": "/dist/css/mainTemplate.css",
+  "/dist/css/overview.css": "/dist/css/overview.css",
   "/dist/css/schedule.css": "/dist/css/schedule.css",
+  "/dist/js/overview.js": "/dist/js/overview.js",
   "/dist/extract/manifest.js": "/dist/extract/manifest.js"
 }

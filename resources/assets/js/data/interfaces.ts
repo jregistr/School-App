@@ -58,6 +58,7 @@ export interface Week {
 export interface GeneratorList {
     id: number,
     student_id: number,
+    credit_limit:number,
     entries: GeneratorEntry[]
 }
 

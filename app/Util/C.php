@@ -66,5 +66,6 @@ class C
     const SECTION = 'section';
     const MEETING = 'meeting';
     const GENERATED = 'generated';
+    const CREDIT_LIMIT = 'credit_limit';
 
 }

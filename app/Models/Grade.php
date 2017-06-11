@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Util\C;
+
 /**
  * @property integer student_id
  * @property integer weight_id
@@ -14,8 +16,9 @@ class Grade extends BaseModel
     public $timestamps = false;
 
     protected $fillable = [
-        'assignment',
-        'grade'
+        C::ASSIGNMENT,
+        C::GRADE,
+        C::WEIGHT_ID
     ];
 
     public function weight()

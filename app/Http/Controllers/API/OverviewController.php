@@ -38,11 +38,12 @@ class OverviewController extends Controller
     {
         $sectionId = $request->input(C::SECTION_ID);
         if ($sectionId == null) {
-            $data = $this->gradeService->summary($this->studentId());
-            if ($data != null) {
-                return $this->res->result($data);
+            $scheduleId = $request->input(C::SCHEDULE_ID);
+            if ($scheduleId != null) {
+                $data = $this->gradeService->summary($this->studentId(), $scheduleId);
+                return $this->res->result(['summary' => $data]);
             } else {
-                return $this->res->fail('No summary');
+                return $this->res->missingParameter(C::SCHEDULE_ID);
             }
         } else {
             return $this->res->result($this->gradeService->summaryForSection($this->studentId(), $sectionId));

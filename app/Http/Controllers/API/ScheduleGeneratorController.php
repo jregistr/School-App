@@ -47,9 +47,8 @@ class ScheduleGeneratorController
     public function addToGenerator(Request $request)
     {
         $checks = $this->res->exist($request, [C::SECTION_ID, C::MEETING_ID]);
-
+        $studentId = Auth::id();
         if ($checks[C::SUCCESS]) {
-            $studentId = Auth::id();
             $sectionId = $request->input(C::SECTION_ID);
             $meetingId = $request->input(C::MEETING_ID);
             $gen = $this->genService->addToGenerator($studentId, $sectionId, $meetingId);
@@ -77,16 +76,21 @@ class ScheduleGeneratorController
 
     public function modifyGeneratorEntry(Request $request)
     {
-        $checks = $this->res->exist($request, [C::SECTION_ID, C::MEETING_ID]);
-        if ($checks[C::SUCCESS]) {
-            $studentId = Auth::id();
-            $sectionId = $request->input(C::SECTION_ID);
-            $meetingId = $request->input(C::MEETING_ID);
-            $requiredValue = $request->input(C::REQUIRED);
-            $this->genService->updateRequiredValue($studentId, $sectionId, $meetingId, $requiredValue);
-            return $this->res->result(['generator' => $this->genService->getGeneratorWithCourses($studentId)]);
+        $studentId = Auth::id();
+        $cLimit = $request->input(C::CREDIT_LIMIT);
+        if ($cLimit != null) {
+            return $this->res->result([C::CREDIT_LIMIT => $this->genService->updateCreditLimit($studentId, $cLimit)]);
         } else {
-            return $this->res->missingParameter($checks[C::NAME]);
+            $checks = $this->res->exist($request, [C::SECTION_ID, C::MEETING_ID, C::REQUIRED]);
+            if ($checks[C::SUCCESS]) {
+                $sectionId = $request->input(C::SECTION_ID);
+                $meetingId = $request->input(C::MEETING_ID);
+                $requiredValue = $request->input(C::REQUIRED);
+                $this->genService->updateRequiredValue($studentId, $sectionId, $meetingId, $requiredValue);
+                return $this->res->result(['generator' => $this->genService->getGeneratorWithCourses($studentId)]);
+            } else {
+                return $this->res->missingParameter($checks[C::NAME]);
+            }
         }
     }
 
