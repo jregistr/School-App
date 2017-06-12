@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Models
  *
  * @property int id
- * @property int start
- * @property int end
+ * @property string start
+ * @property string end
  * @property string location
  * @property boolean sunday
  * @property boolean monday

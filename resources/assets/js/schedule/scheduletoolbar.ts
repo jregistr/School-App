@@ -361,7 +361,6 @@ export class ScheduleToolbarComponent implements Component {
 
         if (starCheck) {
             data.is_primary = starIn.hasClass('glyphicon-star') ? 1 : 0;
-            console.log(data);
         }
 
         if (inputCheck) {

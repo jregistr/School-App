@@ -27,6 +27,7 @@ export class GeneratedSchedulesComponent implements Component {
         this.outer.empty();
         if (this.schedules.length > 0) {
             this.schedules.forEach(schedule => {
+                // console.log(schedule);
                 const p = $(`<div class="col-lg-12 gs-schedule-col"></div>`);
                 const s = this.makeScheduleElement(schedule);
                 this.outer.append(p);
@@ -74,6 +75,8 @@ export class GeneratedSchedulesComponent implements Component {
         if (this.schedules.length > 0) {
             const btn = this.confirmClearModal.find('button[class="btn btn-danger"]');
             const cancel = this.confirmClearModal.find('button[class="btn btn-primary"]');
+            btn.off();
+            cancel.off();
             const self = this;
             btn.on('click', () => {
                 self.clearGenSchedules();

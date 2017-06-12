@@ -3,6 +3,7 @@ import {Course, Schedule, ScheduledCourse} from "../data/interfaces";
 import {GeneratorListComponent} from "../create/generatorList";
 import {ViewSectionsComponent} from "../create/viewSections";
 import {GeneratedSchedulesComponent} from "../create/generatedSchedules";
+import {headers} from "../common/functions";
 
 class CreateProgram {
 
@@ -48,14 +49,14 @@ class CreateProgram {
         });
 
         this.generatedRenderer = new GeneratedSchedulesComponent(generatedTabBody, $('#sch-confirmClearGens'),
-        $('#sch-confirmAddRem'));
+            $('#sch-confirmAddRem'));
         this.generatedRenderer.updateSchedules();
     }
 
     private onGenerateClicked(): void {
         this.generatedRenderer.clearGeneratedSchedules((continu: boolean) => {
             if (continu) {
-                this.generateNewSchedules().then(value => {
+                CreateProgram.generateNewSchedules().then(value => {
                     this.generatedRenderer.updateSchedules(value);
                     this.generatedTab.tab('show');
                 }, reason => {
@@ -75,11 +76,21 @@ class CreateProgram {
         this.generatorList.addToGenList(scheduledCourse);
     }
 
-    private generateNewSchedules(): Promise<Schedule[]> {
+    private static generateNewSchedules(): Promise<Schedule[]> {
         return new Promise<Schedule[]>((resolve, reject) => {
-            setTimeout(() => {
-                resolve([]);
-            }, 400);
+            $.ajax({
+                url: '/api/schedule/generator/generate',
+                method: 'POST',
+                headers,
+                success(resp: JQueryAjaxSettings) {
+                    const data = resp.data;
+                    const schedules: Schedule[] = data.schedules;
+                    resolve(schedules);
+                },
+                error(xhr, status) {
+                    reject(xhr);
+                }
+            });
         });
     }
 

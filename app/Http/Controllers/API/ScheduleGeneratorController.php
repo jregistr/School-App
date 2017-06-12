@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Services\PrecondResultsService;
 use App\Services\ScheduleGeneratorService;
+use App\Services\ScheduleMakerService;
 use App\Util\C;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,16 +15,20 @@ class ScheduleGeneratorController
 
     private $res;
     private $genService;
+    private $makerService;
 
     /**
      * ScheduleGeneratorController constructor.
      * @param PrecondResultsService $res - Dependency on precondition service to render results.
      * @param ScheduleGeneratorService $genService - Dependency on the generator service.
+     * @param ScheduleMakerService $makerService
      */
-    public function __construct(PrecondResultsService $res, ScheduleGeneratorService $genService)
+    public function __construct(PrecondResultsService $res, ScheduleGeneratorService $genService,
+                                ScheduleMakerService $makerService)
     {
         $this->res = $res;
         $this->genService = $genService;
+        $this->makerService = $makerService;
     }
 
     /**
@@ -92,6 +97,13 @@ class ScheduleGeneratorController
                 return $this->res->missingParameter($checks[C::NAME]);
             }
         }
+    }
+
+    public function generateSchedules()
+    {
+        $studentId = Auth::id();
+        $schedules = $this->makerService->generateSchedules($studentId);
+        return $this->res->result(['schedules' => $schedules]);
     }
 
 }

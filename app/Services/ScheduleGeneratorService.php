@@ -168,5 +168,4 @@ class ScheduleGeneratorService
             return false;
         }
     }
-
 }
