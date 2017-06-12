@@ -126,13 +126,13 @@ class ScheduleMakerService
     {
         $result = true;
         foreach ($list as $otherSchedule) {
-            $count = 0;
+            $allExist = true;
             foreach ($schedule as $selection) {
-                if ($this->existsIn($selection, $otherSchedule)) {
-                    $count += 1;
+                if (!($this->existsIn($selection, $otherSchedule))) {
+                    $allExist = false;
                 }
             }
-            if ($count == count($otherSchedule)) {
+            if ($allExist) {
                 $result = false;
                 break;
             }
