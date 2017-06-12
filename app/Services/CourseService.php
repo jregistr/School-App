@@ -34,7 +34,9 @@ class CourseService
         if ($user != null) {
             $courses = Course::where(C::STUDENT_ID, $studentId)
                 ->orWhere(C::STUDENT_ID, null)
-                ->where(C::SCHOOL_ID, $user->school_id)->get()->shuffle();
+                ->where(C::SCHOOL_ID, $user->school_id)
+                ->orderBy(C::NAME, 'ASC')
+                ->get();
 
             $subjs = [];
             foreach ($courses as $course) {
