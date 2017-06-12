@@ -12,7 +12,7 @@
 
     <!-- Bootstrap -->
 
-    <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
     <link rel="stylesheet" href="dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/register.css" />
@@ -39,6 +39,8 @@
     @yield('content')
 </div>
 
+<script src="dist/extract/manifest.js"></script>
+<script src="dist/extract/common-vendors.js"></script>
 <script src="dist/js/common.js"></script>
 </body>
 </html>

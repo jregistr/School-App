@@ -14,7 +14,7 @@
     {{--<link rel="stylesheet" href="/css/bootstrap.min.css"/>--}}
 
     {{--<link href="/css/register.css" rel="stylesheet">--}}
-    <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" href="/images/graduation-school-hat.png"/>
     {{--<link rel="stylesheet" href="/css/landing.css"/>--}}
     <link rel="stylesheet" href="dist/css/bootstrap.css" />
@@ -42,7 +42,7 @@
                 </button>
                 <a class="navbar-brand" href="{{url("/")}}"><img src="images/graduation-school-hat.png"/> myAgenda</a>
             </div>
-            <div class="navbar-collapse collapse navbar-right">
+            <div id="navbar" class="navbar-collapse collapse navbar-right" style="background: gray">
                 <ul class="nav navbar-nav">
                     <li><a href="{{url("/register")}}">Register</a></li>
                     <li><a href="{{url("/login")}}">Login</a></li>
@@ -102,6 +102,10 @@
 
 {{--<script src="/js/jquery-3.2.0.min.js"></script>--}}
 {{--<script src="/js/bootstrap.min.js"></script>--}}
+{{--<script src="dist/js/common.js"></script>--}}
+
+<script src="dist/extract/manifest.js"></script>
+<script src="dist/extract/common-vendors.js"></script>
 <script src="dist/js/common.js"></script>
 </body>
 </html>

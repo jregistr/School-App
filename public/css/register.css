@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext);
 
 html {
     -ms-text-size-adjust: 100%;
@@ -42,10 +42,10 @@ body {
 }
 
 .login, .email{
-    position: absolute;
-    top: 50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+    /*position: absolute;*/
+    /*top: 50%;*/
+    /*left:50%;*/
+    /*transform: translate(-50%,-50%);*/
 }
 
 
