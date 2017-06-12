@@ -83,7 +83,7 @@
                 <div class="clearfix"></div>
                 <h2 class="section-heading">What is myAgenda</h2>
                 <p class="lead">
-                    Haven't filled this in yet
+                    A simple and easy to use tool to generate schedules based on specified meeting times.
                 </p>
             </div>
         </div>

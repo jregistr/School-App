@@ -22,6 +22,9 @@
 </p>
 
 <a class="button" href="{{$activationLink}}">Activate your account</a>
+<br>
+If the button above doesn't work. Copy and paste this link below in your browser.
+{{$activationLink}}
 
 <p>Thank you</p>
 <p>The myAgenda Team</p>
