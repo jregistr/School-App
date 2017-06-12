@@ -103,12 +103,63 @@ class ScheduleMakerService
                     array_push($generatedSchedules, $newSchedule);
                 }
             }
+            error_log(count($generatedSchedules));
+            $uniques = [];
+            foreach ($generatedSchedules as $generatedSchedule) {
+                if ($this->isUnique($generatedSchedule, $uniques)) {
+                    array_push($uniques, $generatedSchedule);
+                }
+            }
 
-            $schedules = $this->querySaveSelections($generatedSchedules, $studentId);
+            error_log(count($uniques));
+            $schedules = $this->querySaveSelections($uniques, $studentId);
             return $schedules;
         } else {
             return [];
         }
+    }
+
+    /**
+     * @param Selection[] $schedule - The schedule to check for uniqueness.
+     * @param Selection[][] $list - The list to check against.
+     * @return  boolean - If the given schedule is unique.
+     */
+    private function isUnique($schedule, $list)
+    {
+        $result = true;
+        foreach ($list as $otherSchedule) {
+            $count = 0;
+            foreach ($schedule as $selection) {
+                if ($this->existsIn($selection, $otherSchedule)) {
+                    $count += 1;
+                }
+            }
+            if ($count == count($otherSchedule)) {
+                $result = false;
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param Selection $selection
+     * @param Selection[] $list
+     * @return boolean - if it is found.
+     */
+    private function existsIn($selection, $list)
+    {
+        $result = false;
+        foreach ($list as $item) {
+            if ($item->course->id == $selection->course->id &&
+                $item->section->id == $selection->section->id &&
+                $item->meeting->id == $selection->meeting->id
+            ) {
+                $result = true;
+                break;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -121,45 +172,26 @@ class ScheduleMakerService
     private function processRequiredSelections($requiredSelects, $creditLimit)
     {
         $generatedSchedules = [];
-        $addedToSomeSchedule = [];
-        while (count($requiredSelects) > 0) {
+
+        foreach ($requiredSelects as $requiredSelect) {
             $currentGeneratedSchedule = [];
+            array_push($currentGeneratedSchedule, $requiredSelect);
             $totalCredits = 0;
 
-            foreach ($requiredSelects as $currentSelection) {
-                if (($currentSelection->course->credits + $totalCredits) <= $creditLimit) {
-                    if ((!$this->hasTimeConflictWithAny($currentSelection, $currentGeneratedSchedule))
-                        && $this->passedCourseCondition($currentSelection, $currentGeneratedSchedule)
+            foreach ($requiredSelects as $possibleAdd) {
+                if (($possibleAdd->course->credits + $totalCredits) <= $creditLimit) {
+                    if ((!$this->hasTimeConflictWithAny($possibleAdd, $currentGeneratedSchedule))
+                        && $this->passedCourseCondition($possibleAdd, $currentGeneratedSchedule)
                     ) {
-
-                        $totalCredits += $currentSelection->course->credits;
-                        array_push($currentGeneratedSchedule, $currentSelection);
-                        array_push($addedToSomeSchedule, $currentSelection);
+                        $totalCredits += $possibleAdd->course->credits;
+                        array_push($currentGeneratedSchedule, $possibleAdd);
                     }
                 }
             }
 
-            foreach ($currentGeneratedSchedule as $temp) {
-                $index = array_search($temp, $requiredSelects);
-                if ($index !== false) {
-                    array_splice($requiredSelects, $index, 1);
-                } else {
-                    error_log($index);
-                }
-            }
-
-            foreach ($addedToSomeSchedule as $curSel) {
-                if (($curSel->course->credits + $totalCredits) <= $creditLimit) {
-                    if ((!$this->hasTimeConflictWithAny($curSel, $currentGeneratedSchedule))
-                        && $this->passedCourseCondition($curSel, $currentGeneratedSchedule)
-                    ) {
-                        $totalCredits += $curSel->course->credits;
-                        array_push($currentGeneratedSchedule, $curSel);
-                    }
-                }
-            }
             array_push($generatedSchedules, $currentGeneratedSchedule);
         }
+
         return $generatedSchedules;
     }
 
@@ -175,7 +207,6 @@ class ScheduleMakerService
     {
         $optionals = $this->copyScheduleData($optionalSelections);
         $generatedSchedules = [];
-        $addedToSomeSchedule = [];
 
         {
             $totalCredits = $this->countCredits($requiredBaseSchedule);
@@ -202,13 +233,13 @@ class ScheduleMakerService
             }
         }
 
-
         if (count($optionals) == 0) {
             array_push($generatedSchedules, $requiredBaseSchedule);
         } else {
-            while (count($optionals) > 0) {
-                $currentGeneratedSchedule = $this->copyScheduleData($requiredBaseSchedule);
+            foreach ($optionals as $possibleAdd) {
                 $totalCredits = $this->countCredits($requiredBaseSchedule);
+                $currentGeneratedSchedule = $this->copyScheduleData($requiredBaseSchedule);
+                array_push($currentGeneratedSchedule, $possibleAdd);
 
                 foreach ($optionals as $optional) {
                     if (($optional->course->credits + $totalCredits) <= $creditLimit) {
@@ -217,29 +248,9 @@ class ScheduleMakerService
                         ) {
                             $totalCredits += $optional->course->credits;
                             array_push($currentGeneratedSchedule, $optional);
-                            array_push($addedToSomeSchedule, $optional);
                         }
                     }
                 }
-
-                foreach ($currentGeneratedSchedule as $temp) {
-                    $index = array_search($temp, $optionals);
-                    if ($index !== false) {
-                        array_splice($optionals, $index, 1);
-                    }
-                }
-
-                foreach ($addedToSomeSchedule as $curSel) {
-                    if (($curSel->course->credits + $totalCredits) <= $creditLimit) {
-                        if ((!$this->hasTimeConflictWithAny($curSel, $currentGeneratedSchedule))
-                            && $this->passedCourseCondition($curSel, $currentGeneratedSchedule)
-                        ) {
-                            $totalCredits += $curSel->course->credits;
-                            array_push($currentGeneratedSchedule, $curSel);
-                        }
-                    }
-                }
-
                 array_push($generatedSchedules, $currentGeneratedSchedule);
             }
         }
