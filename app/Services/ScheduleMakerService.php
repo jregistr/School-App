@@ -103,7 +103,6 @@ class ScheduleMakerService
                     array_push($generatedSchedules, $newSchedule);
                 }
             }
-            error_log(count($generatedSchedules));
             $uniques = [];
             foreach ($generatedSchedules as $generatedSchedule) {
                 if ($this->isUnique($generatedSchedule, $uniques)) {
@@ -111,7 +110,6 @@ class ScheduleMakerService
                 }
             }
 
-            error_log(count($uniques));
             $schedules = $this->querySaveSelections($uniques, $studentId);
             return $schedules;
         } else {
