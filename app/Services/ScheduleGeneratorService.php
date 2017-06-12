@@ -29,7 +29,10 @@ class ScheduleGeneratorService
         if ($user != null) {
             $generator = GeneratorList::where(C::STUDENT_ID, $studentId)->first();
             if ($generator == null) {
-                $generator = GeneratorList::create([C::STUDENT_ID => $studentId]);
+                $generator = GeneratorList::create([
+                    C::STUDENT_ID => $studentId,
+                    C::CREDIT_LIMIT => 17
+                ]);
                 $generator['entries'] = [];
             }
             return $generator;
