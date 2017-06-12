@@ -52,3 +52,9 @@ body,html{
 footer{
     padding: 20px;
 }
+
+@media screen and (max-width: 480px) {
+    #navbar {
+        background: gray;
+    }
+}

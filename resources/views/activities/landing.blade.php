@@ -42,7 +42,7 @@
                 </button>
                 <a class="navbar-brand" href="{{url("/")}}"><img src="images/graduation-school-hat.png"/> myAgenda</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse navbar-right" style="background: gray">
+            <div id="navbar" class="navbar-collapse collapse navbar-right">
                 <ul class="nav navbar-nav">
                     <li><a href="{{url("/register")}}">Register</a></li>
                     <li><a href="{{url("/login")}}">Login</a></li>
